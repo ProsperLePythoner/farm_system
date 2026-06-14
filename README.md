@@ -223,6 +223,7 @@ Fields:
 - notes
 
 Relationship:
+
 Crop
 ⇣
 Planting
