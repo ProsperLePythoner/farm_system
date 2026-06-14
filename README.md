@@ -127,7 +127,8 @@ Avoid duplicate data whenever possible.
 
 ## Project Structure
 
-```farm_system/
+```
+farm_system/
 │
 ├── config/
 │
