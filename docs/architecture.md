@@ -1,2 +1,1 @@
-## Record any Significant Architectural Decisions Here
-
+# Project Architectural Decisions...

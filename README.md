@@ -165,8 +165,10 @@ farm_system/
 ├── media/
 │
 ├── docs/
-|   ├── DATABASE_DESIGN.md
-│   └── DECISIONS_LOG.md
+|   ├── database_design.md
+|   ├── architecture.md
+|   ├── roadmap.md
+│   └── business_rules.md
 │
 ├── requirements.txt
 |
@@ -177,7 +179,7 @@ farm_system/
 └── manage.py
 ```
 
-## App Responsibilities
+## APP RESPONSIBILITIES
 
 ### accounts
 
@@ -194,6 +196,13 @@ Roles:
 ---
 
 ### crops
+
+#### ```Field (i.e., Block)```
+
+Fields:
+- name
+- size
+- contained_plantings (list or tuple)
 
 #### ```Crop```
 
@@ -218,10 +227,7 @@ Fields:
 - planting_date
 - field_name
 
-Status values:
-- PLANTED
-- READY_FOR_HARVEST
-- HARVESTED
+Status values will be computed dynamically, no need to store in variables.
 
 ---
 
@@ -237,6 +243,8 @@ Fields:
 
 Relationship:
 
+Field<br>
+⇣<br>
 Crop<br>
 ⇣<br>
 Planting<br>
@@ -270,12 +278,23 @@ Fields:
 
 ### sales
 
+Relationship structure:
+
+```
+Customer → Order → OrderItem → Payment
+```
+
 #### ```Order```
 
 Fields:
 - customer
 - order_date
 - total_amount
+
+#### ```OrderItem```
+
+Fields:
+- 
 
 ---
 
@@ -324,7 +343,7 @@ Version 1 does not require a dedicated inventory app.
 
 Available Stock:
 
-### Total Harvested [to_be_reviewed!!]
+### Total Harvested [to be reviewed!!]
 
 Total Sold
 
@@ -519,3 +538,36 @@ Before adding any feature ask:
 "Does this solve a real farm problem today?"
 
 If the answer is no: do not build it yet.
+
+
+
+---
+<br><br><br>
+
+## DOMAIN MAP (Models are Born Here)
+
+If this is my domain map, then I probably should create separate apps for them?
+
+```
+Field
+    └── Planting
+
+Crop
+    └── Planting
+
+Planting
+    ├── Crop
+    ├── Planting date
+    ├── field
+    ├── quantity_planted
+    ├── planting_date
+    └── Harvest
+
+Customer
+    └── Order
+
+Order
+    ├── OrderItem
+         └── ...
+    └── Payment
+```
