@@ -10,6 +10,17 @@
 - belongs to Crop
 - has many Harvests
 
+### Customer
+- Own person; purchases and makes orders
+
+### Order
+- Belongs to customer
+- Has many OrderItem items
+
+### OrderItem
+- Belongs to order
+- Has a single crop, payment amount, etc.
+
 ### Harvest
 - belongs to Planting
 
@@ -20,22 +31,58 @@
 
 # Entity-Relationship Diagram (Rough)
 
+```Python
+### Field
+1. id
+2. name
+3. size
+4. notes
+
 ### Crop
 1. id
 2. name
-3. variety
+3. unit
+4. description
 
-## Planting
+### Planting
 1. id
-2. crop_id
-3. field_id
+2. crop_id (ForeignKey)
+3. field_id (ForeignKey)
 4. planting_date
+5. quantity_planted
+6. notes
 
-## Harvest
+### Harvest
 1. id
-2. planting_id
+2. planting_id (ForeignKey)
+3. quantity_harvested
+4. harvesting_date
+
+### Customer
+1. id
+2. name
+3. phone
+4. location
+5. notes
+
+### Order
+1. id
+2. customer_id (ForeignKey)
+3. order_date
+4. notes
+
+### OrderItem
+1. id
+2. crop_id (ForeignKey)
 3. quantity
-4. harvest_date
+4. unit_price
+
+### Payment
+1. id
+2. order_id (ForeignKey)
+3. amount_paid
+4. payment_date
+```
 
 <br><br>
 

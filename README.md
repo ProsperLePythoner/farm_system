@@ -127,7 +127,7 @@ Avoid duplicate data whenever possible.
 
 ## Project Structure
 
-```
+```Text
 farm_system/
 |
 ├── .venv/ (internal details hidden!)
@@ -197,14 +197,33 @@ Roles:
 
 ### crops
 
-#### ```Field (i.e., Block)```
+#### 1. ```Field (i.e., Block)```
 
 Fields:
 - name
 - size
-- contained_plantings (list or tuple)
 
-#### ```Crop```
+I don't need ```contained_plantings``` because Django already knows this
+ through the relationship:
+
+```Python
+Planting.field = ForeignKey(Field)
+```
+
+Django gives me:
+```Python
+field.planting_set.all()
+
+# or...
+
+field.plantings.all()
+```
+
+if I use ```related_name```.
+
+<br>
+
+#### 2. ```Crop```
 
 Fields:
 - name
@@ -220,7 +239,7 @@ Tomatoes
 
 ---
 
-#### ```Planting```
+#### 3. ```Planting```
 
 Fields:
 - crop
@@ -233,7 +252,7 @@ Status values will be computed dynamically, no need to store in variables.
 
 ### harvests
 
-#### ```Harvest```
+#### 1. ```Harvest```
 
 Fields:
 - planting
@@ -265,7 +284,7 @@ Harvest 3: 90kg
 
 ### customers
 
-#### ```Customer```
+#### 1. ```Customer```
 
 Fields:
 - name
@@ -284,21 +303,16 @@ Relationship structure:
 Customer → Order → OrderItem → Payment
 ```
 
-#### ```Order```
+#### 1. ```Order```
 
 Fields:
 - customer
 - order_date
 - total_amount
 
-#### ```OrderItem```
-
-Fields:
-- 
-
 ---
 
-#### ```Payment```
+#### 2. ```Payment```
 
 Fields:
 - order
@@ -542,6 +556,7 @@ If the answer is no: do not build it yet.
 
 
 ---
+
 <br><br><br>
 
 ## DOMAIN MAP (Models are Born Here)
@@ -568,6 +583,9 @@ Customer
 
 Order
     ├── OrderItem
-         └── ...
+        ├── order
+        ├── crop
+        ├── quantity
+        ├── unit_price
     └── Payment
 ```
