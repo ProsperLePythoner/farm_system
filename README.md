@@ -1,4 +1,4 @@
-# Agribusiness_Architechture
+# Agribusiness Architechture
 
 ## Project Overview
 
@@ -129,6 +129,13 @@ Avoid duplicate data whenever possible.
 
 ```
 farm_system/
+|
+├── .venv/ (internal details hidden!)
+|   ├─- Include
+|   ├─- Lib
+|   ├─- Scripts
+|   ├─- .gitignore
+|   ├─- pyvenv.cfg
 │
 ├── config/
 │
@@ -157,7 +164,13 @@ farm_system/
 │
 ├── media/
 │
+├── docs/
+|   ├── DATABASE_DESIGN.md
+│   └── DECISIONS_LOG.md
+│
 ├── requirements.txt
+|
+├── .gitignore
 |
 ├── README.md
 │
@@ -182,7 +195,7 @@ Roles:
 
 ### crops
 
-#### Crop [each one]
+#### ```Crop```
 
 Fields:
 - name
@@ -198,7 +211,7 @@ Tomatoes
 
 ---
 
-#### Planting
+#### ```Planting```
 
 Fields:
 - crop
@@ -214,7 +227,7 @@ Status values:
 
 ### harvests
 
-#### Harvest
+#### ```Harvest```
 
 Fields:
 - planting
@@ -224,10 +237,10 @@ Fields:
 
 Relationship:
 
-Crop
-⇣
-Planting
-⇣
+Crop<br>
+⇣<br>
+Planting<br>
+⇣<br>
 Harvest
 
 A planting can have multiple harvest records.
@@ -236,15 +249,15 @@ Example:
 
 Planting: Tomatoes
 
-Harvest 1: 150kg
-Harvest 2: 120kg
+Harvest 1: 150kg<br>
+Harvest 2: 120kg<br>
 Harvest 3: 90kg
 
 ---
 
 ### customers
 
-#### Customer
+#### ```Customer```
 
 Fields:
 - name
@@ -257,7 +270,7 @@ Fields:
 
 ### sales
 
-#### Order
+#### ```Order```
 
 Fields:
 - customer
@@ -266,7 +279,7 @@ Fields:
 
 ---
 
-#### Payment
+#### ```Payment```
 
 Fields:
 - order
@@ -282,7 +295,7 @@ Never use a simple paid/unpaid Boolean, i.e. this is unrealistic
 ### dashboard
 
 Displays:
-- Upcoming harvests
+- Upcoming harvests (calendar feature)
 - Available stock
 - Oustanding balances
 - Recent orders
@@ -294,10 +307,10 @@ Contains no business logic.
 ## Harvest Window Logic
 
 Harvest Start:
-planting_date + maturity_days
+```planting_date + maturity_days```
 
 Harvest End:
-harvest_start + 3 days
+```harvest_start + 3 days```
 
 These values should be calculated dynamically.
 
@@ -321,7 +334,7 @@ Available Stock
 
 Example:
 
-Harvested = 500kg
+Harvested = 500kg<br>
 Sold = 320kg
 
 Available = 180kg
@@ -339,7 +352,7 @@ Calendar should display:
 - Harvest windows
 - Upcoming harvests
 
-Primary view:
+Primary view:<br>
 Month Calendar (with days, ofc.)
 
 ---
@@ -418,6 +431,86 @@ These features should not influence Version 1 architecture.
 - Bug Fixes
 
 ---
+
+## Personal Notes 🐱‍👤
+
+Make sure to properly create a virtual environment that will streamline 
+your workflow and practically save you from excruciating *PAIN* later on.
+
+#### Uhh... why use a virtual environment in the first place?
+
+Listen up. Think of a venv as a private toolbox for one project. It basically
+isolates ur projects into separate environments, preventing them from 
+sharing ur system-wide Python installation, which can get messy the more ur project 
+ages and becomes more complex.
+
+Consider the example below [*Courtesy of ChatGPT*]:
+
+Without venv:
+```
+Windows Python
+├── Django 5.2
+├── Pillow 11
+├── NumPy
+├── Pandas
+├── ...
+```
+
+With venv:
+```
+Farm System
+└── venv/
+    ├── Django 5.2
+    ├── Pillow
+    └── Whitenoise
+
+Another Project
+└── venv/
+    ├── Django 4.2
+    └── Requests
+```
+
+Each project gets its **own** isolated environment.
+
+And... for *this* project specifically, we're going pretty serious with
+- Django
+- Authentication
+- Static files
+- Media uploads
+- Database drivers
+- Production deployment
+
+### Useful .venv actions/commands or whatever...
+
+- Inside ```farm_system```, create the virtual environment as follows:
+
+```
+python -m venv .venv
+```
+
+- Then activate it:
+
+```
+.venv\Scripts\activate
+```
+
+- Next, reinstall Django (Do this!!! ❌):
+```
+pip install django
+```
+
+- Thereafter, save dependencies:
+```
+pip freeze > requirements.txt
+```
+
+Now your project becomes portable :)
+```
+pip install -r requirements.txt
+```
+
+So use a venv. Stay safe... and use A **VENV**! 🐱‍👤 (Purr...)
+
 
 ## Golden Rule
 
