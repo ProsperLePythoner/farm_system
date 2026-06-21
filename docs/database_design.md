@@ -84,6 +84,21 @@
 4. payment_date
 ```
 
+### 📢**Note**: Model *id* fields
+
+- With Django, id fields for all models are assigned automatically 
+  (ofc this can be changed, but we're not gonna do that).
+
+- By default, Django gives each model an auto-incrementing primary key with the 
+  type specified per app in ```AppConfig.default_auto_field``` or globally in the 
+  ```DEFAULT_AUTO_FIELD``` setting. For example:
+  ```Python
+  id = models.BigAutoField(primary_key=True)
+  ```
+
+- Just so you know, you can change this by specifying primary_key=True on one of your 
+fields. If Django sees you’ve explicitly set ```Field.primary_key```, it won’t add the automatic id column.
+
 <br><br>
 
 
@@ -163,7 +178,7 @@ Payment.order = ForeignKey(Order)
 
 # Models
 
-```
+```txt
 accounts
 └── User
 
@@ -183,3 +198,10 @@ sales
 ├── OrderItem
 └── Payment
 ```
+
+<br>
+
+# Database Management System (DBMS)
+The database used for this system's functionality is PostgreSQL.
+The installation process was rather straightforward and so it will not be discussed
+here; partly true because this data is already stored in a well-known LLM :D

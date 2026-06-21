@@ -517,28 +517,28 @@ And... for *this* project specifically, we're going pretty serious with
 
 - Inside ```farm_system```, create the virtual environment as follows:
 
-```
+```bash
 python -m venv .venv
 ```
 
 - Then activate it:
 
-```
+```bash
 .venv\Scripts\activate
 ```
 
 - Next, reinstall Django (Do this!!! ❌):
-```
+```bash
 pip install django
 ```
 
 - Thereafter, save dependencies:
-```
+```bash
 pip freeze > requirements.txt
 ```
 
 Now your project becomes portable :)
-```
+```bash
 pip install -r requirements.txt
 ```
 

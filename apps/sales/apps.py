@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class HarvestsConfig(AppConfig):
-    name = 'harvests'
+class SalesConfig(AppConfig):
+    name = 'apps.sales'

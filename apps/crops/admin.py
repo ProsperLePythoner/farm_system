@@ -1,3 +1,8 @@
-from django.contrib import admin
+# crops/admin.py
 
-# Register your models here.
+from django.contrib import admin
+from .models import Field, Crop, Planting
+
+admin.site.register(Field)
+admin.site.register(Crop)
+admin.site.register(Planting)
