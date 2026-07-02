@@ -31,7 +31,7 @@ Now, continue with the following:
 4. Test all business scenarios in admin [x]
 5. Add validators [x]
 6. Fix model bugs [x]
-7. Build URLs
+7. Build URLs [x] eh, sorta!
 8. Build views
 9. Build templates
 10. Add inventory management
