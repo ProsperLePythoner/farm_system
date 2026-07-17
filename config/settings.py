@@ -89,6 +89,25 @@ DATABASES = {
     }
 }
 
+'''
+NOTE TO SELF!!!
+
+Here are the original parameters for the database connection, in case you 
+change it sometime later:
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "farm_system",
+        "USER": "postgres",
+        "PASSWORD": "@superuser101", # 🔐 Database pa****rd!!!
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
+
+'''
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
