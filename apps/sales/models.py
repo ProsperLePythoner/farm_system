@@ -45,7 +45,7 @@ class Order(models.Model):
         for item in self.items.all():
             total += item.line_total
 
-        return total
+        return total # i.e., derived value
 
     @property
     def total_paid(self):
