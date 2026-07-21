@@ -235,15 +235,13 @@ Those map naturally to Django's generic class-based views:
 **Business Task** &emsp; **Django View**
 
 ---
-List plantings &emsp;	```ListView```
-
-View planting details &emsp;	```DetailView```
-
-Register a new planting &emsp;	```CreateView```
-
-Update planting information &emsp;	```UpdateView```
-
-Archive/remove planting &emsp;	```DeleteView``` (or a custom archive view if you prefer soft deletion)
+| Business task               | Django view                                                         |
+| --------------------------- | ------------------------------------------------------------------- |
+| List plantings              | `ListView`                                                          |
+| View planting details       | `DetailView`                                                        |
+| Register a new planting     | `CreateView`                                                        |
+| Update planting information | `UpdateView`                                                        |
+| Archive/remove planting     | `DeleteView` (or a custom archive view if you prefer soft deletion) |
 
 The key point is that we're choosing these views because they fit 
 the business tasks, not because "CRUD is what Django apps have."
