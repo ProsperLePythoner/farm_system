@@ -277,3 +277,47 @@ That understanding will make every subsequent view feel like a logical
 extension rather than a new concept.
 
 ---
+
+
+# URLs and Dashboards
+```text
+                dashboard/
+                     │
+        ┌────────────┼────────────┐
+        │            │            │
+ Farm Manager   Sales Clerk   Administrator
+        │            │            │
+        ▼            ▼            ▼
+ Production     Sales stats   Everything
+ Dashboard      Dashboard     Dashboard
+```
+
+# Dashboard Design
+Should probably look something like this...
+```text
+Login
+   │
+   ▼
+DashboardView
+   │
+   ├── Farm Manager Dashboard
+   │      ├── Harvest alerts
+   │      ├── Plantings
+   │      ├── Fields
+   │      └── Inventory
+   │
+   ├── Sales Dashboard
+   │      ├── Customers
+   │      ├── Orders
+   │      ├── Payments
+   │      └── Outstanding balances
+   │
+   └── Administrator Dashboard
+          ├── Production summary
+          ├── Sales summary
+          ├── Users
+          └── Reports
+```
+
+Everything flows through one dashboard endpoint, 
+but the experience changes based on the authenticated user's role.
