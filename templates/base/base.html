@@ -9,14 +9,14 @@
     <title>
         {% block title %}
             Farm Management System
-        {% endblock %}
+        {% endblock title %}
     </title>
 
     <!-- Global CSS -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
     {% block extra_css %}
-    {% endblock %}
+    {% endblock extra_css %}
 </head>
 
 <body>
@@ -29,7 +29,7 @@
         <main class="main-content">
 
             {% block content %}
-            {% endblock %}
+            {% endblock content %}
 
         </main>
 
@@ -40,7 +40,7 @@
     <script src="{% static 'js/sidebar.js' %}"></script>
 
     {% block extra_js %}
-    {% endblock %}
+    {% endblock extra_js %}
 
 </body>
 </html>
