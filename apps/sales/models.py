@@ -158,6 +158,10 @@ class Payment(models.Model):
         validators=[MinValueValidator(Decimal("0.01"))]
     )
 
+    @property
+    def payment_due(self):
+        pass # implement this to calculate outstanding balance dynamically
+
     payment_date = models.DateField()
 
     # ------------------------------

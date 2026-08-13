@@ -37,3 +37,7 @@ Now, continue with the following:
 10. Add inventory management
 11. Add reporting/dashboard
 ```
+
+Be sure to add the following functionality:
+1. Automatic harvest alert emails
+2. Dynamic dashboard display
