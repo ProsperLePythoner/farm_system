@@ -1,0 +1,46 @@
+CROPS
+│
+├── Overview
+│
+├── Crops
+│   ├── Crop list
+│   ├── Crop detail
+│   ├── Add crop
+│   └── Edit crop
+│
+├── Fields
+│   ├── Field list
+│   ├── Field detail
+│   ├── Add field
+│   └── Edit field
+│
+└── Plantings
+    ├── Planting list
+    ├── Planting detail
+    ├── Record planting
+    └── Edit planting
+
+
+DASHBOARD: CROPS OVERVIEW
+
+┌───────────────────────────────────────────────────────────┐
+│ Crops                                      + New Planting  │
+│ Manage your farm's crops, fields and production           │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  ACTIVE CROPS       FIELDS          PLANTINGS             │
+│       8               12               24                 │
+│                                                           │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  🌱 Plantings requiring attention                          │
+│                                                           │
+│  Tomatoes       Block A       Ready for harvest           │
+│  Cabbage        Plot C        Harvest in 2 days           │
+│  Maize          Block B       Growing                     │
+│                                                           │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  Recent plantings                                         │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
