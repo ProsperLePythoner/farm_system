@@ -1,0 +1,28 @@
+{% extends "base/base.html" %}
+
+{% block title %}Delete Planting{% endblock %}
+
+{% block content %}
+
+<h1>Delete Planting</h1>
+
+<p>
+    Are you sure you want to delete
+    <strong>{{ planting }}</strong>?
+</p>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <button type="submit">
+        Yes, delete
+    </button>
+
+    <a href="{% url 'crops:planting-detail' planting.pk %}">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}

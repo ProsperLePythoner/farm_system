@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+
+{% block title %}Plantings{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Plantings</h1>
+        <p>Manage crops currently planted across your fields.</p>
+    </div>
+
+    <a href="{% url 'crops:planting-create' %}">
+        New Planting
+    </a>
+</div>
+
+
+{% if plantings %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Crop</th>
+            <th>Field</th>
+            <th>Quantity</th>
+            <th>Planting Date</th>
+            <th>Expected Harvest</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for planting in plantings %}
+
+        <tr>
+            <td>
+                <a href="{% url 'crops:planting-detail' planting.pk %}">
+                    {{ planting.crop.crop_name }}
+                </a>
+            </td>
+
+            <td>
+                {{ planting.field.field_name }}
+            </td>
+
+            <td>
+                {{ planting.quantity_planted }}
+                {{ planting.planting_qty_unit }}
+            </td>
+
+            <td>
+                {{ planting.planting_date }}
+            </td>
+
+            <td>
+                {{ planting.harvest_start }}
+                – {{ planting.harvest_end }}
+            </td>
+
+            <td>
+                {% if planting.is_ready_for_harvest %}
+                    Ready for harvest
+                {% else %}
+                    Growing
+                {% endif %}
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+</table>
+
+{% else %}
+
+<p>No plantings have been registered yet.</p>
+
+<a href="{% url 'crops:planting-create' %}">
+    Register your first planting
+</a>
+
+{% endif %}
+
+{% endblock %}

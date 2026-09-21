@@ -1,0 +1,97 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{ planting }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>{{ planting.crop.crop_name }}</h1>
+        <p>{{ planting.field.field_name }}</p>
+    </div>
+
+    <div>
+        <a href="{% url 'crops:planting-update' planting.pk %}">
+            Edit
+        </a>
+
+        <a href="{% url 'crops:planting-delete' planting.pk %}">
+            Delete
+        </a>
+    </div>
+
+</div>
+
+
+<section>
+
+    <h2>Planting Information</h2>
+
+    <dl>
+
+        <dt>Crop</dt>
+        <dd>{{ planting.crop.crop_name }}</dd>
+
+        <dt>Field</dt>
+        <dd>{{ planting.field.field_name }}</dd>
+
+        <dt>Quantity planted</dt>
+        <dd>
+            {{ planting.quantity_planted }}
+            {{ planting.planting_qty_unit }}
+        </dd>
+
+        <dt>Planting date</dt>
+        <dd>{{ planting.planting_date }}</dd>
+
+    </dl>
+
+</section>
+
+
+<section>
+
+    <h2>Harvest Window</h2>
+
+    {% if planting.is_ready_for_harvest %}
+
+        <p>
+            This planting is ready for harvest.
+        </p>
+
+    {% else %}
+
+        <p>
+            This planting is still growing.
+        </p>
+
+    {% endif %}
+
+    <p>
+        Expected start:
+        {{ planting.harvest_start }}
+    </p>
+
+    <p>
+        Expected end:
+        {{ planting.harvest_end }}
+    </p>
+
+</section>
+
+
+{% if planting.notes %}
+
+<section>
+
+    <h2>Notes</h2>
+
+    <p>{{ planting.notes }}</p>
+
+</section>
+
+{% endif %}
+
+
+{% endblock %}

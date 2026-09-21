@@ -1,0 +1,50 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    {% if object %}
+        Edit Planting
+    {% else %}
+        New Planting
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        {% if object %}
+            <h1>Edit Planting</h1>
+            <p>Update the planting information.</p>
+        {% else %}
+            <h1>New Planting</h1>
+            <p>Register a new crop planting.</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<form method="post">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        {% if object %}
+            Save Changes
+        {% else %}
+            Register Planting
+        {% endif %}
+    </button>
+
+    <a href="{% url 'crops:planting-list' %}">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}
