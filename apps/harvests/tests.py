@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.formats import date_format
 
 from apps.crops.models import Crop, Field, Planting
 
@@ -86,6 +88,67 @@ class HarvestTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "5.00 kg")
         self.assertContains(response, "North plot")
+
+    def test_list_view_shows_upcoming_window_and_record_action(self):
+        planting = Planting.objects.create(
+            crop=self.crop,
+            field=self.field,
+            planting_qty_unit="seeds",
+            quantity_planted=Decimal("20.00"),
+            planting_date=timezone.localdate(),
+        )
+
+        response = self.client.get(reverse("harvests:harvest-list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(response.context["upcoming_plantings"]), [planting])
+        self.assertEqual(list(response.context["harvests"]), [])
+        self.assertContains(response, "Upcoming Harvest Windows")
+        self.assertContains(response, date_format(planting.harvest_start, "DATE_FORMAT"))
+        self.assertContains(
+            response,
+            reverse("harvests:harvest-create", args=[planting.pk]),
+        )
+        self.assertContains(response, "Record Harvest")
+
+    def test_complete_upcoming_planting_to_harvest_lifecycle(self):
+        planting = Planting.objects.create(
+            crop=self.crop,
+            field=self.field,
+            planting_qty_unit="seeds",
+            quantity_planted=Decimal("20.00"),
+            planting_date=timezone.localdate(),
+        )
+        harvest_list_url = reverse("harvests:harvest-list")
+
+        upcoming_response = self.client.get(harvest_list_url)
+        self.assertContains(
+            upcoming_response,
+            date_format(planting.harvest_start, "DATE_FORMAT"),
+        )
+        self.assertContains(
+            upcoming_response,
+            reverse("harvests:harvest-create", args=[planting.pk]),
+        )
+
+        create_response = self.client.post(
+            reverse("harvests:harvest-create", args=[planting.pk]),
+            {
+                "harvesting_date": planting.harvest_start.isoformat(),
+                "quantity_harvested": "5.00",
+                "notes": "First picking",
+            },
+        )
+        self.assertRedirects(
+            create_response,
+            reverse("crops:planting-detail", args=[planting.pk]),
+        )
+
+        harvest = Harvest.objects.get(planting=planting)
+        record_response = self.client.get(harvest_list_url)
+        self.assertEqual(list(record_response.context["harvests"]), [harvest])
+        self.assertContains(record_response, "5.00 kg")
+        self.assertContains(record_response, "First picking")
 
     def test_update_preserves_the_recorded_unit(self):
         harvest = Harvest.objects.create(

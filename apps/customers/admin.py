@@ -1,6 +1,9 @@
-# customers/admin.py
-
 from django.contrib import admin
+
 from .models import Customer
 
-admin.site.register(Customer)
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ("customer_name", "customer_phone", "customer_location", "created_at")
+    ordering = ("customer_name",)

@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+
+{% block title %}Delete Customer{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Delete Customer</h1>
+        <p>Delete <strong>{{ customer.customer_name }}</strong>?</p>
+    </div>
+</div>
+
+{% if has_order_history %}
+<p>This customer has order history and cannot be deleted. Keeping the customer record preserves the order history.</p>
+<a href="{% url 'customers:customer-detail' customer.pk %}">Return to customer</a>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete customer</button>
+    <a href="{% url 'customers:customer-detail' customer.pk %}">Cancel</a>
+</form>
+{% endif %}
+{% endblock %}

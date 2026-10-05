@@ -6,39 +6,78 @@
 <div class="page-header">
     <div>
         <h1>Harvests</h1>
-        <p>Harvest records across all plantings.</p>
+        <p>Expected harvest windows and recorded harvests.</p>
     </div>
 </div>
 
-{% if harvests %}
-<table>
-    <thead>
-        <tr>
-            <th>Crop</th>
-            <th>Field</th>
-            <th>Harvest date</th>
-            <th>Quantity</th>
-            <th>Notes</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for harvest in harvests %}
-        <tr>
-            <td>{{ harvest.planting.crop.crop_name }}</td>
-            <td>{{ harvest.planting.field.field_name }}</td>
-            <td>{{ harvest.harvesting_date }}</td>
-            <td>{{ harvest.quantity_harvested }} {{ harvest.unit }}</td>
-            <td>{{ harvest.notes|default:"—" }}</td>
-            <td>
-                <a href="{% url 'harvests:harvest-update' harvest.pk %}">Edit</a>
-                <a href="{% url 'harvests:harvest-delete' harvest.pk %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No harvests have been recorded yet.</p>
-{% endif %}
+<section>
+    <h2>Upcoming Harvest Windows</h2>
+    {% if upcoming_plantings %}
+    <table>
+        <thead>
+            <tr>
+                <th>Crop</th>
+                <th>Field</th>
+                <th>Expected window</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for planting in upcoming_plantings %}
+            <tr>
+                <td>
+                    <a href="{% url 'crops:planting-detail' planting.pk %}">
+                        {{ planting.crop.crop_name }}
+                    </a>
+                </td>
+                <td>{{ planting.field.field_name }}</td>
+                <td>{{ planting.harvest_start }} – {{ planting.harvest_end }}</td>
+                <td>
+                    <a href="{% url 'harvests:harvest-create' planting.pk %}">
+                        Record Harvest
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No upcoming harvest windows.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Recorded Harvests</h2>
+    {% if harvests %}
+    <table>
+        <thead>
+            <tr>
+                <th>Crop</th>
+                <th>Field</th>
+                <th>Harvest date</th>
+                <th>Quantity</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for harvest in harvests %}
+            <tr>
+                <td>{{ harvest.planting.crop.crop_name }}</td>
+                <td>{{ harvest.planting.field.field_name }}</td>
+                <td>{{ harvest.harvesting_date }}</td>
+                <td>{{ harvest.quantity_harvested }} {{ harvest.unit }}</td>
+                <td>{{ harvest.notes|default:"—" }}</td>
+                <td>
+                    <a href="{% url 'harvests:harvest-update' harvest.pk %}">Edit</a>
+                    <a href="{% url 'harvests:harvest-delete' harvest.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No harvests have been recorded yet.</p>
+    {% endif %}
+</section>
 {% endblock %}

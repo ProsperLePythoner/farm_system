@@ -39,14 +39,32 @@ Harvest pages are served under `/harvests/`:
 | Edit a harvest | `<pk>/edit/` | `UpdateView` |
 | Delete a harvest | `<pk>/delete/` | `DeleteView` |
 
+The harvest list displays both recorded `Harvest` rows and upcoming windows
+derived from `Planting` dates and crop maturity days. Each upcoming planting
+links to the context-aware record form for that specific planting. At this
+stage, upcoming means that the calculated harvest start is today or later;
+status categories and the handling of past-due plantings remain to be defined.
+
 Recording a harvest from its planting provides context: the planting, crop, and
 field are known, while the user supplies the harvest date, quantity, and notes.
 The form and view enforce the relationship and snapshot the crop's current unit.
 
+Customer pages are served under `/customers/`:
+
+| User task | Route pattern | View |
+|---|---|---|
+| List customers | `/` (app root) | `ListView` |
+| Add a customer | `new/` | `CreateView` |
+| View contact details and order history | `<pk>/` | `DetailView` |
+| Edit a customer | `<pk>/edit/` | `UpdateView` |
+| Delete a customer without orders | `<pk>/delete/` | `DeleteView` |
+
+Customer deletion is blocked when orders exist, preserving customer references
+and order history. Customer search and filtering are not implemented yet.
+
 ### Incomplete routes
 
 - `/sales/` and `/sales/<pk>/` currently return placeholder responses.
-- Customer URLs are not yet defined.
 - The dashboard view currently renders the shared base template; it is not yet
   a data-driven or role-specific dashboard.
 - There is no complete sign-in, role, or permission workflow documented by the

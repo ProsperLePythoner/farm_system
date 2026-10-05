@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base/base.html" %}
 
-</body>
-</html>
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Customers</h1>
+        <p>Manage people and businesses buying produce.</p>
+    </div>
+    <a href="{% url 'customers:customer-create' %}">Add Customer</a>
+</div>
+
+{% if customers %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in customers %}
+        <tr>
+            <td>
+                <a href="{% url 'customers:customer-detail' customer.pk %}">
+                    {{ customer.customer_name }}
+                </a>
+            </td>
+            <td>{{ customer.customer_phone }}</td>
+            <td>{{ customer.customer_location|default:"—" }}</td>
+            <td>
+                <a href="{% url 'customers:customer-update' customer.pk %}">Edit</a>
+                <a href="{% url 'customers:customer-delete' customer.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No customers have been added yet.</p>
+<a href="{% url 'customers:customer-create' %}">Add your first customer</a>
+{% endif %}
+{% endblock %}

@@ -1,5 +1,7 @@
+from django.db.models import DateField, ExpressionWrapper, F
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from apps.crops.models import Planting
@@ -18,6 +20,22 @@ class HarvestListView(ListView):
             "planting__crop",
             "planting__field",
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["upcoming_plantings"] = (
+            Planting.objects
+            .select_related("crop", "field")
+            .annotate(
+                expected_harvest_start=ExpressionWrapper(
+                    F("planting_date") + F("crop__maturity_days"),
+                    output_field=DateField(),
+                )
+            )
+            .filter(expected_harvest_start__gte=timezone.localdate())
+            .order_by("expected_harvest_start", "pk")
+        )
+        return context
 
 
 class HarvestCreateView(CreateView):

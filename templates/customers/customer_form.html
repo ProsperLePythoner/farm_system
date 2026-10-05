@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    {% if object %}Edit Customer{% else %}Add Customer{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{% if object %}Edit Customer{% else %}Add Customer{% endif %}</h1>
+        <p>Enter the customer's contact information.</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if object %}Save Changes{% else %}Add Customer{% endif %}</button>
+    <a href="{% if object %}{% url 'customers:customer-detail' object.pk %}{% else %}{% url 'customers:customer-list' %}{% endif %}">Cancel</a>
+</form>
+{% endblock %}
