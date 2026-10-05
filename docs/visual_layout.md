@@ -3,7 +3,8 @@
 ## Current shared application shell
 
 The web UI uses a shared Django template shell styled by the project's
-hand-written `static/css/base.css`:
+hand-written `static/css/base.css`. The sidebar is vertical on wider screens
+and becomes one horizontally scrollable navigation row on smaller screens:
 
 ```text
 +--------------------------------------------------------------+
@@ -25,8 +26,7 @@ hand-written `static/css/base.css`:
 
 The shell is defined in `templates/base/base.html`. Navigation covers the
 dashboard landing page, crop/field/planting workflows, harvests, customers, and
-sales orders. Active-page links are indicated, and the sidebar reflows for
-smaller screens.
+sales orders. Active-page links use a consistent accent treatment.
 
 ## Current page coverage
 
