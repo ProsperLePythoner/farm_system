@@ -1,10 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base/base.html" %}
 
-</body>
-</html>
+{% block title %}Sales Orders{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Sales Orders</h1>
+        <p>Customer orders, totals, and outstanding balances.</p>
+    </div>
+    <a href="{% url 'sales:order-create' %}">New Order</a>
+</div>
+
+{% if orders %}
+<table>
+    <thead>
+        <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Paid</th>
+            <th>Outstanding</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td><a href="{% url 'sales:order-detail' order.pk %}">#{{ order.pk }}</a></td>
+            <td>{{ order.customer.customer_name }}</td>
+            <td>{{ order.order_date }}</td>
+            <td>TSh {{ order.total_amount|floatformat:2 }}</td>
+            <td>TSh {{ order.total_paid|floatformat:2 }}</td>
+            <td>TSh {{ order.outstanding_balance|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No orders have been recorded yet.</p>
+<a href="{% url 'sales:order-create' %}">Create the first order</a>
+{% endif %}
+{% endblock %}

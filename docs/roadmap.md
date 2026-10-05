@@ -32,12 +32,18 @@ the application; it does not imply production hardening.
 - [x] Customer list, detail, create, edit, and delete workflows.
 - [x] Customer detail displays related order history.
 - [x] Customer records with orders are protected from deletion.
+- [x] Sales order list, detail, create, edit, and delete workflows.
+- [x] Orders support multiple line items linked to specific harvest records.
+- [x] Order totals and outstanding balances are calculated from line items and
+  existing payment records.
+- [x] Orders with payment history and harvests referenced by sales are protected
+  from deletion.
 
 ### Incomplete foundations
 
 - [ ] Crop and field user-facing pages; the current crop views focus on
   plantings.
-- [ ] Order, order-item, and payment workflows.
+- [ ] Payment creation and management workflows.
 - [ ] Inventory calculations and stock availability checks.
 - [ ] Role-based access control; the planned roles are not yet enforced.
 - [ ] Operational dashboard, reporting, notifications, and deployment setup.
@@ -46,30 +52,36 @@ the application; it does not imply production hardening.
 
 1. Finish crops and fields management, or decide that these master records will
    remain admin-only for the first release.
-2. Implement order and payment workflows, with validation and tests around
-   totals, payment balances, and invalid input.
-3. Decide and enforce quantity-unit rules before calculating stock:
-   - either make a crop's unit immutable once it has related transactions, or
-   - preserve the unit on each sales order item, as harvests already do.
-4. Define inventory semantics, including whether negative stock is allowed,
-   how returns/waste are represented, and when an order reduces available stock.
-5. Build a dashboard from implemented production and sales queries; avoid
+2. Implement payment creation and management, with validation and tests around
+   payment balances and invalid input.
+3. Define inventory semantics, including when stock is deducted, whether
+   negative stock is allowed, and how waste, returns, and adjustments are
+   represented.
+4. Enforce harvest-level availability so order quantities cannot exceed
+   remaining stock.
+5. Revisit legacy crop-only sales: they remain readable but cannot be assigned
+   to harvest stock without historical allocation data.
+6. Build a dashboard from implemented production and sales queries; avoid
    presenting planned metrics as if they are already authoritative.
-6. Add authentication, role/group permissions, and access tests before
+7. Add authentication, role/group permissions, and access tests before
    multi-user deployment.
-7. Configure production settings, credentials, database, static/media files,
+8. Configure production settings, credentials, database, static/media files,
    backups, and deployment checks.
+
+New order items snapshot the selected harvest's measurement unit. Legacy
+crop-only order items remain readable, but cannot be assigned to harvest stock
+without historical allocation data.
 
 ## Later enhancements
 
 - Harvest-window email or in-app alerts, with delivery timing and recipient
   rules defined first.
 - Reports for production, sales, outstanding balances, and stock.
-- Batch-level traceability, if a sale must be tied to a particular harvest.
+- Harvest-level stock reporting and adjustments, once movement rules are defined.
 
 ## Current inventory boundary
 
-Harvest records are production history. They are not stock batches allocated to
-sales. The current sales model associates an order item with a crop, not with a
-harvest. Crop-level stock can only be calculated reliably after harvest and sales
-units are made consistent and business rules for stock movements are defined.
+New sales lines reference harvest records, but stock availability and
+overselling validation are not implemented. Do not treat harvested quantity
+minus order quantities as authoritative until order fulfillment, returns, and
+adjustment rules are defined.

@@ -1,0 +1,38 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    {% if object %}Edit Order{% else %}New Order{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{% if object %}Edit Order{% else %}New Order{% endif %}</h1>
+        <p>Select a customer, then add each item from its harvest record.</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <section>
+        <h2>Order Items</h2>
+        {{ item_formset.management_form }}
+        {{ item_formset.non_form_errors }}
+        {% for item_form in item_formset %}
+        <fieldset>
+            <legend>Item {{ forloop.counter }}</legend>
+            {{ item_form.as_p }}
+        </fieldset>
+        {% endfor %}
+    </section>
+
+    <button type="submit">{% if object %}Save Order{% else %}Create Order{% endif %}</button>
+    {% if object %}
+    <a href="{% url 'sales:order-detail' object.pk %}">Cancel</a>
+    {% else %}
+    <a href="{% url 'sales:order-list' %}">Cancel</a>
+    {% endif %}
+</form>
+{% endblock %}

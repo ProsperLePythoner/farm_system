@@ -1,6 +1,7 @@
 from decimal import Decimal
-from django.core.validators import MinValueValidator
 
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Sum
 
@@ -108,23 +109,25 @@ class OrderItem(models.Model):
 
     crop = models.ForeignKey(
         "crops.Crop",
-        on_delete=models.PROTECT # Don't flush away orders upon deleting a crop
+        on_delete=models.PROTECT,
+        related_name="order_items",
     )
 
-    '''
-    You don't really need to store this field
-    because it's essentially duplicate data, but what the heck.
-    Just keep it for now.'''
-    # ---------------------------------
+    harvest = models.ForeignKey(
+        "harvests.Harvest",
+        on_delete=models.PROTECT,
+        related_name="order_items",
+        null=True,
+        blank=True,
+        help_text="Blank only for sales entered before harvest tracking.",
+    )
 
-    #@property
-    #def unit(self):
-    #    return self.crop.unit
-    # ---------------------------------
+    unit = models.CharField(max_length=20)
+
     quantity = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        validators=[MinValueValidator(Decimal("0.01"))] # Disallow zero values
+        validators=[MinValueValidator(Decimal("0.01"))],
     )
 
     unit_price = models.DecimalField(
@@ -137,6 +140,23 @@ class OrderItem(models.Model):
     def line_total(self):
         return self.quantity * self.unit_price
 
+    def clean(self):
+        super().clean()
+        if self.harvest_id and self.crop_id:
+            harvest_crop_id = self.harvest.planting.crop_id
+            if self.crop_id != harvest_crop_id:
+                raise ValidationError({
+                    "harvest": "The selected harvest must be for the selected crop."
+                })
+
+    def save(self, *args, **kwargs):
+        if self.harvest_id:
+            self.crop = self.harvest.planting.crop
+            self.unit = self.harvest.unit
+        elif not self.unit and self.crop_id:
+            self.unit = self.crop.unit
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.crop.crop_name} - {self.quantity}"
 
@@ -148,8 +168,8 @@ class Payment(models.Model):
 
     order = models.ForeignKey(
         Order,
-        on_delete=models.CASCADE,
-        related_name="payments"
+        on_delete=models.PROTECT,
+        related_name="payments",
     )
 
     amount_paid = models.DecimalField(

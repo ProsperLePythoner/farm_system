@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+
+{% block title %}Delete Order{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Delete Order #{{ order.pk }}</h1>
+        <p>{{ order.customer.customer_name }} — {{ order.order_date }}</p>
+    </div>
+</div>
+
+{% if has_payments %}
+<p>This order has payment history and cannot be deleted. Keeping the order preserves its payment records.</p>
+<a href="{% url 'sales:order-detail' order.pk %}">Return to order</a>
+{% else %}
+<p>Are you sure you want to delete this order and its items?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete order</button>
+    <a href="{% url 'sales:order-detail' order.pk %}">Cancel</a>
+</form>
+{% endif %}
+{% endblock %}

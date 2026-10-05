@@ -12,8 +12,8 @@ The project mounts app URLs under these prefixes:
 /dashboard/    dashboard
 /crops/        crop/planting workflows
 /harvests/     harvest workflows
-/customers/    customer app (routes not implemented)
-/sales/        placeholder order list/detail responses
+/customers/    customer CRUD and order history
+/sales/        order CRUD with harvest-linked line items
 /accounts/     account app
 /admin/        Django admin
 ```
@@ -62,9 +62,22 @@ Customer pages are served under `/customers/`:
 Customer deletion is blocked when orders exist, preserving customer references
 and order history. Customer search and filtering are not implemented yet.
 
+Sales order pages are served under `/sales/`:
+
+| User task | Route pattern | View |
+|---|---|---|
+| List orders | `/` (app root) | `ListView` |
+| Create an order with harvest-linked items | `orders/new/` | `CreateView` |
+| View order items and calculated summary | `orders/<pk>/` | `DetailView` |
+| Edit an order and its items | `orders/<pk>/edit/` | `UpdateView` |
+| Delete an order without payment history | `orders/<pk>/delete/` | `DeleteView` |
+
+New order items select a harvest and snapshot its crop and unit. Legacy items
+recorded against a crop only are preserved and remain visible. Payment forms
+and stock availability enforcement are not implemented yet.
+
 ### Incomplete routes
 
-- `/sales/` and `/sales/<pk>/` currently return placeholder responses.
 - The dashboard view currently renders the shared base template; it is not yet
   a data-driven or role-specific dashboard.
 - There is no complete sign-in, role, or permission workflow documented by the
@@ -92,14 +105,15 @@ Each harvest belongs to one planting. A planting may have multiple harvest
 records. Recording a harvest does not currently create a separate inventory
 batch or directly affect an order.
 
-## Intended sales workflow (not implemented)
+## Sales workflow (partially implemented)
 
 ```text
-Select customer → Create order → Add crop items → Record payment(s)
+Select customer → Create order → Add harvest-linked items → Record payment(s)
 ```
 
-Payments are separate from orders to allow installments. Before completing this
-workflow, define order lifecycle and stock reservation/deduction behavior.
+Order creation and harvest-linked items are implemented. Payments remain
+separate from orders to support installments, but payment entry and stock
+reservation/deduction workflows are still pending.
 
 ## Future role-specific experience
 

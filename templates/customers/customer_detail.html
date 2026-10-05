@@ -48,7 +48,9 @@
         <tbody>
             {% for order in orders %}
             <tr>
-                <td>#{{ order.pk }}</td>
+                <td>
+                    <a href="{% url 'sales:order-detail' order.pk %}">#{{ order.pk }}</a>
+                </td>
                 <td>{{ order.order_date }}</td>
                 <td>
                     {% for item in order.items.all %}

@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+
+{% block title %}Order #{{ order.pk }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Order #{{ order.pk }}</h1>
+        <p>{{ order.customer.customer_name }} — {{ order.order_date }}</p>
+    </div>
+    <div>
+        <a href="{% url 'sales:order-update' order.pk %}">Edit</a>
+        <a href="{% url 'sales:order-delete' order.pk %}">Delete</a>
+    </div>
+</div>
+
+{% if order.notes %}
+<p>{{ order.notes }}</p>
+{% endif %}
+
+<section>
+    <h2>Items</h2>
+    {% with items=order.items.all %}
+    {% if items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Crop</th>
+                <th>Harvest</th>
+                <th>Quantity</th>
+                <th>Unit price</th>
+                <th>Line total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.crop.crop_name }}</td>
+                <td>
+                    {% if item.harvest %}
+                        {{ item.harvest.harvesting_date }} — {{ item.harvest.planting.field.field_name }}
+                    {% else %}
+                        Legacy crop-only item
+                    {% endif %}
+                </td>
+                <td>{{ item.quantity }} {{ item.unit }}</td>
+                <td>TSh {{ item.unit_price|floatformat:2 }} / {{ item.unit }}</td>
+                <td>TSh {{ item.line_total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>This order has no items.</p>
+    {% endif %}
+    {% endwith %}
+</section>
+
+<section>
+    <h2>Order Summary</h2>
+    <dl>
+        <dt>Total</dt>
+        <dd>TSh {{ order.total_amount|floatformat:2 }}</dd>
+        <dt>Paid</dt>
+        <dd>TSh {{ order.total_paid|floatformat:2 }}</dd>
+        <dt>Outstanding</dt>
+        <dd>TSh {{ order.outstanding_balance|floatformat:2 }}</dd>
+        <dt>Payment status</dt>
+        <dd>{{ order.status|title }}</dd>
+    </dl>
+</section>
+{% endblock %}

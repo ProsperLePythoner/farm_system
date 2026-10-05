@@ -55,8 +55,11 @@ key automatically unless one is explicitly declared.
 ### OrderItem
 
 - Belongs to one order and references one crop.
-- Stores quantity and unit price; line total is calculated.
-- Does not currently store a unit snapshot or reference a harvest record.
+- New order items also reference one specific harvest; the crop is set from that
+  harvest.
+- Stores quantity, the unit snapshot, and unit price; line total is calculated.
+- `harvest` is nullable only to preserve older crop-only sales that cannot be
+  assigned to a harvest without inventing historical allocation data.
 
 ### Payment
 
@@ -69,30 +72,34 @@ Crop      1 ─── * Planting * ─── 1 Field
 Planting  1 ─── * Harvest
 Customer  1 ─── * Order
 Order     1 ─── * OrderItem * ─── 1 Crop
+Harvest   1 ─── * OrderItem (harvest nullable on legacy items only)
 Order     1 ─── * Payment
 ```
 
 ## Inventory and traceability boundary
 
-The current design records harvest production and crop-level sales separately.
-An order item is associated with a crop, not a specific harvest. This supports a
-future crop-level stock calculation, not batch allocation or full traceability.
+New sales items are assigned to a specific harvest record, which provides a
+basis for harvest-level stock calculations. Older order items still reference
+only a crop and are retained as legacy data; they cannot be safely allocated to
+a harvest retrospectively.
 
-Before calculating or enforcing available stock, define:
+Stock availability is not yet calculated or enforced. Before doing so, define:
 
-1. Compatible measurement units between harvests and order items.
-2. Whether a crop's unit may change after it has related transactions, or
-   whether order items should snapshot their unit.
-3. When stock is reduced (for example, on order confirmation or fulfillment).
-4. How waste, returns, adjustments, and negative stock are represented.
+1. When stock is reduced (for example, on order confirmation or fulfillment).
+2. How waste, returns, adjustments, and negative stock are represented.
+3. How legacy crop-only order items should be handled in stock reports.
 
-Do not treat `harvest total - order quantity` as authoritative until these rules
-are settled.
+Each new order item snapshots the harvest's unit, and its crop is taken from that
+harvest. Do not treat `harvested quantity - linked order quantities` as
+authoritative stock until movement and fulfillment rules are settled.
 
 ## Notes on model deletion behavior
 
-- Deleting an order cascades to its order items and payments.
+- Deleting an order cascades to its order items.
+- Orders with payment history cannot be deleted.
 - Deleting a planting that has harvest records is prevented.
+- Deleting a harvest referenced by an order item is prevented.
+- Deleting an order with payment history is prevented.
 - Referenced crops and fields are protected from deletion through their
   relationships.
 
