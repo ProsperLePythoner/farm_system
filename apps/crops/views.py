@@ -6,9 +6,11 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.db.models import Prefetch
 
 from .models import Planting
 from .forms import PlantingForm
+from apps.harvests.models import Harvest
 
 
 class PlantingListView(ListView):
@@ -29,6 +31,18 @@ class PlantingDetailView(DetailView):
     model = Planting
     template_name = "crops/planting_detail.html"
     context_object_name = "planting"
+
+    def get_queryset(self):
+        return (
+            Planting.objects
+            .select_related("crop", "field")
+            .prefetch_related(
+                Prefetch(
+                    "harvests",
+                    queryset=Harvest.objects.order_by("-harvesting_date", "-pk"),
+                )
+            )
+        )
 
 
 class PlantingCreateView(CreateView):

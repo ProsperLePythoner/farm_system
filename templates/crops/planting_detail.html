@@ -80,6 +80,32 @@
 
 </section>
 
+<section>
+    <div class="page-header">
+        <div>
+            <h2>Harvest Records</h2>
+            <p>Record and review harvests for this planting.</p>
+        </div>
+        <a href="{% url 'harvests:harvest-create' planting.pk %}">Record Harvest</a>
+    </div>
+
+    {% with harvests=planting.harvests.all %}
+    {% if harvests %}
+    <ul>
+        {% for harvest in harvests %}
+        <li>
+            {{ harvest.harvesting_date }} — {{ harvest.quantity_harvested }} {{ harvest.unit }}
+            <a href="{% url 'harvests:harvest-update' harvest.pk %}">Edit</a>
+            <a href="{% url 'harvests:harvest-delete' harvest.pk %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No harvests have been recorded for this planting.</p>
+    {% endif %}
+    {% endwith %}
+</section>
+
 
 {% if planting.notes %}
 

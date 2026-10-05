@@ -1,4 +1,7 @@
 from django.db import models
+from decimal import Decimal
+
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
 
@@ -12,43 +15,38 @@ class Harvest(models.Model):
 
     planting = models.ForeignKey(
         "crops.Planting",
-        on_delete=models.CASCADE, # Delete a planting, all harvest records go swoosh... bye-bye!
-        related_name="harvests"
+        on_delete=models.PROTECT,
+        related_name="harvests",
     )
 
     harvesting_date = models.DateField()
 
-    '''
-    Corrected from:
-    
-        harvest_unit = models.CharField(
-        max_length=20,
-        verbose_name="Physical unit for measuring harvest for"
-                    f" {planting.crop.crop_name}"
-        )
-    
-    To THIS (below)... to avoid duplicate data'''
-
-    # --------------------------
-    # Computed property
-    # --------------------------
-    
-    @property
-    def unit(self):
-        return self.planting.crop.unit
+    unit = models.CharField(max_length=20)
 
     quantity_harvested = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        validators=[MinValueValidator(0)] # validate input (positive only)
+        validators=[MinValueValidator(Decimal("0.01"))],
     )
 
-    notes = models.TextField(
-        blank=True
-    )
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-harvesting_date", "-pk"]
+
+    def clean(self):
+        super().clean()
+        if (
+            self.planting_id
+            and self.harvesting_date
+            and self.harvesting_date < self.planting.planting_date
+        ):
+            raise ValidationError({
+                "harvesting_date": "Harvest date cannot be before the planting date."
+            })
 
     def __str__(self):
         return (
-            f"{self.planting.crop.crop_name} " # remove space?
-            f" ({self.quantity_harvested}{self.unit})"
+            f"{self.planting.crop.crop_name} "
+            f"({self.quantity_harvested} {self.unit}) on {self.harvesting_date}"
         )

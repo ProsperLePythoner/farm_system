@@ -1,186 +1,106 @@
-# Entities & Attributes
+# Database Design
 
-### Farm
-- has many Fields
+This document records the current model relationships and the important
+boundaries between production and sales. Django supplies each model's primary
+key automatically unless one is explicitly declared.
+
+## Current entities and relationships
 
 ### Field
-- has many Plantings
 
-### Planting
-- belongs to Crop
-- has many Harvests
-
-### Customer
-- Own person; purchases and makes orders
-
-### Order
-- Belongs to customer
-- Has many OrderItem items
-
-### OrderItem
-- Belongs to order
-- Has a single crop, payment amount, etc.
-
-### Harvest
-- belongs to Planting
-
-### Sale
-- may contain many Harvest records
-
-<br><br>
-
-# Entity-Relationship Diagram (Rough)
-
-```Python
-### Field
-1. id
-2. name
-3. size
-4. notes
+- Stores a named physical block, plot, or greenhouse, its size in acres, and
+  optional notes.
+- Has many plantings.
+- Fields with plantings are protected from deletion.
 
 ### Crop
-1. id
-2. name
-3. unit
-4. description
+
+- Stores the crop name, maturity duration in days, measurement unit, and
+  optional description.
+- Has many plantings.
+- Crops used by plantings or order items are protected from deletion.
 
 ### Planting
-1. id
-2. crop_id (ForeignKey)
-3. field_id (ForeignKey)
-4. planting_date
-5. quantity_planted
-6. notes
+
+- Belongs to one crop and one field.
+- Stores planting date, planted quantity and its unit, and optional notes.
+- Has many harvest records.
+- Calculates the expected harvest start from planting date plus crop maturity
+  days; the current expected window ends three days later.
 
 ### Harvest
-1. id
-2. planting_id (ForeignKey)
-3. quantity_harvested
-4. harvesting_date
+
+- Belongs to one planting.
+- Stores harvest date, quantity, the unit used for that record, and optional
+  notes.
+- A harvest date cannot be earlier than its planting date; quantity must be
+  positive.
+- The unit is stored on the harvest so later edits to the crop catalogue do not
+  relabel historical harvests.
+- A planting with harvest records cannot be deleted.
 
 ### Customer
-1. id
-2. name
-3. phone
-4. location
-5. notes
+
+- Stores a person/business name, phone, optional location, notes, and creation
+  timestamp.
+- Has many orders.
 
 ### Order
-1. id
-2. customer_id (ForeignKey)
-3. order_date
-4. notes
+
+- Belongs to one customer and stores order date, notes, and timestamps.
+- Has many order items and payments.
+- Calculates total amount, total paid, outstanding balance, and payment status
+  from related records.
 
 ### OrderItem
-1. id
-2. crop_id (ForeignKey)
-3. quantity
-4. unit_price
+
+- Belongs to one order and references one crop.
+- Stores quantity and unit price; line total is calculated.
+- Does not currently store a unit snapshot or reference a harvest record.
 
 ### Payment
-1. id
-2. order_id (ForeignKey)
-3. amount_paid
-4. payment_date
+
+- Belongs to one order and stores payment amount and date.
+
+## Relationship summary
+
+```text
+Crop      1 ─── * Planting * ─── 1 Field
+Planting  1 ─── * Harvest
+Customer  1 ─── * Order
+Order     1 ─── * OrderItem * ─── 1 Crop
+Order     1 ─── * Payment
 ```
 
-### 📢**Note**: Model *id* fields
+## Inventory and traceability boundary
 
-- With Django, id fields for all models are assigned automatically 
-  (ofc this can be changed, but we're not gonna do that).
+The current design records harvest production and crop-level sales separately.
+An order item is associated with a crop, not a specific harvest. This supports a
+future crop-level stock calculation, not batch allocation or full traceability.
 
-- By default, Django gives each model an auto-incrementing primary key with the 
-  type specified per app in ```AppConfig.default_auto_field``` or globally in the 
-  ```DEFAULT_AUTO_FIELD``` setting. For example:
-  ```Python
-  id = models.BigAutoField(primary_key=True)
-  ```
+Before calculating or enforcing available stock, define:
 
-- Just so you know, you can change this by specifying primary_key=True on one of your 
-fields. If Django sees you’ve explicitly set ```Field.primary_key```, it won’t add the automatic id column.
+1. Compatible measurement units between harvests and order items.
+2. Whether a crop's unit may change after it has related transactions, or
+   whether order items should snapshot their unit.
+3. When stock is reduced (for example, on order confirmation or fulfillment).
+4. How waste, returns, adjustments, and negative stock are represented.
 
-<br><br>
+Do not treat `harvest total - order quantity` as authoritative until these rules
+are settled.
 
+## Notes on model deletion behavior
 
-# Complete ERD Breakdown (TL;DR ERD 😐)
+- Deleting an order cascades to its order items and payments.
+- Deleting a planting that has harvest records is prevented.
+- Referenced crops and fields are protected from deletion through their
+  relationships.
 
-## 1. Crop → Planting
+## Apps and models
 
-One crop, e.g. ```tomatoes``` can have multiple plantings:
-- March planting
-- April planting
-- July planting, etc.
-
-In ur models, use:
-```Python
-Planting.crop = ForeignKey(Crop)
-```
-<br>
-
-## 2. Field → Planting
-
-One field, e.g. ```Block A``` can have multiple plantings over time:
-- Tomatoes
-- "Hoho"
-- Sweetcorn, etc.
-
-Use:
-```Python
-Planting.field = ForeignKey(Field)
-```
-<br>
-
-## 3. Planting → Harvest
-
-From one planting can be harvested ```100pcs, 2000pcs, 1500pcs, etc.``` across multiple harvests.
-
-The appropriate approach to designing this relationship would be:
-```Python
-Harvest.planting = ForeignKey(Planting)
-```
-<br>
-
-## 4. Customer → Order
-
-One customer, e.g. ```Msese``` can place multiple orders (```Order 1, ... 2, ... 3```).
-
-For this relationship, use:
-```Python
-Order.customer = ForeignKey(Customer)
-```
-<br>
-
-## 5. Order → OrderItem
-
-One order i.e. ```Order #3``` contains multiple order items:
-- 200pcs sweetcorn
-- 10kg capsicum, etc.
-
-So...
-```Python
-OrderItem.order = ForeignKey(Order)
-```
-<br>
-
-## 6. Order → Payment
-
-An order is often paid in instalments. One order that cost ```100,000 TZS``` may be paid through:
-- 60,000 TZS
-- 30,000 TZS
-- 10,000 TZS
-
-Represent it as follows:
-```Python
-Payment.order = ForeignKey(Order)
-```
-
-<br><br>
-
-# Models
-
-```txt
+```text
 accounts
-└── User
+└── Uses Django's built-in user model (no custom user model currently defined)
 
 crops
 ├── Crop
@@ -199,9 +119,8 @@ sales
 └── Payment
 ```
 
-<br>
+## Database engine
 
-# Database Management System (DBMS)
-The database used for this system's functionality is PostgreSQL.
-The installation process was rather straightforward and so it will not be discussed
-here; partly true because this data is already stored in a well-known LLM :D
+Project settings currently configure PostgreSQL. A local SQLite database file
+is also present in the repository directory, but it is not the database engine
+configured by the current settings.

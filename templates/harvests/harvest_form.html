@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    {% if object %}Edit Harvest{% else %}Record Harvest{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{% if object %}Edit Harvest{% else %}Record Harvest{% endif %}</h1>
+        <p>{{ planting.crop.crop_name }} — {{ planting.field.field_name }}</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if object %}Save Changes{% else %}Record Harvest{% endif %}</button>
+    <a href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
+</form>
+{% endblock %}

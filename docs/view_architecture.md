@@ -1,323 +1,98 @@
-# Step 1: User Identification
-We've got three logical user roles, based on this project.
+# View Architecture and Workflows
 
-## 1. Farm Manager
-Responsible for production.
+This document separates existing application behavior from planned workflows.
+The diagrams describe user-facing intent; role-specific authorization and
+dashboards are not yet implemented.
 
-They answer questions like:
+## Current URL structure
 
-- What are we growing?
-- Where are we planting?
-- What's ready for harvest?
-- How much have we harvested?
-
-They don't care about customer payments.
-
----
-
-## 2. Sales Clerk
-Responsible for selling produce.
-
-Their world is:
-
-- Customers
-- Orders
-- Payments
-- Outstanding balances
-
-They don't care about planting schedules.
-
----
-
-## 3. Administrator
-Responsible for maintaining the system.
-
-Examples:
-- Manage users
-- Configure mistakes
-- View reports
-- Access everything
-
-## `Notice!`
-Each role has a **different mental model** 
-of the farm.
-
----
-
-<br>
-
-# Step 2: What happens after login?
-If I'm the farm manager, the dashboard should immediately answer the question:
-> "What needs my attention today?"
-
-In this context, that might look like:
-```text
-Dashboard
-│
-├── Crops currently growing
-├── Plantings due for harvest
-├── Recent harvests
-├── Low inventory alerts
-├── Quick actions
-│     ├── New Planting
-│     ├── Record Harvest
-│     └── View Fields
-```
-Every section answers a real business question.
-
----
-
-<br>
-
-# Step 3: Build the workflow
-Design the production side first.
-
-## Workflow A — Planning a crop
-Suppose today is the beginning of the season. The manager wants to grow tomatoes.
-The workflow is:
-```text
-Dashboard
-        │
-        ▼
-View Crops
-        │
-        ▼
-Choose Tomatoes
-        │
-        ▼
-Create Planting
-        │
-        ▼
-Select Field
-        │
-        ▼
-Enter planting date
-        │
-        ▼
-Save
-```
-Question:<br>
-Why don't we create a crop here?
-Because tomatoes already exist in the crop catalogue.
-We're planting tomatoes.
-That's a different action.
-The separation makes data much cleaner.
-
----
-
-## Workflow B — Harvesting
-A month later...
-
-The dashboard says:
+The project mounts app URLs under these prefixes:
 
 ```text
-Planting #27
-
-Ready for harvest
+/dashboard/    dashboard
+/crops/        crop/planting workflows
+/harvests/     harvest workflows
+/customers/    customer app (routes not implemented)
+/sales/        placeholder order list/detail responses
+/accounts/     account app
+/admin/        Django admin
 ```
-Manager clicks:
+
+### Implemented user-facing workflows
+
+Planting pages are served under `/crops/plantings/`:
+
+| User task | Route pattern | View |
+|---|---|---|
+| List plantings | `plantings/` | `ListView` |
+| Create a planting | `plantings/new/` | `CreateView` |
+| View a planting and its harvests | `plantings/<pk>/` | `DetailView` |
+| Edit a planting | `plantings/<pk>/edit/` | `UpdateView` |
+| Delete a planting | `plantings/<pk>/delete/` | `DeleteView` |
+
+Harvest pages are served under `/harvests/`:
+
+| User task | Route pattern | View |
+|---|---|---|
+| List harvests | `/` (app root) | `ListView` |
+| Record a harvest for a planting | `plantings/<planting_pk>/new/` | `CreateView` |
+| Edit a harvest | `<pk>/edit/` | `UpdateView` |
+| Delete a harvest | `<pk>/delete/` | `DeleteView` |
+
+Recording a harvest from its planting provides context: the planting, crop, and
+field are known, while the user supplies the harvest date, quantity, and notes.
+The form and view enforce the relationship and snapshot the crop's current unit.
+
+### Incomplete routes
+
+- `/sales/` and `/sales/<pk>/` currently return placeholder responses.
+- Customer URLs are not yet defined.
+- The dashboard view currently renders the shared base template; it is not yet
+  a data-driven or role-specific dashboard.
+- There is no complete sign-in, role, or permission workflow documented by the
+  current views.
+
+## Intended production workflow
+
 ```text
-Record Harvest
+Maintain crop and field records
+              │
+              ▼
+       Create a planting
+              │
+              ▼
+     Monitor expected window
+              │
+              ▼
+       Record each harvest
+              │
+              ▼
+      Review planting history
 ```
 
-The page already knows:
-- planting
-- crop
-- field
+Each harvest belongs to one planting. A planting may have multiple harvest
+records. Recording a harvest does not currently create a separate inventory
+batch or directly affect an order.
 
-The manager only enters:
+## Intended sales workflow (not implemented)
+
 ```text
-Harvest Date
-
-Quantity
-
-Notes
+Select customer → Create order → Add crop items → Record payment(s)
 ```
 
-The form, as well as the url become quite simple, 
-e.g. ```/plantings/27/harvests/new/```, 
-instead of: ```/harvest/create/```
+Payments are separate from orders to allow installments. Before completing this
+workflow, define order lifecycle and stock reservation/deduction behavior.
 
-This is called *context-aware workflow*. The URL carries the context, 
-so the form doesn't have to ask for information the system already knows.
+## Future role-specific experience
 
----
+The following roles and dashboards are product goals, not current access-control
+rules:
 
-## Workflow C — Selling produce
-Now we switch roles.
+- **Farm manager:** plantings, expected harvests, harvest history, fields.
+- **Sales clerk:** customers, orders, payments, outstanding balances.
+- **Administrator:** user and system administration, with appropriate access.
 
-The sales clerk logs in.
-
-Their dashboard looks completely different.
-```text
-Dashboard
-
-Customers
-
-Recent Orders
-
-Outstanding Payments
-
-Quick Sale
-```
-
-Suppose a customer walks in. The clerk follows this path:
-```text
-Dashboard
-      │
-      ▼
-Customers
-      │
-      ▼
-Select Customer
-      │
-      ▼
-New Order
-      │
-      ▼
-Add Items
-      │
-      ▼
-Review Total
-      │
-      ▼
-Save Order
-```
-
-Then, ```Record Payment```.
-
-Here, "record payment" is a separate workflow. 
-A customer may pay immediately, later, or in installments.
-
-That matches how real businesses operate.
-
----
-
-# Step 4 — Navigation
-Now we can derive the application's navigation directly from those workflows.
-```text
-Dashboard
-│
-├── Production
-│     ├── Fields
-│     ├── Crops
-│     ├── Plantings
-│     └── Harvests
-│
-├── Sales
-│     ├── Customers
-│     ├── Orders
-│     └── Payments
-│
-├── Reports
-│
-└── Administration
-```
-The menu mirrors the departments of the business, not the database schema.
-
----
-
-# Step 5 — What views do we actually need?
-Now we're ready to think in Django.
-
-Let's take Plantings as an example.
-
-A user needs to:
-
-See all plantings.
-View one planting.
-Create a planting.
-Edit a planting.
-Archive (or delete) a planting.
-
-Those map naturally to Django's generic class-based views:
-
-**Business Task** &emsp; **Django View**
-
----
-| Business task               | Django view                                                         |
-| --------------------------- | ------------------------------------------------------------------- |
-| List plantings              | `ListView`                                                          |
-| View planting details       | `DetailView`                                                        |
-| Register a new planting     | `CreateView`                                                        |
-| Update planting information | `UpdateView`                                                        |
-| Archive/remove planting     | `DeleteView` (or a custom archive view if you prefer soft deletion) |
-
-The key point is that we're choosing these views because they fit 
-the business tasks, not because "CRUD is what Django apps have."
-
---- 
-<br>
-
-### `Courtesy of ChatGPT...`
-Where we'll start coding
-
-I recommend we begin with the Production module in this order:
-
-Plantings
-Harvests
-Crops
-Customers
-Orders
-Payments
-
-Why this order?
-
-Because Plantings sit at the heart of your production workflow. 
-Harvests depend on plantings, and many dashboard features will 
-eventually depend on both. Once those are in place, the rest of the 
-application has a solid foundation.
-
-When we start implementing PlantingListView, 
-I won't just show you the code. We'll dissect every method and 
-attribute—why ListView is the right abstraction, how queryset and 
-context are built, why the URL pattern is structured the way it is, 
-and how that all supports the business workflow we just designed. 
-That understanding will make every subsequent view feel like a logical 
-extension rather than a new concept.
-
----
-
-
-# URLs and Dashboards
-```text
-                dashboard/
-                     │
-        ┌────────────┼────────────┐
-        │            │            │
- Farm Manager   Sales Clerk   Administrator
-        │            │            │
-        ▼            ▼            ▼
- Production     Sales stats   Everything
- Dashboard      Dashboard     Dashboard
-```
-
-# Dashboard Design
-Should probably look something like this...
-```text
-Login
-   │
-   ▼
-DashboardView
-   │
-   ├── Farm Manager Dashboard
-   │      ├── Harvest alerts
-   │      ├── Plantings
-   │      ├── Fields
-   │      └── Inventory
-   │
-   ├── Sales Dashboard
-   │      ├── Customers
-   │      ├── Orders
-   │      ├── Payments
-   │      └── Outstanding balances
-   │
-   └── Administrator Dashboard
-          ├── Production summary
-          ├── Sales summary
-          ├── Users
-          └── Reports
-```
-
-Everything flows through one dashboard endpoint, 
-but the experience changes based on the authenticated user's role.
+Use Django groups/permissions or another explicit authorization strategy before
+exposing role-specific data in a multi-user deployment. A dashboard should be
+built from verified data and business rules rather than acting as a separate
+source of truth.

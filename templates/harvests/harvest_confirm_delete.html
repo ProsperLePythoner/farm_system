@@ -1,0 +1,18 @@
+{% extends "base/base.html" %}
+
+{% block title %}Delete Harvest{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Delete Harvest</h1>
+        <p>Delete the {{ harvest.quantity_harvested }} {{ harvest.unit }} harvest for {{ harvest.planting.crop.crop_name }}?</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm Delete</button>
+    <a href="{% url 'crops:planting-detail' harvest.planting_id %}">Cancel</a>
+</form>
+{% endblock %}
