@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base/base.html" %}
 
-</body>
-</html>
+{% block title %}Crops{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Crops</h1>
+        <p>Manage the crop catalogue used for planting and harvest records.</p>
+    </div>
+    <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+</div>
+
+{% if crops %}
+<table>
+    <thead>
+        <tr>
+            <th>Crop</th>
+            <th>Maturity</th>
+            <th>Harvest unit</th>
+            <th>Plantings</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for crop in crops %}
+        <tr>
+            <td><a href="{% url 'crops:crop-detail' crop.pk %}">{{ crop.crop_name }}</a></td>
+            <td>{{ crop.maturity_days }} days</td>
+            <td>{{ crop.get_unit_display }}</td>
+            <td>{{ crop.planting_count }}</td>
+            <td>
+                <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
+                <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No crops have been added yet.</p>
+    <a href="{% url 'crops:crop-create' %}">Add your first crop</a>
+</div>
+{% endif %}
+{% endblock %}

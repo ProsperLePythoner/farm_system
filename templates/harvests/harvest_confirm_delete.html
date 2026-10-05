@@ -10,9 +10,14 @@
     </div>
 </div>
 
+{% if delete_blocked %}
+<p class="form-errors">{{ blocked_message }}</p>
+<a href="{% url 'crops:planting-detail' harvest.planting_id %}">Return to planting</a>
+{% else %}
 <form method="post">
     {% csrf_token %}
     <button type="submit">Confirm Delete</button>
     <a href="{% url 'crops:planting-detail' harvest.planting_id %}">Cancel</a>
 </form>
+{% endif %}
 {% endblock %}

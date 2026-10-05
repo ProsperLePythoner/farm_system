@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+
+{% block title %}Delete Field{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Delete Field</h1>
+        <p>Delete <strong>{{ field.field_name }}</strong>?</p>
+    </div>
+</div>
+
+{% if delete_blocked %}
+<p class="form-errors">{{ blocked_message }}</p>
+<a href="{% url 'crops:field-detail' field.pk %}">Return to field</a>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete field</button>
+    <a href="{% url 'crops:field-detail' field.pk %}">Cancel</a>
+</form>
+{% endif %}
+{% endblock %}

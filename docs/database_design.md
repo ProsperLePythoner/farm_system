@@ -17,6 +17,9 @@ key automatically unless one is explicitly declared.
 
 - Stores the crop name, maturity duration in days, measurement unit, and
   optional description.
+- Measurement units are currently selected from a controlled list (`g`, `kg`,
+  `tonne`, `bag`, `crate`, `bunch`, `heads`, and `pcs`). Existing `heads` and
+  `pcs` records are retained.
 - Has many plantings.
 - Crops used by plantings or order items are protected from deletion.
 
@@ -26,7 +29,8 @@ key automatically unless one is explicitly declared.
 - Stores planting date, planted quantity and its unit, and optional notes.
 - Has many harvest records.
 - Calculates the expected harvest start from planting date plus crop maturity
-  days; the current expected window ends three days later.
+  days; the current window spans three calendar days, ending at start plus two
+  days.
 
 ### Harvest
 
@@ -99,7 +103,6 @@ authoritative stock until movement and fulfillment rules are settled.
 - Orders with payment history cannot be deleted.
 - Deleting a planting that has harvest records is prevented.
 - Deleting a harvest referenced by an order item is prevented.
-- Deleting an order with payment history is prevented.
 - Referenced crops and fields are protected from deletion through their
   relationships.
 

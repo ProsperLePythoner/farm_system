@@ -11,6 +11,10 @@
     <strong>{{ planting }}</strong>?
 </p>
 
+{% if delete_blocked %}
+<p class="form-errors">{{ blocked_message }}</p>
+<a href="{% url 'crops:planting-detail' planting.pk %}">Return to planting</a>
+{% else %}
 <form method="post">
 
     {% csrf_token %}
@@ -24,5 +28,6 @@
     </a>
 
 </form>
+{% endif %}
 
 {% endblock %}

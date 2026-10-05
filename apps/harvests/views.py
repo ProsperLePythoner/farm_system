@@ -1,10 +1,11 @@
-from django.db.models import DateField, ExpressionWrapper, F
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from apps.crops.models import Planting
+from django.contrib.messages.views import SuccessMessageMixin
+from config.view_mixins import ProtectedDeleteMixin
 
 from .forms import HarvestForm
 from .models import Harvest
@@ -23,25 +24,28 @@ class HarvestListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["upcoming_plantings"] = (
+        today = timezone.localdate()
+        plantings = (
             Planting.objects
             .select_related("crop", "field")
-            .annotate(
-                expected_harvest_start=ExpressionWrapper(
-                    F("planting_date") + F("crop__maturity_days"),
-                    output_field=DateField(),
-                )
-            )
-            .filter(expected_harvest_start__gte=timezone.localdate())
-            .order_by("expected_harvest_start", "pk")
+            .order_by("planting_date", "pk")
+        )
+        context["upcoming_plantings"] = sorted(
+            [
+                planting
+                for planting in plantings
+                if planting.harvest_end >= today
+            ],
+            key=lambda planting: (planting.harvest_start, planting.pk),
         )
         return context
 
 
-class HarvestCreateView(CreateView):
+class HarvestCreateView(SuccessMessageMixin, CreateView):
     model = Harvest
     form_class = HarvestForm
     template_name = "harvests/harvest_form.html"
+    success_message = "Harvest recorded."
 
     def dispatch(self, request, *args, **kwargs):
         self.planting = get_object_or_404(
@@ -69,11 +73,12 @@ class HarvestCreateView(CreateView):
         return reverse("crops:planting-detail", kwargs={"pk": self.planting.pk})
 
 
-class HarvestUpdateView(UpdateView):
+class HarvestUpdateView(SuccessMessageMixin, UpdateView):
     model = Harvest
     form_class = HarvestForm
     template_name = "harvests/harvest_form.html"
     context_object_name = "harvest"
+    success_message = "Harvest updated."
 
     def get_queryset(self):
         return Harvest.objects.select_related("planting__crop", "planting__field")
@@ -90,10 +95,12 @@ class HarvestUpdateView(UpdateView):
         )
 
 
-class HarvestDeleteView(DeleteView):
+class HarvestDeleteView(ProtectedDeleteMixin, DeleteView):
     model = Harvest
     template_name = "harvests/harvest_confirm_delete.html"
     context_object_name = "harvest"
+    blocked_message = "This harvest is referenced by a sale and cannot be deleted."
+    deleted_message = "Harvest deleted."
 
     def get_queryset(self):
         return Harvest.objects.select_related("planting__crop", "planting__field")
@@ -103,3 +110,6 @@ class HarvestDeleteView(DeleteView):
             "crops:planting-detail",
             kwargs={"pk": self.object.planting_id},
         )
+
+    def is_deletion_blocked(self):
+        return self.object.order_items.exists()

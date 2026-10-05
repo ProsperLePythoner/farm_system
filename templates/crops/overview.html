@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+
+{% block title %}Crops &amp; Fields{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Crops &amp; Fields</h1>
+        <p>Manage the production catalogue and recent planting activity.</p>
+    </div>
+    <div>
+        <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+        <a class="button" href="{% url 'crops:field-create' %}">New Field</a>
+    </div>
+</div>
+
+<section>
+    <h2>Catalogue</h2>
+    <p>{{ crop_count }} crops · {{ field_count }} fields · {{ planting_count }} plantings</p>
+    <p>
+        <a href="{% url 'crops:crop-list' %}">Manage crops</a> ·
+        <a href="{% url 'crops:field-list' %}">Manage fields</a> ·
+        <a href="{% url 'crops:planting-list' %}">View plantings</a>
+    </p>
+</section>
+
+<section>
+    <div class="page-header">
+        <div><h2>Recent Plantings</h2></div>
+        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+    </div>
+    {% if recent_plantings %}
+    <ul>
+        {% for planting in recent_plantings %}
+        <li>
+            <a href="{% url 'crops:planting-detail' planting.pk %}">
+                {{ planting.crop.crop_name }} — {{ planting.field.field_name }} ({{ planting.planting_date }})
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No plantings have been recorded yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

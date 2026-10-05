@@ -10,10 +10,13 @@ the application; it does not imply production hardening.
 
 - [x] Django project split into domain apps: accounts, crops, harvests,
   customers, sales, and dashboard.
-- [x] Django admin is configured for the primary production and customer models.
+- [x] Django admin is configured for primary production, customer, and sales
+  models.
 - [x] Crop, field, planting, customer, harvest, order, order-item, and payment
   model foundations exist.
 - [x] Migrations exist for the current models.
+- [x] Shared page shell, navigation, flash messages, and responsive base styles.
+- [x] Dashboard route renders its own page inside the shared shell.
 
 ### Production workflow
 
@@ -29,6 +32,11 @@ the application; it does not imply production hardening.
   are rejected.
 - [x] Plantings with harvest records cannot be deleted, preserving production
   history.
+- [x] Crop and field list, detail, create, edit, and delete pages.
+- [x] Crop and field deletion gives a clear blocked state when referenced.
+- [x] Planting form links to create missing crop and field records.
+- [x] Crop harvest/sales units are selected from a controlled list, including
+  existing `heads` and `pcs` values.
 - [x] Customer list, detail, create, edit, and delete workflows.
 - [x] Customer detail displays related order history.
 - [x] Customer records with orders are protected from deletion.
@@ -41,8 +49,6 @@ the application; it does not imply production hardening.
 
 ### Incomplete foundations
 
-- [ ] Crop and field user-facing pages; the current crop views focus on
-  plantings.
 - [ ] Payment creation and management workflows.
 - [ ] Inventory calculations and stock availability checks.
 - [ ] Role-based access control; the planned roles are not yet enforced.
@@ -50,23 +56,29 @@ the application; it does not imply production hardening.
 
 ## Recommended next steps
 
-1. Finish crops and fields management, or decide that these master records will
-   remain admin-only for the first release.
-2. Implement payment creation and management, with validation and tests around
+1. Implement payment creation and management, with validation and tests around
    payment balances and invalid input.
-3. Define inventory semantics, including when stock is deducted, whether
+2. Define inventory semantics, including when stock is deducted, whether
    negative stock is allowed, and how waste, returns, and adjustments are
    represented.
-4. Enforce harvest-level availability so order quantities cannot exceed
+3. Enforce harvest-level availability so order quantities cannot exceed
    remaining stock.
-5. Revisit legacy crop-only sales: they remain readable but cannot be assigned
+4. Revisit legacy crop-only sales: they remain readable but cannot be assigned
    to harvest stock without historical allocation data.
-6. Build a dashboard from implemented production and sales queries; avoid
+5. Build a dashboard from implemented production and sales queries; avoid
    presenting planned metrics as if they are already authoritative.
-7. Add authentication, role/group permissions, and access tests before
+6. Add authentication, role/group permissions, and access tests before
    multi-user deployment.
-8. Configure production settings, credentials, database, static/media files,
+7. Configure production settings, credentials, database, static/media files,
    backups, and deployment checks.
+
+## Interface foundation
+
+The shared UI uses the existing `static/css/base.css` stylesheet. Tailwind is
+not configured as an active build pipeline in this checkout, so the unused
+Tailwind demo integration was removed rather than requiring new frontend
+tooling. The current dashboard is a navigation landing page, not an operational
+dashboard with business metrics.
 
 New order items snapshot the selected harvest's measurement unit. Legacy
 crop-only order items remain readable, but cannot be assigned to harvest stock

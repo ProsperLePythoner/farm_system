@@ -12,7 +12,7 @@ from .forms import NameForm
 def testing(request):
     print("Testing the 'testing' view...\n\n\n")
 
-    template = loader.get_template("templates/testing/tests.html")
+    template = loader.get_template("testing/tests.html")
     return HttpResponse(template.render({
         'name': 'Prosper.dev'
     }, request))

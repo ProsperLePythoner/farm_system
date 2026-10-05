@@ -1,37 +1,59 @@
 <aside class="sidebar">
-
-    <ul>
-
-        <li>
-            <a href="#">Dashboard</a>
-        </li>
-
-        <li>
-            <a href="{% url 'crops:planting-list' %}">
-                Crops
-            </a>
-        </li>
-
-        <li>
-            <a href="{% url 'harvests:harvest-list' %}">Harvests</a>
-        </li>
-
-        <li>
-            <a href="{% url 'customers:customer-list' %}">Customers</a>
-        </li>
-
-        <li>
-            <a href="{% url 'sales:order-list' %}">Sales</a>
-        </li>
-
-        <li>
-            <a href="#">Reports</a>
-        </li>
-
-        <li>
-            <a href="#">Settings</a>
-        </li>
-
-    </ul>
-
+    <nav aria-label="Main navigation">
+        <ul>
+            <li>
+                <a href="{% url 'dashboard:dashboard' %}"
+                   {% if request.resolver_match.app_name == "dashboard" %}aria-current="page"{% endif %}>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-section">
+                <span>Crops &amp; Production</span>
+                <ul>
+                    <li>
+                        <a href="{% url 'crops:overview' %}"
+                           {% if request.resolver_match.url_name == "overview" %}aria-current="page"{% endif %}>
+                            Overview
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'crops:crop-list' %}"
+                           {% if request.resolver_match.url_name == "crop-list" or request.resolver_match.url_name == "crop-detail" or request.resolver_match.url_name == "crop-create" or request.resolver_match.url_name == "crop-update" or request.resolver_match.url_name == "crop-delete" %}aria-current="page"{% endif %}>
+                            Crops
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'crops:field-list' %}"
+                           {% if request.resolver_match.url_name == "field-list" or request.resolver_match.url_name == "field-detail" or request.resolver_match.url_name == "field-create" or request.resolver_match.url_name == "field-update" or request.resolver_match.url_name == "field-delete" %}aria-current="page"{% endif %}>
+                            Fields
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'crops:planting-list' %}"
+                           {% if request.resolver_match.url_name|slice:":8" == "planting" %}aria-current="page"{% endif %}>
+                            Plantings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'harvests:harvest-list' %}"
+                           {% if request.resolver_match.app_name == "harvests" %}aria-current="page"{% endif %}>
+                            Harvests
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="{% url 'customers:customer-list' %}"
+                   {% if request.resolver_match.app_name == "customers" %}aria-current="page"{% endif %}>
+                    Customers
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'sales:order-list' %}"
+                   {% if request.resolver_match.app_name == "sales" %}aria-current="page"{% endif %}>
+                    Sales
+                </a>
+            </li>
+        </ul>
+    </nav>
 </aside>

@@ -9,8 +9,8 @@ dashboards are not yet implemented.
 The project mounts app URLs under these prefixes:
 
 ```text
-/dashboard/    dashboard
-/crops/        crop/planting workflows
+/dashboard/    dashboard landing page
+/crops/        crop, field, and planting workflows
 /harvests/     harvest workflows
 /customers/    customer CRUD and order history
 /sales/        order CRUD with harvest-linked line items
@@ -28,7 +28,19 @@ Planting pages are served under `/crops/plantings/`:
 | Create a planting | `plantings/new/` | `CreateView` |
 | View a planting and its harvests | `plantings/<pk>/` | `DetailView` |
 | Edit a planting | `plantings/<pk>/edit/` | `UpdateView` |
-| Delete a planting | `plantings/<pk>/delete/` | `DeleteView` |
+| Delete a planting | `plantings/<pk>/delete/` | protected `DeleteView` |
+
+Crop and field pages are served under `/crops/`:
+
+| User task | Route pattern | View |
+|---|---|---|
+| Production catalogue overview | `/` (app root) | `TemplateView` |
+| List, create, view, edit, delete crops | `crops/…` | Generic class-based views |
+| List, create, view, edit, delete fields | `fields/…` | Generic class-based views |
+
+Crop and field deletes are refused when plantings or sales reference the crop,
+or plantings reference the field. The planting form provides links to create
+missing crop and field catalogue entries.
 
 Harvest pages are served under `/harvests/`:
 
@@ -42,8 +54,8 @@ Harvest pages are served under `/harvests/`:
 The harvest list displays both recorded `Harvest` rows and upcoming windows
 derived from `Planting` dates and crop maturity days. Each upcoming planting
 links to the context-aware record form for that specific planting. At this
-stage, upcoming means that the calculated harvest start is today or later;
-status categories and the handling of past-due plantings remain to be defined.
+stage, upcoming includes windows that have started but have not yet ended.
+Status categories and the handling of harvested plantings remain to be defined.
 
 Recording a harvest from its planting provides context: the planting, crop, and
 field are known, while the user supplies the harvest date, quantity, and notes.
@@ -78,8 +90,8 @@ and stock availability enforcement are not implemented yet.
 
 ### Incomplete routes
 
-- The dashboard view currently renders the shared base template; it is not yet
-  a data-driven or role-specific dashboard.
+- The dashboard is a navigation landing page, not yet data-driven or
+  role-specific.
 - There is no complete sign-in, role, or permission workflow documented by the
   current views.
 

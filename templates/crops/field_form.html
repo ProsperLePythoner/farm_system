@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    {% if object %}Edit Field{% else %}New Field{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{% if object %}Edit Field{% else %}New Field{% endif %}</h1>
+        <p>Enter the name and size of a farm block or plot.</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if object %}Save Changes{% else %}Create Field{% endif %}</button>
+    <a href="{% if object %}{% url 'crops:field-detail' object.pk %}{% else %}{% url 'crops:field-list' %}{% endif %}">Cancel</a>
+</form>
+{% endblock %}

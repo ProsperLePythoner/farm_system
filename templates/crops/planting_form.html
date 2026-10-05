@@ -31,7 +31,34 @@
 
     {% csrf_token %}
 
-    {{ form.as_p }}
+    {% if not has_crops and not object %}
+    <p class="messages warning">
+        Add a crop before creating your first planting.
+        <a href="{% url 'crops:crop-create' %}">Create a crop</a>
+    </p>
+    {% endif %}
+
+    {% if not has_fields and not object %}
+    <p class="messages warning">
+        Add a field before creating your first planting.
+        <a href="{% url 'crops:field-create' %}">Create a field</a>
+    </p>
+    {% endif %}
+
+    {% for field in form %}
+    <p>
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.name == "crop" %}
+            <a href="{% url 'crops:crop-create' %}">+ New crop</a>
+        {% elif field.name == "field" %}
+            <a href="{% url 'crops:field-create' %}">+ New field</a>
+        {% endif %}
+        {% for error in field.errors %}<span class="field-errors">{{ error }}</span>{% endfor %}
+        {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+    </p>
+    {% endfor %}
+    {{ form.non_field_errors }}
 
     <button type="submit">
         {% if object %}

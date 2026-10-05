@@ -1,9 +1,10 @@
 from django.db import transaction
-from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+from django.contrib import messages
 
+from config.view_mixins import ProtectedDeleteMixin
 from .forms import OrderForm, OrderItemFormSet
 from .models import Order
 
@@ -15,7 +16,7 @@ class OrderListView(ListView):
     queryset = (
         Order.objects
         .select_related("customer")
-        .prefetch_related("items__crop")
+        .prefetch_related("items__crop", "payments")
         .order_by("-order_date", "-pk")
     )
 
@@ -57,6 +58,7 @@ class OrderFormsetViewMixin:
             self.object = form.save()
             item_formset.instance = self.object
             item_formset.save()
+        messages.success(self.request, self.success_message)
         return redirect(self.get_success_url())
 
 
@@ -64,6 +66,7 @@ class OrderCreateView(OrderFormsetViewMixin, CreateView):
     model = Order
     form_class = OrderForm
     template_name = "sales/order_form.html"
+    success_message = "Order created."
 
     def get_success_url(self):
         return reverse("sales:order-detail", kwargs={"pk": self.object.pk})
@@ -74,6 +77,7 @@ class OrderUpdateView(OrderFormsetViewMixin, UpdateView):
     form_class = OrderForm
     template_name = "sales/order_form.html"
     context_object_name = "order"
+    success_message = "Order updated."
 
     def get_queryset(self):
         return Order.objects.select_related("customer").prefetch_related("items")
@@ -82,26 +86,21 @@ class OrderUpdateView(OrderFormsetViewMixin, UpdateView):
         return reverse("sales:order-detail", kwargs={"pk": self.object.pk})
 
 
-class OrderDeleteView(DeleteView):
+class OrderDeleteView(ProtectedDeleteMixin, DeleteView):
     model = Order
     template_name = "sales/order_confirm_delete.html"
     context_object_name = "order"
     success_url = reverse_lazy("sales:order-list")
+    blocked_message = "This order has payment history and cannot be deleted."
+    deleted_message = "Order deleted."
 
     def get_queryset(self):
         return Order.objects.select_related("customer").prefetch_related("items")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["has_payments"] = self.object.payments.exists()
+        context["has_payments"] = self.is_deletion_blocked()
         return context
 
-    def form_valid(self, form):
-        try:
-            return super().form_valid(form)
-        except ProtectedError:
-            context = self.get_context_data(
-                form=form,
-                has_payments=True,
-            )
-            return self.render_to_response(context, status=409)
+    def is_deletion_blocked(self):
+        return self.object.payments.exists()

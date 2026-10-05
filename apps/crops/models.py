@@ -46,17 +46,30 @@ class Crop(models.Model):
     - Capsicum
     """
 
+    class Unit(models.TextChoices):
+        GRAM = "g", "Gram (g)"
+        KILOGRAM = "kg", "Kilogram (kg)"
+        TONNE = "tonne", "Tonne"
+        BAG = "bag", "Bag"
+        CRATE = "crate", "Crate"
+        BUNCH = "bunch", "Bunch"
+        HEADS = "heads", "Heads"
+        PIECES = "pcs", "Pieces (pcs)"
+
     crop_name = models.CharField(
         max_length=100,
         unique=True,
-        verbose_name="Specific name for crop"
+        verbose_name="Specific name for crop",
     )
 
-    maturity_days = models.PositiveIntegerField()
+    maturity_days = models.PositiveIntegerField(
+        verbose_name="Maturity period in days",
+    )
 
     unit = models.CharField(
         max_length=20,
-        verbose_name="Physical measurement unit"
+        choices=Unit.choices,
+        verbose_name="Harvest and sales unit",
     )
 
     description = models.TextField(
@@ -128,7 +141,7 @@ class Planting(models.Model):
     @property
     def harvest_end(self):
         """
-        Harvest window closes after 3 days.
+        Last day of a three-calendar-day harvest window, including harvest_start.
         """
         return self.harvest_start + timedelta(days=2)
 

@@ -1,23 +1,23 @@
 {% extends "base/base.html" %}
 
-{% block title %}{{ crop.crop_name }}{% endblock %}
+{% block title %}{{ field.field_name }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1>{{ crop.crop_name }}</h1>
-        <p>{{ crop.maturity_days }} days to maturity · {{ crop.get_unit_display }}</p>
+        <h1>{{ field.field_name }}</h1>
+        <p>{{ field.field_size }} acres</p>
     </div>
     <div>
-        <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
-        <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+        <a href="{% url 'crops:field-update' field.pk %}">Edit</a>
+        <a href="{% url 'crops:field-delete' field.pk %}">Delete</a>
     </div>
 </div>
 
-{% if crop.description %}
+{% if field.notes %}
 <section>
-    <h2>Description</h2>
-    <p>{{ crop.description }}</p>
+    <h2>Notes</h2>
+    <p>{{ field.notes }}</p>
 </section>
 {% endif %}
 
@@ -26,19 +26,19 @@
         <div><h2>Plantings</h2></div>
         <a href="{% url 'crops:planting-create' %}">New Planting</a>
     </div>
-    {% with plantings=crop.plantings.all %}
+    {% with plantings=field.plantings.all %}
     {% if plantings %}
     <ul>
         {% for planting in plantings %}
         <li>
             <a href="{% url 'crops:planting-detail' planting.pk %}">
-                {{ planting.field.field_name }} — planted {{ planting.planting_date }}
+                {{ planting.crop.crop_name }} — planted {{ planting.planting_date }}
             </a>
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <p>This crop has not been planted yet.</p>
+    <p>Nothing has been planted in this field yet.</p>
     {% endif %}
     {% endwith %}
 </section>

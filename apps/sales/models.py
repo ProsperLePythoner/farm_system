@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Sum
 
 
 class Order(models.Model):
@@ -50,12 +49,10 @@ class Order(models.Model):
 
     @property
     def total_paid(self):
-
-        paid = self.payments.aggregate(
-            total=Sum("amount_paid")
-        )["total"]
-
-        return paid or Decimal("0.00")
+        return sum(
+            (payment.amount_paid for payment in self.payments.all()),
+            Decimal("0.00"),
+        )
 
     @property
     def outstanding_balance(self):
@@ -73,10 +70,11 @@ class Order(models.Model):
         (probably useful for some arbitrary dashboard)
         '''
 
-        if self.total_paid == 0:
+        total_paid = self.total_paid
+        if total_paid == 0:
             return "pending"
 
-        if self.total_paid < self.total_amount:
+        if total_paid < self.total_amount:
             return "partial"
 
         return "paid"

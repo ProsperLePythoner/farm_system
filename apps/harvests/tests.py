@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
@@ -111,6 +111,19 @@ class HarvestTests(TestCase):
         )
         self.assertContains(response, "Record Harvest")
 
+    def test_list_view_includes_a_window_that_is_open_today(self):
+        planting = Planting.objects.create(
+            crop=self.crop,
+            field=self.field,
+            planting_qty_unit="seeds",
+            quantity_planted=Decimal("20.00"),
+            planting_date=timezone.localdate() - timedelta(days=62),
+        )
+
+        response = self.client.get(reverse("harvests:harvest-list"))
+
+        self.assertEqual(list(response.context["upcoming_plantings"]), [planting])
+
     def test_complete_upcoming_planting_to_harvest_lifecycle(self):
         planting = Planting.objects.create(
             crop=self.crop,
@@ -194,6 +207,38 @@ class HarvestTests(TestCase):
             reverse("crops:planting-detail", args=[self.planting.pk]),
         )
         self.assertFalse(Harvest.objects.filter(pk=harvest.pk).exists())
+
+    def test_harvest_delete_is_blocked_when_referenced_by_an_order(self):
+        from apps.customers.models import Customer
+        from apps.sales.models import Order, OrderItem
+
+        harvest = Harvest.objects.create(
+            planting=self.planting,
+            harvesting_date=date(2026, 2, 1),
+            quantity_harvested=Decimal("5.00"),
+            unit="kg",
+        )
+        customer = Customer.objects.create(
+            customer_name="Market",
+            customer_phone="123",
+        )
+        order = Order.objects.create(customer=customer, order_date=date(2026, 2, 2))
+        OrderItem.objects.create(
+            order=order,
+            crop=self.crop,
+            harvest=harvest,
+            quantity=Decimal("1.00"),
+            unit_price=Decimal("10.00"),
+            unit="kg",
+        )
+
+        response = self.client.post(
+            reverse("harvests:harvest-delete", args=[harvest.pk])
+        )
+
+        self.assertEqual(response.status_code, 409)
+        self.assertContains(response, "referenced by a sale", status_code=409)
+        self.assertTrue(Harvest.objects.filter(pk=harvest.pk).exists())
 
     def test_planting_cannot_be_deleted_while_harvests_exist(self):
         Harvest.objects.create(

@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base/base.html" %}
 
-</body>
-</html>
+{% block title %}
+    {% if object %}Edit Crop{% else %}New Crop{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{% if object %}Edit Crop{% else %}New Crop{% endif %}</h1>
+        <p>Crop units are used to record harvests and sales.</p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if object %}Save Changes{% else %}Create Crop{% endif %}</button>
+    <a href="{% if object %}{% url 'crops:crop-detail' object.pk %}{% else %}{% url 'crops:crop-list' %}{% endif %}">Cancel</a>
+</form>
+{% endblock %}

@@ -106,6 +106,16 @@ class SalesOrderWorkflowTests(TestCase):
         self.assertEqual(items[1].line_total, Decimal("30000.00"))
         self.assertEqual(order.total_amount, Decimal("130000.00"))
 
+    def test_order_creation_shows_one_success_message(self):
+        response = self.client.post(
+            reverse("sales:order-create"),
+            self.order_form_data(),
+            follow=True,
+        )
+
+        self.assertContains(response, "Order created.")
+        self.assertEqual(response.content.count(b"Order created."), 1)
+
     def test_order_create_requires_harvest_for_new_line_items(self):
         data = self.order_form_data()
         data.update({

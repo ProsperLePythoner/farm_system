@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base/base.html" %}
 
-</body>
-</html>
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Farm Dashboard</h1>
+        <p>Choose an area to manage your farm operations.</p>
+    </div>
+</div>
+
+<div class="dashboard-links">
+    <a href="{% url 'crops:overview' %}">Crops &amp; Fields</a>
+    <a href="{% url 'crops:planting-list' %}">Plantings</a>
+    <a href="{% url 'harvests:harvest-list' %}">Harvests</a>
+    <a href="{% url 'customers:customer-list' %}">Customers</a>
+    <a href="{% url 'sales:order-list' %}">Sales Orders</a>
+</div>
+{% endblock %}

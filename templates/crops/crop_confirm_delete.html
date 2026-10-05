@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+
+{% block title %}Delete Crop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Delete Crop</h1>
+        <p>Delete <strong>{{ crop.crop_name }}</strong>?</p>
+    </div>
+</div>
+
+{% if delete_blocked %}
+<p class="form-errors">{{ blocked_message }}</p>
+<a href="{% url 'crops:crop-detail' crop.pk %}">Return to crop</a>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete crop</button>
+    <a href="{% url 'crops:crop-detail' crop.pk %}">Cancel</a>
+</form>
+{% endif %}
+{% endblock %}

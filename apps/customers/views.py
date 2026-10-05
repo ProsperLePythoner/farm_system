@@ -1,7 +1,9 @@
 from django.db.models import Prefetch
-from django.db.models.deletion import ProtectedError
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+
+from config.view_mixins import ProtectedDeleteMixin
 
 from apps.sales.models import Order
 
@@ -32,38 +34,35 @@ class CustomerDetailView(DetailView):
         )
 
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(SuccessMessageMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = "customers/customer_form.html"
     success_url = reverse_lazy("customers:customer-list")
+    success_message = "Customer created."
 
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(SuccessMessageMixin, UpdateView):
     model = Customer
     form_class = CustomerForm
     template_name = "customers/customer_form.html"
     context_object_name = "customer"
     success_url = reverse_lazy("customers:customer-list")
+    success_message = "Customer updated."
 
 
-class CustomerDeleteView(DeleteView):
+class CustomerDeleteView(ProtectedDeleteMixin, DeleteView):
     model = Customer
     template_name = "customers/customer_confirm_delete.html"
     context_object_name = "customer"
     success_url = reverse_lazy("customers:customer-list")
+    blocked_message = "This customer has orders and cannot be deleted."
+    deleted_message = "Customer deleted."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["has_order_history"] = self.object.orders.exists()
+        context["has_order_history"] = self.is_deletion_blocked()
         return context
 
-    def form_valid(self, form):
-        try:
-            return super().form_valid(form)
-        except ProtectedError:
-            context = self.get_context_data(
-                form=form,
-                has_order_history=True,
-            )
-            return self.render_to_response(context, status=409)
+    def is_deletion_blocked(self):
+        return self.object.orders.exists()

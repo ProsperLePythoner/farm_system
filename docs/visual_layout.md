@@ -2,39 +2,45 @@
 
 ## Current shared application shell
 
-The web UI currently uses a shared Django template shell:
+The web UI uses a shared Django template shell styled by the project's
+hand-written `static/css/base.css`:
 
 ```text
 +--------------------------------------------------------------+
 | Navbar                                                       |
 +--------------------+-----------------------------------------+
-| Sidebar            | Main content                            |
+| Sidebar            | Main content + flash messages           |
 |                    |                                         |
 | Dashboard          | Current app page                        |
-| Crops/Plantings    |                                         |
-| Harvests           |                                         |
+| Crops & Production |                                         |
+|   Crops/Fields     |                                         |
+|   Plantings        |                                         |
+|   Harvests         |                                         |
 | Customers          |                                         |
 | Sales              |                                         |
-| Reports            |                                         |
 +--------------------+-----------------------------------------+
 | Footer                                                       |
 +--------------------------------------------------------------+
 ```
 
-The shell is defined in `templates/base/base.html`. The sidebar includes
-navigation entries for several areas, but not every entry currently leads to an
-implemented feature.
+The shell is defined in `templates/base/base.html`. Navigation covers the
+dashboard landing page, crop/field/planting workflows, harvests, customers, and
+sales orders. Active-page links are indicated, and the sidebar reflows for
+smaller screens.
 
 ## Current page coverage
 
 - **Plantings:** list, form, detail, and delete confirmation pages.
+- **Crops and fields:** overview, list, detail, form, and delete confirmation
+  pages.
 - **Harvests:** list, record/edit form, and delete confirmation pages; planting
   detail includes that planting's harvest history.
-- **Dashboard:** shared shell only; no operational metrics yet.
-- **Customers and sales:** templates and/or views are incomplete and should not
-  be represented as finished workflows.
+- **Dashboard:** landing page in the shared shell; no operational metrics yet.
+- **Customers:** list, detail with order history, create, edit, and delete.
+- **Sales:** order list, detail, create/edit with harvest-linked items, and
+  delete.
 
-## Intended navigation
+## Navigation structure
 
 ```text
 Dashboard
@@ -42,17 +48,13 @@ Dashboard
 │   ├── Crops and fields
 │   ├── Plantings
 │   └── Harvests
-├── Sales
-│   ├── Customers
-│   ├── Orders
-│   └── Payments
-├── Reports
-└── Administration
+├── Customers
+└── Sales Orders
 ```
 
-This is a target information architecture, not a guarantee that every menu
-destination is implemented. The navigation should mirror business tasks rather
-than expose database tables directly.
+Payments, reports, and administration are intended destinations but do not yet
+have dedicated user-facing workflows. Navigation should mirror business tasks
+rather than expose database tables directly.
 
 ## Future dashboard content
 
