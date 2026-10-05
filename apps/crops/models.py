@@ -130,7 +130,7 @@ class Planting(models.Model):
         """
         Harvest window closes after 3 days.
         """
-        return self.harvest_start + timedelta(days=3)
+        return self.harvest_start + timedelta(days=2)
 
     @property
     def is_ready_for_harvest(self):
