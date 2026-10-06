@@ -1,5 +1,7 @@
 <header class="navbar">
-    <a href="{% url 'dashboard:dashboard' %}" class="brand">Farm System</a>
+    <a href="{% url 'dashboard:dashboard' %}" class="brand">
+        Farm System
+    </a>
     <div class="user-box">
         {% if user.is_authenticated %}
             {{ user.get_username }}
