@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models.deletion import ProtectedError
 from django.test import TestCase
@@ -16,6 +17,12 @@ from .models import Harvest
 
 class HarvestTests(TestCase):
     def setUp(self):
+        admin = get_user_model().objects.create_superuser(
+            username="workflow-admin",
+            email="admin@example.test",
+            password="test-password",
+        )
+        self.client.force_login(admin)
         self.crop = Crop.objects.create(
             crop_name="Tomatoes",
             maturity_days=60,

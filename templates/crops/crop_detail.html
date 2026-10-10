@@ -9,8 +9,12 @@
         <p>{{ crop.maturity_days }} days to maturity · {{ crop.get_unit_display }}</p>
     </div>
     <div>
+        {% if perms.crops.change_crop %}
         <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
+        {% endif %}
+        {% if perms.crops.delete_crop %}
         <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+        {% endif %}
     </div>
 </div>
 
@@ -24,7 +28,9 @@
 <section>
     <div class="page-header">
         <div><h2>Plantings</h2></div>
-        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        {% if perms.crops.add_planting %}
+            <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        {% endif %}
     </div>
     {% with plantings=crop.plantings.all %}
     {% if plantings %}

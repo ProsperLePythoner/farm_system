@@ -9,8 +9,12 @@
         <p>Manage the production catalogue and recent planting activity.</p>
     </div>
     <div>
+        {% if perms.crops.add_crop %}
         <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+        {% endif %}
+        {% if perms.crops.add_field %}
         <a class="button" href="{% url 'crops:field-create' %}">New Field</a>
+        {% endif %}
     </div>
 </div>
 
@@ -18,16 +22,18 @@
     <h2>Catalogue</h2>
     <p>{{ crop_count }} crops · {{ field_count }} fields · {{ planting_count }} plantings</p>
     <p>
-        <a href="{% url 'crops:crop-list' %}">Manage crops</a> ·
-        <a href="{% url 'crops:field-list' %}">Manage fields</a> ·
-        <a href="{% url 'crops:planting-list' %}">View plantings</a>
+        {% if perms.crops.view_crop %}<a href="{% url 'crops:crop-list' %}">Manage crops</a> ·{% endif %}
+        {% if perms.crops.view_field %}<a href="{% url 'crops:field-list' %}">Manage fields</a> ·{% endif %}
+        {% if perms.crops.view_planting %}<a href="{% url 'crops:planting-list' %}">View plantings</a>{% endif %}
     </p>
 </section>
 
 <section>
     <div class="page-header">
         <div><h2>Recent Plantings</h2></div>
-        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        {% if perms.crops.add_planting %}
+            <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        {% endif %}
     </div>
     {% if recent_plantings %}
     <ul>

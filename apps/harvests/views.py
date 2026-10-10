@@ -5,13 +5,20 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from apps.crops.models import Planting
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from config.view_mixins import ProtectedDeleteMixin
 
 from .forms import HarvestForm
 from .models import Harvest
 
 
-class HarvestListView(ListView):
+class HarvestListView(PermissionRequiredMixin, ListView):
+    permission_required = (
+        "harvests.view_harvest",
+        "crops.view_planting",
+        "crops.view_crop",
+        "crops.view_field",
+    )
     model = Harvest
     template_name = "harvests/harvest_list.html"
     context_object_name = "harvests"
@@ -41,7 +48,13 @@ class HarvestListView(ListView):
         return context
 
 
-class HarvestCreateView(SuccessMessageMixin, CreateView):
+class HarvestCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    permission_required = (
+        "harvests.add_harvest",
+        "crops.view_planting",
+        "crops.view_crop",
+        "crops.view_field",
+    )
     model = Harvest
     form_class = HarvestForm
     template_name = "harvests/harvest_form.html"
@@ -73,7 +86,13 @@ class HarvestCreateView(SuccessMessageMixin, CreateView):
         return reverse("crops:planting-detail", kwargs={"pk": self.planting.pk})
 
 
-class HarvestUpdateView(SuccessMessageMixin, UpdateView):
+class HarvestUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    permission_required = (
+        "harvests.change_harvest",
+        "crops.view_planting",
+        "crops.view_crop",
+        "crops.view_field",
+    )
     model = Harvest
     form_class = HarvestForm
     template_name = "harvests/harvest_form.html"
@@ -95,7 +114,13 @@ class HarvestUpdateView(SuccessMessageMixin, UpdateView):
         )
 
 
-class HarvestDeleteView(ProtectedDeleteMixin, DeleteView):
+class HarvestDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    permission_required = (
+        "harvests.delete_harvest",
+        "crops.view_planting",
+        "crops.view_crop",
+        "crops.view_field",
+    )
     model = Harvest
     template_name = "harvests/harvest_confirm_delete.html"
     context_object_name = "harvest"

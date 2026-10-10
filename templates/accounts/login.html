@@ -1,0 +1,16 @@
+{% extends "base/base.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Log in</h1>
+    <p>Sign in to access the farm management system.</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {{ form.as_p }}
+        <button type="submit">Log in</button>
+    </form>
+</section>
+{% endblock %}

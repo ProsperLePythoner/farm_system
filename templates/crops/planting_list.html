@@ -10,9 +10,9 @@
         <p>Manage crops currently planted across your fields.</p>
     </div>
 
-    <a href="{% url 'crops:planting-create' %}">
-        New Planting
-    </a>
+    {% if perms.crops.add_planting %}
+        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+    {% endif %}
 </div>
 
 
@@ -77,9 +77,9 @@
 
 <p>No plantings have been registered yet.</p>
 
-<a href="{% url 'crops:planting-create' %}">
-    Register your first planting
-</a>
+{% if perms.crops.add_planting %}
+    <a href="{% url 'crops:planting-create' %}">Register your first planting</a>
+{% endif %}
 
 {% endif %}
 

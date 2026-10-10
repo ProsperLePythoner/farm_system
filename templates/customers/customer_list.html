@@ -8,7 +8,9 @@
         <h1>Customers</h1>
         <p>Manage people and businesses buying produce.</p>
     </div>
-    <a href="{% url 'customers:customer-create' %}">Add Customer</a>
+    {% if perms.customers.add_customer %}
+        <a href="{% url 'customers:customer-create' %}">Add Customer</a>
+    {% endif %}
 </div>
 
 {% if customers %}
@@ -32,8 +34,12 @@
             <td>{{ customer.customer_phone }}</td>
             <td>{{ customer.customer_location|default:"—" }}</td>
             <td>
+                {% if perms.customers.change_customer %}
                 <a href="{% url 'customers:customer-update' customer.pk %}">Edit</a>
+                {% endif %}
+                {% if perms.customers.delete_customer %}
                 <a href="{% url 'customers:customer-delete' customer.pk %}">Delete</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -41,6 +47,8 @@
 </table>
 {% else %}
 <p>No customers have been added yet.</p>
-<a href="{% url 'customers:customer-create' %}">Add your first customer</a>
+{% if perms.customers.add_customer %}
+    <a href="{% url 'customers:customer-create' %}">Add your first customer</a>
+{% endif %}
 {% endif %}
 {% endblock %}

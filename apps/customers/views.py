@@ -1,4 +1,5 @@
 from django.db.models import Prefetch
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -11,14 +12,21 @@ from .forms import CustomerForm
 from .models import Customer
 
 
-class CustomerListView(ListView):
+class CustomerListView(PermissionRequiredMixin, ListView):
+    permission_required = "customers.view_customer"
     model = Customer
     template_name = "customers/customer_list.html"
     context_object_name = "customers"
     queryset = Customer.objects.order_by("customer_name", "pk")
 
 
-class CustomerDetailView(DetailView):
+class CustomerDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = (
+        "customers.view_customer",
+        "sales.view_order",
+        "sales.view_orderitem",
+        "crops.view_crop",
+    )
     model = Customer
     template_name = "customers/customer_detail.html"
     context_object_name = "customer"
@@ -34,7 +42,8 @@ class CustomerDetailView(DetailView):
         )
 
 
-class CustomerCreateView(SuccessMessageMixin, CreateView):
+class CustomerCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    permission_required = "customers.add_customer"
     model = Customer
     form_class = CustomerForm
     template_name = "customers/customer_form.html"
@@ -42,7 +51,8 @@ class CustomerCreateView(SuccessMessageMixin, CreateView):
     success_message = "Customer created."
 
 
-class CustomerUpdateView(SuccessMessageMixin, UpdateView):
+class CustomerUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    permission_required = "customers.change_customer"
     model = Customer
     form_class = CustomerForm
     template_name = "customers/customer_form.html"
@@ -51,7 +61,8 @@ class CustomerUpdateView(SuccessMessageMixin, UpdateView):
     success_message = "Customer updated."
 
 
-class CustomerDeleteView(ProtectedDeleteMixin, DeleteView):
+class CustomerDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    permission_required = "customers.delete_customer"
     model = Customer
     template_name = "customers/customer_confirm_delete.html"
     context_object_name = "customer"

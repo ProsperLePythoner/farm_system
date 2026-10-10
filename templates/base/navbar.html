@@ -4,7 +4,20 @@
     </a>
     <div class="user-box">
         {% if user.is_authenticated %}
-            {{ user.get_username }}
+            <div>
+                <a href="{% url 'accounts:profile' %}">
+                    {{ user.get_full_name|default:user.get_username }}
+                </a>
+                {% if account_role_display %}
+                    <small>{{ account_role_display }}</small>
+                {% endif %}
+            </div>
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit">Log out</button>
+            </form>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Log in</a>
         {% endif %}
     </div>
 </header>

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -9,7 +10,12 @@ from .forms import OrderForm, OrderItemFormSet
 from .models import Order
 
 
-class OrderListView(ListView):
+class OrderListView(PermissionRequiredMixin, ListView):
+    permission_required = (
+        "sales.view_order",
+        "sales.view_orderitem",
+        "customers.view_customer",
+    )
     model = Order
     template_name = "sales/order_list.html"
     context_object_name = "orders"
@@ -21,7 +27,14 @@ class OrderListView(ListView):
     )
 
 
-class OrderDetailView(DetailView):
+class OrderDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = (
+        "sales.view_order",
+        "sales.view_orderitem",
+        "customers.view_customer",
+        "crops.view_crop",
+        "harvests.view_harvest",
+    )
     model = Order
     template_name = "sales/order_detail.html"
     context_object_name = "order"
@@ -62,7 +75,14 @@ class OrderFormsetViewMixin:
         return redirect(self.get_success_url())
 
 
-class OrderCreateView(OrderFormsetViewMixin, CreateView):
+class OrderCreateView(PermissionRequiredMixin, OrderFormsetViewMixin, CreateView):
+    permission_required = (
+        "sales.add_order",
+        "sales.add_orderitem",
+        "customers.view_customer",
+        "harvests.view_harvest",
+        "crops.view_crop",
+    )
     model = Order
     form_class = OrderForm
     template_name = "sales/order_form.html"
@@ -72,7 +92,14 @@ class OrderCreateView(OrderFormsetViewMixin, CreateView):
         return reverse("sales:order-detail", kwargs={"pk": self.object.pk})
 
 
-class OrderUpdateView(OrderFormsetViewMixin, UpdateView):
+class OrderUpdateView(PermissionRequiredMixin, OrderFormsetViewMixin, UpdateView):
+    permission_required = (
+        "sales.change_order",
+        "sales.change_orderitem",
+        "customers.view_customer",
+        "harvests.view_harvest",
+        "crops.view_crop",
+    )
     model = Order
     form_class = OrderForm
     template_name = "sales/order_form.html"
@@ -86,7 +113,8 @@ class OrderUpdateView(OrderFormsetViewMixin, UpdateView):
         return reverse("sales:order-detail", kwargs={"pk": self.object.pk})
 
 
-class OrderDeleteView(ProtectedDeleteMixin, DeleteView):
+class OrderDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    permission_required = ("sales.delete_order", "sales.delete_orderitem")
     model = Order
     template_name = "sales/order_confirm_delete.html"
     context_object_name = "order"

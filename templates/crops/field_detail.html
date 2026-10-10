@@ -9,8 +9,12 @@
         <p>{{ field.field_size }} acres</p>
     </div>
     <div>
+        {% if perms.crops.change_field %}
         <a href="{% url 'crops:field-update' field.pk %}">Edit</a>
+        {% endif %}
+        {% if perms.crops.delete_field %}
         <a href="{% url 'crops:field-delete' field.pk %}">Delete</a>
+        {% endif %}
     </div>
 </div>
 
@@ -24,7 +28,9 @@
 <section>
     <div class="page-header">
         <div><h2>Plantings</h2></div>
-        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        {% if perms.crops.add_planting %}
+            <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        {% endif %}
     </div>
     {% with plantings=field.plantings.all %}
     {% if plantings %}

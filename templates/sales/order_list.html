@@ -6,9 +6,15 @@
 <div class="page-header">
     <div>
         <h1>Sales Orders</h1>
-        <p>Customer orders, totals, and outstanding balances.</p>
+        {% if perms.sales.view_payment %}
+            <p>Customer orders, totals, and outstanding balances.</p>
+        {% else %}
+            <p>Customer orders and totals.</p>
+        {% endif %}
     </div>
+    {% if perms.sales.add_order and perms.sales.add_orderitem %}
     <a href="{% url 'sales:order-create' %}">New Order</a>
+    {% endif %}
 </div>
 
 {% if orders %}
@@ -19,8 +25,10 @@
             <th>Customer</th>
             <th>Date</th>
             <th>Total</th>
+            {% if perms.sales.view_payment %}
             <th>Paid</th>
             <th>Outstanding</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -30,14 +38,18 @@
             <td>{{ order.customer.customer_name }}</td>
             <td>{{ order.order_date }}</td>
             <td>TSh {{ order.total_amount|floatformat:2 }}</td>
+            {% if perms.sales.view_payment %}
             <td>TSh {{ order.total_paid|floatformat:2 }}</td>
             <td>TSh {{ order.outstanding_balance|floatformat:2 }}</td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {% else %}
 <p>No orders have been recorded yet.</p>
-<a href="{% url 'sales:order-create' %}">Create the first order</a>
+{% if perms.sales.add_order and perms.sales.add_orderitem %}
+    <a href="{% url 'sales:order-create' %}">Create the first order</a>
+{% endif %}
 {% endif %}
 {% endblock %}

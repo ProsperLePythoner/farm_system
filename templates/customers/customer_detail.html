@@ -9,8 +9,12 @@
         <p>Customer details and order history.</p>
     </div>
     <div>
+        {% if perms.customers.change_customer %}
         <a href="{% url 'customers:customer-update' customer.pk %}">Edit</a>
+        {% endif %}
+        {% if perms.customers.delete_customer %}
         <a href="{% url 'customers:customer-delete' customer.pk %}">Delete</a>
+        {% endif %}
     </div>
 </div>
 

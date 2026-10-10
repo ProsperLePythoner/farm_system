@@ -1,6 +1,7 @@
 from datetime import date
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models.deletion import ProtectedError
 from django.test import TestCase
@@ -15,6 +16,12 @@ from .models import Order, OrderItem, Payment
 
 class SalesOrderWorkflowTests(TestCase):
     def setUp(self):
+        admin = get_user_model().objects.create_superuser(
+            username="workflow-admin",
+            email="admin@example.test",
+            password="test-password",
+        )
+        self.client.force_login(admin)
         self.customer = Customer.objects.create(
             customer_name="Mlimani Market",
             customer_phone="+255 700 123456",

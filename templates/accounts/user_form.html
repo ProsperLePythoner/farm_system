@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+
+{% block title %}{% if managed_user %}Edit User{% else %}Create User{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{% if managed_user %}Edit User{% else %}Create User{% endif %}</h1>
+        <p>
+            {% if managed_user %}
+                Update account details, role, and sign-in status.
+            {% else %}
+                New accounts are inactive unless you explicitly enable sign-in.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if managed_user %}Save changes{% else %}Create user{% endif %}</button>
+    <a href="{% url 'accounts:user-list' %}">Cancel</a>
+</form>
+{% endblock %}

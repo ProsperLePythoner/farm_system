@@ -1,59 +1,87 @@
+{% if user.is_authenticated %}
 <aside class="sidebar" id="main-navigation">
     <nav aria-label="Main navigation">
         <ul>
+            {% if user.is_authenticated %}
             <li>
                 <a href="{% url 'dashboard:dashboard' %}"
                    {% if request.resolver_match.app_name == "dashboard" %}aria-current="page"{% endif %}>
                     Dashboard
                 </a>
             </li>
+            {% endif %}
             <li class="nav-section">
+                {% if perms.crops.view_crop or perms.crops.view_field or perms.crops.view_planting or perms.harvests.view_harvest %}
                 <span class="nav-heading">Crops &amp; Production</span>
                 <ul>
+                    {% if perms.crops.view_crop and perms.crops.view_field and perms.crops.view_planting %}
                     <li>
                         <a href="{% url 'crops:overview' %}"
                            {% if request.resolver_match.url_name == "overview" %}aria-current="page"{% endif %}>
                             Overview
                         </a>
                     </li>
+                    {% endif %}
+                    {% if perms.crops.view_crop %}
                     <li>
                         <a href="{% url 'crops:crop-list' %}"
                            {% if request.resolver_match.url_name == "crop-list" or request.resolver_match.url_name == "crop-detail" or request.resolver_match.url_name == "crop-create" or request.resolver_match.url_name == "crop-update" or request.resolver_match.url_name == "crop-delete" %}aria-current="page"{% endif %}>
                             Crops
                         </a>
                     </li>
+                    {% endif %}
+                    {% if perms.crops.view_field %}
                     <li>
                         <a href="{% url 'crops:field-list' %}"
                            {% if request.resolver_match.url_name == "field-list" or request.resolver_match.url_name == "field-detail" or request.resolver_match.url_name == "field-create" or request.resolver_match.url_name == "field-update" or request.resolver_match.url_name == "field-delete" %}aria-current="page"{% endif %}>
                             Fields
                         </a>
                     </li>
+                    {% endif %}
+                    {% if perms.crops.view_planting %}
                     <li>
                         <a href="{% url 'crops:planting-list' %}"
                            {% if request.resolver_match.url_name|slice:":8" == "planting" %}aria-current="page"{% endif %}>
                             Plantings
                         </a>
                     </li>
+                    {% endif %}
+                    {% if perms.harvests.view_harvest %}
                     <li>
                         <a href="{% url 'harvests:harvest-list' %}"
                            {% if request.resolver_match.app_name == "harvests" %}aria-current="page"{% endif %}>
                             Harvests
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
+                {% endif %}
             </li>
+            {% if perms.auth.view_user %}
+            <li>
+                <a href="{% url 'accounts:user-list' %}"
+                   {% if request.resolver_match.app_name == "accounts" and request.resolver_match.url_name|slice:":4" == "user" %}aria-current="page"{% endif %}>
+                    User accounts
+                </a>
+            </li>
+            {% endif %}
+            {% if perms.customers.view_customer %}
             <li>
                 <a href="{% url 'customers:customer-list' %}"
                    {% if request.resolver_match.app_name == "customers" %}aria-current="page"{% endif %}>
                     Customers
                 </a>
             </li>
+            {% endif %}
+            {% if perms.sales.view_order %}
             <li>
                 <a href="{% url 'sales:order-list' %}"
                    {% if request.resolver_match.app_name == "sales" %}aria-current="page"{% endif %}>
                     Sales
                 </a>
             </li>
+            {% endif %}
         </ul>
     </nav>
 </aside>
+{% endif %}

@@ -1,0 +1,56 @@
+{% extends "base/base.html" %}
+
+{% block title %}User Accounts{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>User Accounts</h1>
+        <p>Manage sign-in access and application roles.</p>
+    </div>
+    {% if perms.auth.add_user %}
+        <a href="{% url 'accounts:user-create' %}">Create user</a>
+    {% endif %}
+</div>
+
+{% if managed_users %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Last sign-in</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for managed_user in managed_users %}
+        <tr>
+            <td>{{ managed_user.get_full_name|default:"—" }}</td>
+            <td>{{ managed_user.get_username }}</td>
+            <td>{{ managed_user.account_role|default:"—" }}</td>
+            <td>{% if managed_user.is_active %}Active{% else %}Inactive{% endif %}</td>
+            <td>{{ managed_user.last_login|date:"DATETIME_FORMAT"|default:"Never" }}</td>
+            <td>
+                {% if managed_user.can_be_managed %}
+                    <a href="{% url 'accounts:user-update' managed_user.pk %}">Edit</a>
+                {% endif %}
+                {% if managed_user.can_be_toggled %}
+                    <form method="post" action="{% url 'accounts:user-toggle-active' managed_user.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">
+                            {% if managed_user.is_active %}Deactivate{% else %}Activate{% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No user accounts have been created.</p>
+{% endif %}
+{% endblock %}

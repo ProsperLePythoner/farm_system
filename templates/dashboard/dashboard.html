@@ -11,10 +11,20 @@
 </div>
 
 <div class="dashboard-links">
+    {% if perms.crops.view_crop and perms.crops.view_field and perms.crops.view_planting %}
     <a href="{% url 'crops:overview' %}">Crops &amp; Fields</a>
+    {% endif %}
+    {% if perms.crops.view_planting %}
     <a href="{% url 'crops:planting-list' %}">Plantings</a>
+    {% endif %}
+    {% if perms.harvests.view_harvest %}
     <a href="{% url 'harvests:harvest-list' %}">Harvests</a>
+    {% endif %}
+    {% if perms.customers.view_customer %}
     <a href="{% url 'customers:customer-list' %}">Customers</a>
+    {% endif %}
+    {% if perms.sales.view_order %}
     <a href="{% url 'sales:order-list' %}">Sales Orders</a>
+    {% endif %}
 </div>
 {% endblock %}

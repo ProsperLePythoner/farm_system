@@ -1,6 +1,7 @@
 from multiprocessing import context
 
 from django.template.loader import get_template
+from django.contrib.auth.decorators import login_required
 
 from django.template import loader
 from django.http import HttpResponse
@@ -9,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .forms import NameForm
 
+@login_required
 def testing(request):
     print("Testing the 'testing' view...\n\n\n")
 
@@ -17,9 +19,11 @@ def testing(request):
         'name': 'Prosper.dev'
     }, request))
 
+@login_required
 def say_hello(request, name):
     return HttpResponse(f"Hello, {name}. How are ya? 😊")
 
+@login_required
 def get_name(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":

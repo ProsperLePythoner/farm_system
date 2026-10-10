@@ -8,7 +8,9 @@
         <h1>Fields</h1>
         <p>Manage farm blocks, plots, and greenhouses.</p>
     </div>
-    <a class="button" href="{% url 'crops:field-create' %}">New Field</a>
+    {% if perms.crops.add_field %}
+        <a class="button" href="{% url 'crops:field-create' %}">New Field</a>
+    {% endif %}
 </div>
 
 {% if fields %}
@@ -28,8 +30,12 @@
             <td>{{ field.field_size }} acres</td>
             <td>{{ field.planting_count }}</td>
             <td>
-                <a href="{% url 'crops:field-update' field.pk %}">Edit</a>
-                <a href="{% url 'crops:field-delete' field.pk %}">Delete</a>
+                {% if perms.crops.change_field %}
+                    <a href="{% url 'crops:field-update' field.pk %}">Edit</a>
+                {% endif %}
+                {% if perms.crops.delete_field %}
+                    <a href="{% url 'crops:field-delete' field.pk %}">Delete</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -38,7 +44,9 @@
 {% else %}
 <div class="empty-state">
     <p>No fields have been added yet.</p>
-    <a href="{% url 'crops:field-create' %}">Add your first field</a>
+    {% if perms.crops.add_field %}
+        <a href="{% url 'crops:field-create' %}">Add your first field</a>
+    {% endif %}
 </div>
 {% endif %}
 {% endblock %}

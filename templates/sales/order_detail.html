@@ -9,8 +9,12 @@
         <p>{{ order.customer.customer_name }} — {{ order.order_date }}</p>
     </div>
     <div>
+        {% if perms.sales.change_order and perms.sales.change_orderitem %}
         <a href="{% url 'sales:order-update' order.pk %}">Edit</a>
+        {% endif %}
+        {% if perms.sales.delete_order and perms.sales.delete_orderitem %}
         <a href="{% url 'sales:order-delete' order.pk %}">Delete</a>
+        {% endif %}
     </div>
 </div>
 
@@ -61,12 +65,14 @@
     <dl>
         <dt>Total</dt>
         <dd>TSh {{ order.total_amount|floatformat:2 }}</dd>
-        <dt>Paid</dt>
-        <dd>TSh {{ order.total_paid|floatformat:2 }}</dd>
-        <dt>Outstanding</dt>
-        <dd>TSh {{ order.outstanding_balance|floatformat:2 }}</dd>
-        <dt>Payment status</dt>
-        <dd>{{ order.status|title }}</dd>
+        {% if perms.sales.view_payment %}
+            <dt>Paid</dt>
+            <dd>TSh {{ order.total_paid|floatformat:2 }}</dd>
+            <dt>Outstanding</dt>
+            <dd>TSh {{ order.outstanding_balance|floatformat:2 }}</dd>
+            <dt>Payment status</dt>
+            <dd>{{ order.status|title }}</dd>
+        {% endif %}
     </dl>
 </section>
 {% endblock %}

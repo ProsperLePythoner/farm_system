@@ -8,7 +8,9 @@
         <h1>Crops</h1>
         <p>Manage the crop catalogue used for planting and harvest records.</p>
     </div>
-    <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+    {% if perms.crops.add_crop %}
+        <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+    {% endif %}
 </div>
 
 {% if crops %}
@@ -30,8 +32,12 @@
             <td>{{ crop.get_unit_display }}</td>
             <td>{{ crop.planting_count }}</td>
             <td>
-                <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
-                <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+                {% if perms.crops.change_crop %}
+                    <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
+                {% endif %}
+                {% if perms.crops.delete_crop %}
+                    <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -40,7 +46,9 @@
 {% else %}
 <div class="empty-state">
     <p>No crops have been added yet.</p>
-    <a href="{% url 'crops:crop-create' %}">Add your first crop</a>
+    {% if perms.crops.add_crop %}
+        <a href="{% url 'crops:crop-create' %}">Add your first crop</a>
+    {% endif %}
 </div>
 {% endif %}
 {% endblock %}

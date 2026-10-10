@@ -1,6 +1,7 @@
 from datetime import date
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
@@ -13,6 +14,12 @@ from .models import Customer
 
 class CustomerWorkflowTests(TestCase):
     def setUp(self):
+        admin = get_user_model().objects.create_superuser(
+            username="workflow-admin",
+            email="admin@example.test",
+            password="test-password",
+        )
+        self.client.force_login(admin)
         self.customer = Customer.objects.create(
             customer_name="Amina Market",
             customer_phone="+255 700 123456",
