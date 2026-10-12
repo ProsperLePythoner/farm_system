@@ -1,20 +1,22 @@
-# Agribusiness Architechture
+# Agribusiness Management System
+
+A Django-based farm operations management system designed to replace fragmented paper records with a simple, reliable, centralized application.
 
 ## Project Overview
 
-### Project Name
-Agribusiness Management System
+**Project name:** Agribusiness Management System
 
 ### Mission
-Build a simple, reliable farm operations system that replaces paper records and helps manage:
 
-- Crop planting
-- Harvest tracking
+Build a practical farm operations system that helps manage:
+
+- Crop planting and field records
+- Harvest tracking and expected harvest windows
 - Customer records
-- Orders
-- Payments
+- Orders and sales
+- Payments and outstanding balances
 
-The system should prioritize:
+The project prioritizes:
 
 1. Simplicity
 2. Reliability
@@ -22,131 +24,478 @@ The system should prioritize:
 4. Easy maintenance
 5. Future scalability
 
-Version 1 is intentionally small and focused.
+Version 1 is intentionally small and focused on essential farm-management workflows.
 
----
+## Live Demo
+
+**[Open the live application](https://farm-system-phi.vercel.app/)**
+
+The application is deployed on Vercel. Visitors are directed to the login page, and authentication is required to access protected areas.
+
+## Application Preview
+
+![Agribusiness Management System dashboard preview](docs/images/dashboard-preview.png)
+
+*Application preview. Features and workflows are still under development.*
+
+## Current Project Status
+
+**Status: Active development**
+
+The project has an established Django application structure, PostgreSQL configuration, shared templates, authentication, role-based access control, and a live deployment.
+
+### Implemented foundations
+
+- Django project and application structure.
+- PostgreSQL database configuration.
+- Production deployment on Vercel.
+- User login and logout.
+- Django group-based application roles.
+- Account-management views and forms for managing users.
+- Shared templates and dashboard routing.
+
+These foundations are in place; individual workflows still require implementation, integration, and testing.
+
+### Main application modules
+
+- **Accounts:** authentication, profiles, user management, and role-based access.
+- **Crops:** crop definitions, fields, and planting records.
+- **Harvests:** harvest records and crop lifecycle tracking.
+- **Customers:** customer information and history.
+- **Sales:** orders, order items, payments, and outstanding balances.
+- **Dashboard:** operational summaries, upcoming harvests, available stock, and recent sales activity.
+
+### Development priorities
+
+- Complete and validate business logic for each module.
+- Connect related modules through consistent model relationships.
+- Improve the user interface and data-entry workflows.
+- Implement and test dashboard summaries.
+- Add automated tests and strengthen production error handling.
+- Develop harvest-calendar and reminder functionality.
 
 ## Version 1 Goals
 
-### Problem 1: Crop Lifecycle Management
+### 1. Crop Lifecycle Management
 
 Track:
 
-- Crops
-- Planting dates
+- Crops and their maturity periods
+- Fields and planting dates
 - Expected harvest dates
-- Harvest records
+- Harvest records and quantities
 
-Benefits:
+Planned benefits:
 
-- Never forget planting dates
-- Automatically predict harvest windows
-- View upcoming harvests
-- Receive harvest reminders
+- Keep planting records organized.
+- Calculate expected harvest windows.
+- Identify upcoming harvests.
+- Prepare for harvest reminders.
 
----
-
-### Problem 2: Customer & Sales Management
+### 2. Customer and Sales Management
 
 Track:
 
-- Customers
-- Orders
+- Customer records
+- Orders and order items
 - Payments
-- Outstanding balances, i.e. [...]
+- Outstanding balances
 
-Benefits:
+Planned benefits:
 
-- Eliminate paper records
-- Reduce lost information
-- Quickly retrieve customer history
-- Monitor unpaid balances
-
----
+- Reduce dependence on paper records.
+- Retrieve customer and order history.
+- Track payments and unpaid balances.
+- Connect sales records with harvested stock.
 
 ## Technology Stack
 
 ### Backend
 
+- Python
 - Django
 
-Responsibilities:
-
-- Authentication
-- Business logic
-- Database interaction
-- Notifications
-
----
+Responsibilities include authentication, business rules, request handling, and database interaction.
 
 ### Database
 
 - PostgreSQL
 
-Reasons:
-
-- Free
-- Reliable
-- Fast
-- Excellent Django integration
-- Easy migrations
+PostgreSQL is used for structured, relational data and integration with Django's ORM and migration system.
 
 ### Frontend
-
-Version 1:
 
 - Django Templates
 - HTML
 - CSS
-- JavaScript
+- JavaScript where required
 
-Avoid React until there is a clear business need (and of course until you've actually learned some of it 🥲)
+The initial frontend uses server-rendered templates to keep the architecture straightforward. A separate frontend framework will only be considered if a clear requirement justifies the added complexity.
 
----
+### Deployment
+
+- Vercel
+- PostgreSQL hosting configured through environment-specific settings
+
+Production secrets and database credentials must remain outside the repository.
+
+## Architecture and App Responsibilities
+
+The project uses separate Django apps to organize related functionality.
+
+### `accounts`
+
+Responsible for:
+
+- Login and logout
+- User profiles
+- User management
+- Application roles and permissions
+
+Configured application roles:
+
+- Administrator
+- Farm Manager
+- Harvest Manager
+- Sales Manager
+- Staff
+
+Access to protected actions should be enforced on the server, not merely by hiding navigation links.
+
+### `crops`
+
+Responsible for crop and planting management.
+
+#### `Field`
+
+Represents a physical farm block.
+
+Conceptual fields:
+
+- Field name
+- Field size
+- Notes
+
+#### `Crop`
+
+Represents a crop type.
+
+Conceptual fields:
+
+- Crop name
+- Maturity duration
+- Unit of measurement
+- Description
+
+Example: tomatoes with a configured maturity duration and a harvesting unit such as kilograms.
+
+#### `Planting`
+
+Represents a particular crop planted in a field.
+
+Conceptual fields:
+
+- Crop
+- Field
+- Planting date
+- Quantity planted, where applicable
+
+A field can have multiple plantings, and a crop can be associated with multiple plantings.
+
+### `harvests`
+
+Responsible for recording harvest activity.
+
+#### `Harvest`
+
+Conceptual fields:
+
+- Related planting
+- Harvest date
+- Quantity harvested
+- Notes
+
+A single planting can have multiple harvest records, allowing repeated harvesting from the same planting where appropriate.
+
+Conceptual relationship:
+
+`Field → Planting → Harvest`
+
+`Crop → Planting`
+
+### `customers`
+
+Responsible for customer information.
+
+#### `Customer`
+
+Conceptual fields:
+
+- Name
+- Phone
+- Location
+- Notes
+- Creation timestamp
+
+Customer records should support reliable identification and retrieval of customer history.
+
+### `sales`
+
+Responsible for sales transactions and payment tracking.
+
+Conceptual relationship:
+
+`Customer → Order → OrderItem`
+
+`Order → Payment`
+
+#### `Order`
+
+Represents a customer's order.
+
+#### `OrderItem`
+
+Represents an individual crop or product included in an order.
+
+Conceptual fields:
+
+- Order
+- Crop or relevant product reference
+- Quantity
+- Unit price
+
+#### `Payment`
+
+Represents a payment associated with an order.
+
+Conceptual fields:
+
+- Order
+- Amount paid
+- Payment date
+
+An order can have multiple payments. Outstanding balances should be calculated from the order total and recorded payments rather than maintained using a simple paid/unpaid Boolean.
+
+### `dashboard`
+
+Responsible for presenting useful operational information, such as:
+
+- Upcoming harvests
+- Available stock
+- Outstanding balances
+- Recent orders
+
+The dashboard should primarily present information calculated by the relevant apps. Business rules should remain in their appropriate domain models or service logic rather than being duplicated in dashboard views.
+
+## Core Business Rules
+
+### Harvest Windows
+
+The expected harvest window is calculated using the planting date and the crop's maturity duration.
+
+Conceptually:
+
+- Harvest start = planting date + maturity duration
+- Harvest end = harvest start + 3 days
+
+These dates should initially be calculated dynamically rather than stored as duplicate data.
+
+The three-day range is a planning aid, not a guarantee of the actual harvest date.
+
+### Inventory Strategy
+
+Version 1 does not require a separate inventory app unless the business rules become too complex for the existing structure.
+
+A basic stock calculation is:
+
+**Available stock = harvested quantity − quantity deducted from stock**
+
+The implementation must define when stock is deducted, how partially fulfilled orders are handled, and how cancellations or adjustments affect stock.
+
+Example:
+
+- Total harvested: 500 kg
+- Quantity deducted from stock: 320 kg
+- Available stock: 180 kg
+
+The stock calculation should be based on actual recorded transactions, not merely the number or value of orders created.
+
+### Calendar Feature
+
+A calendar is planned to display:
+
+- Planting dates
+- Expected harvest windows
+- Upcoming harvests
+
+The initial target is a monthly calendar view.
+
+### Notification System
+
+The initial notification goal is email reminders for harvests approaching their expected harvest window.
+
+SMS, WhatsApp, and push notifications may be considered later if there is a genuine operational need.
+
+## Authentication Strategy
+
+Version 1 uses Django's built-in authentication system with usernames and passwords.
+
+Third-party authentication providers are outside the initial scope unless future requirements justify them.
+
+Password validation, appropriate permissions, secure session handling, and protection of sensitive configuration remain important security requirements.
+
+## Development Roadmap
+
+### Phase 1 — Project Foundations
+
+- Django project and app structure
+- Database models and migrations
+- Authentication and role foundations
+- Shared templates
+- Initial production deployment
+
+**Status:** Core foundations established; ongoing validation and refinement remain necessary.
+
+### Phase 2 — Operational Workflows
+
+- Crop and field management
+- Planting records
+- Harvest recording
+- Customer management
+- Orders and order items
+- Payment recording and balance calculations
+
+**Status:** Implementation and integration in progress.
+
+### Phase 3 — Operational Visibility
+
+- Dashboard summaries
+- Available-stock calculations
+- Harvest calendar
+- Email reminders
+- Reports
+
+**Status:** Planned and to be completed as the underlying workflows become reliable.
+
+### Phase 4 — Quality and Reliability
+
+- Automated tests
+- User acceptance testing
+- Bug fixes
+- Production error handling
+- Interface refinement
+
+**Status:** Ongoing throughout development.
+
+## Local Development Setup
+
+### Prerequisites
+
+- Python compatible with the project's dependencies
+- Git
+- PostgreSQL, if using a local PostgreSQL database
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ProsperLePythoner/farm_system.git
+cd farm_system
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Install the project's dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Configure the required environment variables in a local `.env` file according to the project's settings. Do not commit secrets or production database credentials.
+
+Apply migrations:
+
+```bash
+python manage.py migrate
+```
+
+Start the development server:
+
+```bash
+python manage.py runserver
+```
+
+Open `http://127.0.0.1:8000/` in your browser.
+
+**Important:** Local and production environments may use different database connections and settings. Configure each environment deliberately.
+
+## Future Features
+
+Potential additions outside Version 1 include:
+
+- Weather integration
+- Expense tracking
+- Employee management
+- Yield analytics
+- Mobile application
+- Dedicated inventory management
+- Customer invoicing
+- AI-assisted forecasting
+
+These features should not complicate the initial architecture without a demonstrated need.
 
 ## Core Design Philosophy
 
 ### Store Facts, Calculate Results
 
-Store:
+Store operational facts such as:
 
 - Planting dates
 - Harvest records
-- Orders
+- Orders and order items
 - Payments
 
-Calculate:
+Calculate derived values such as:
 
-- Harvest windows (i.e. maturity duration)
+- Expected harvest windows
 - Available stock
 - Outstanding balances
 
-Avoid duplicate data whenever possible.
+Avoid storing duplicate data when it can be derived reliably from authoritative records.
 
----
+### Keep the System Focused
 
-## Project Structure
+Before adding a feature, ask:
 
-```Text
+> Does this solve a real farm-management problem today?
+
+If not, defer it until the need becomes clear.
+
+## Repository Structure
+
+The main project structure is organized approximately as follows:
+
+```text
 farm_system/
-|
-├── .venv/ (internal details hidden!)
-|   ├─- Include
-|   ├─- Lib
-|   ├─- Scripts
-|   ├─- .gitignore
-|   ├─- pyvenv.cfg
-│
 ├── config/
-│
 ├── apps/
-│   ├─- accounts/
+│   ├── accounts/
 │   ├── crops/
 │   ├── harvests/
 │   ├── customers/
 │   ├── sales/
 │   └── dashboard/
-│
 ├── templates/
 │   ├── base/
 │   ├── accounts/
@@ -155,437 +504,25 @@ farm_system/
 │   ├── harvests/
 │   ├── customers/
 │   └── sales/
-│
 ├── static/
 │   ├── css/
 │   ├── js/
 │   ├── images/
 │   └── fonts/
-│
-├── media/
-│
 ├── docs/
-|   ├── database_design.md
-|   ├── architecture.md
-|   ├── roadmap.md
+│   ├── images/
+│   ├── database_design.md
+│   ├── architecture.md
+│   ├── roadmap.md
 │   └── business_rules.md
-│
 ├── requirements.txt
-|
 ├── .gitignore
-|
 ├── README.md
-│
 └── manage.py
 ```
 
-## APP RESPONSIBILITIES
-
-### accounts
-
-Handles:
-- Login
-- Logout
-- Permissions
-- User roles
-
-Roles:
-- Admin
-- Staff
+This is a simplified overview; the exact files may evolve as the project develops.
 
 ---
 
-### crops
-
-#### 1. ```Field (i.e., Block)```
-
-Fields:
-- name
-- size
-
-I don't need ```contained_plantings``` because Django already knows this
- through the relationship:
-
-```Python
-Planting.field = ForeignKey(Field)
-```
-
-Django gives me:
-```Python
-field.planting_set.all()
-
-# or...
-
-field.plantings.all()
-```
-
-if I use ```related_name```.
-
-<br>
-
-#### 2. ```Crop```
-
-Fields:
-- name
-- maturity_days
-- unit
-- description
-
-Example:
-
-Tomatoes
-- maturity_days = 90
-- unit = kg
-
----
-
-#### 3. ```Planting```
-
-Fields:
-- crop
-- planting_date
-- field_name
-
-Status values will be computed dynamically, no need to store in variables.
-
----
-
-### harvests
-
-#### 1. ```Harvest```
-
-Fields:
-- planting
-- harvesting_date
-- quantity_harvested
-- notes
-
-Relationship:
-
-Field<br>
-⇣<br>
-Crop<br>
-⇣<br>
-Planting<br>
-⇣<br>
-Harvest
-
-A planting can have multiple harvest records.
-
-Example:
-
-Planting: Tomatoes
-
-Harvest 1: 150kg<br>
-Harvest 2: 120kg<br>
-Harvest 3: 90kg
-
----
-
-### customers
-
-#### 1. ```Customer```
-
-Fields:
-- name
-- phone
-- location
-- notes
-- created_at
-
----
-
-### sales
-
-Relationship structure:
-
-```
-Customer → Order → OrderItem → Payment
-```
-
-#### 1. ```Order```
-
-Fields:
-- customer
-- order_date
-- total_amount
-
----
-
-#### 2. ```Payment```
-
-Fields:
-- order
-- amount_paid
-- payment_date
-
-Outstanding balance should always be calculated.
-
-Never use a simple paid/unpaid Boolean, i.e. this is unrealistic
-
----
-
-### dashboard
-
-Displays:
-- Upcoming harvests (calendar feature)
-- Available stock
-- Oustanding balances
-- Recent orders
-
-Contains no business logic.
-
----
-
-## Harvest Window Logic
-
-Harvest Start:
-```planting_date + maturity_days```
-
-Harvest End:
-```harvest_start + 3 days```
-
-These values should be calculated dynamically.
-
-Do not store them initially.
-
----
-
-## Inventory Strategy
-
-Version 1 does not require a dedicated inventory app.
-
-Available Stock:
-
-### Total Harvested [to be reviewed!!]
-
-Total Sold
-
-=
-
-Available Stock
-
-Example:
-
-Harvested = 500kg<br>
-Sold = 320kg
-
-Available = 180kg
-
-Create a dedicated inventory app only when inventory complexity justifies it.
-
----
-
-## Calendar Feature
-
-Required.
-
-Calendar should display:
-- Planting dates
-- Harvest windows
-- Upcoming harvests
-
-Primary view:<br>
-Month Calendar (with days, ofc.)
-
----
-
-## Notification System
-
-Version 1:
-
-Use email reminders to notify farmers on harvests due within 3 days.
-
-Future options to consider:
-- SMS
-- WhatsApp
-- Push notifications
-
----
-
-## Authentication Strategy
-
-Version 1:
-- Django Authentication
-- Username
-- Password
-
-Do **not** implement:
-- Google Login
-- Facebook Login
-- OAuth Providers
-
-For all the right reasons, do *NOT*. Besides, this is just version 1 🤷‍♀️...
-
-Only do employ this stuff to work when a *real* need exists.
-
----
-
-## Future Features (Not Version 1)
-
-Potential future additions:
-
-- Weather Integration
-- Expense Tracking
-- Employee Management
-- Yield Analytics
-- Mobile App
-- Inventory App
-- Customer Invoicing
-- AI Forecasting
-
-These features should not influence Version 1 architecture.
-
----
-
-## Development Roadmap
-
-### Sprint 1
-
-- Authentication
-- Crop CRUD
-- Planting CRUD
-- Customer CRUD
-
-### Sprint 2
-- Harvest Recording
-- Orders
-- Payments
-- Outstanding Balances
-
-### Sprint 3
-- Dashboard
-- Calendar
-- Email Notifications
-
-### Sprint 4
-- Deployment
-- User Testing
-- Bug Fixes
-
----
-
-## Personal Notes 🐱‍👤
-
-Make sure to properly create a virtual environment that will streamline 
-your workflow and practically save you from excruciating *PAIN* later on.
-
-#### Uhh... why use a virtual environment in the first place?
-
-Listen up. Think of a venv as a private toolbox for one project. It basically
-isolates ur projects into separate environments, preventing them from 
-sharing ur system-wide Python installation, which can get messy the more ur project 
-ages and becomes more complex.
-
-Consider the example below [*Courtesy of ChatGPT*]:
-
-Without venv:
-```
-Windows Python
-├── Django 5.2
-├── Pillow 11
-├── NumPy
-├── Pandas
-├── ...
-```
-
-With venv:
-```
-Farm System
-└── venv/
-    ├── Django 5.2
-    ├── Pillow
-    └── Whitenoise
-
-Another Project
-└── venv/
-    ├── Django 4.2
-    └── Requests
-```
-
-Each project gets its **own** isolated environment.
-
-And... for *this* project specifically, we're going pretty serious with
-- Django
-- Authentication
-- Static files
-- Media uploads
-- Database drivers
-- Production deployment
-
-### Useful .venv actions/commands or whatever...
-
-- Inside ```farm_system```, create the virtual environment as follows:
-
-```bash
-python -m venv .venv
-```
-
-- Then activate it:
-
-```bash
-.venv\Scripts\activate
-```
-
-- Next, reinstall Django (Do this!!! ❌):
-```bash
-pip install django
-```
-
-- Thereafter, save dependencies:
-```bash
-pip freeze > requirements.txt
-```
-
-Now your project becomes portable :)
-```bash
-pip install -r requirements.txt
-```
-
-So use a venv. Stay safe... and use A **VENV**! 🐱‍👤 (Purr...)
-
-
-## Golden Rule
-
-Before adding any feature ask:
-
-"Does this solve a real farm problem today?"
-
-If the answer is no: do not build it yet.
-
-
-
----
-
-<br><br><br>
-
-## DOMAIN MAP (Models are Born Here)
-
-If this is my domain map, then I probably should create separate apps for them?
-
-```
-Field
-    └── Planting
-
-Crop
-    └── Planting
-
-Planting
-    ├── Crop
-    ├── Planting date
-    ├── field
-    ├── quantity_planted
-    ├── planting_date
-    └── Harvest
-
-Customer
-    └── Order
-
-Order
-    ├── OrderItem
-        ├── order
-        ├── crop
-        ├── quantity
-        ├── unit_price
-    └── Payment
-```
+*Agribusiness Management System — built incrementally, with a focus on practical farm operations, maintainable code, and reliable records.*
