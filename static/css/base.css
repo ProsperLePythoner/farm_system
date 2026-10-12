@@ -578,7 +578,7 @@ dd{margin:0}
 
 @media (max-width:480px) {
     :root {
-        --navbar-height: 6.75rem;
+        --navbar-height: 4rem;
     }
 
     .navbar.navbar-anonymous {
@@ -594,43 +594,46 @@ dd{margin:0}
     }
 
     .navbar {
-        --navbar-height: 6.25rem;
-        align-items: stretch;
-        display: grid;
-        gap: 6px;
-        grid-template-columns: minmax(0, 1fr);
-        padding: 8px 14px 10px;
+        --navbar-height: 4rem;
+        align-items: center;
+        gap: 8px;
+        min-height: var(--navbar-height);
+        padding: 8px 10px;
     }
 
     .navbar-start {
-        min-height: 38px;
+        flex: 0 1 auto;
+        gap: 6px;
     }
 
     .navbar .brand {
-        gap: 9px;
+        gap: 6px;
     }
 
     .brand-mark {
-        height: 32px;
-        width: 32px;
+        height: 30px;
+        width: 30px;
     }
 
     .brand-name {
-        font-size: 1rem;
+        font-size: .95rem;
     }
 
     .user-box {
-        border-top: 1px solid rgba(255, 255, 255, .16);
-        gap: 8px;
-        justify-content: space-between;
-        padding-top: 6px;
-        width: 100%;
+        flex: 0 1 auto;
+        gap: 6px;
     }
 
     .user-identity {
-        flex: 1 1 auto;
+        flex: 0 1 auto;
+        gap: 5px;
         min-width: 0;
-        padding: 2px 4px 2px 0;
+        padding: 2px;
+    }
+
+    .user-avatar {
+        height: 28px;
+        width: 28px;
     }
 
     .user-meta {
@@ -639,17 +642,27 @@ dd{margin:0}
     }
 
     .user-name {
-        max-width: none;
+        max-width: 5rem;
+        font-size: .78rem;
+    }
+
+    .user-role {
+        font-size: .65rem;
     }
 
     .navbar .button-ghost {
-        min-height: 36px;
-        padding: .4rem .7rem;
+        font-size: .78rem;
+        min-height: 32px;
+        padding: .3rem .5rem;
     }
 
     .navbar .nav-toggle {
-        height: 38px;
-        width: 38px;
+        height: 34px;
+        width: 34px;
+    }
+
+    .sidebar {
+        padding-top: calc(var(--navbar-height) + 12px);
     }
 
     .main-content {
@@ -681,5 +694,16 @@ dd{margin:0}
 
     h1 {
         font-size: 1.45rem;
+    }
+}
+
+@media (max-width:360px) {
+    .brand-name,
+    .user-role {
+        display: none;
+    }
+
+    .user-name {
+        max-width: 4.25rem;
     }
 }
