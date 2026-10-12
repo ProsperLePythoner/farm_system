@@ -1,23 +1,46 @@
-<header class="navbar">
-    <a href="{% url 'dashboard:dashboard' %}" class="brand">
-        Farm System
-    </a>
+<header class="navbar{% if not user.is_authenticated %} navbar-anonymous{% endif %}">
+    <div class="navbar-start">
+        {% if user.is_authenticated %}
+        <button type="button"
+                class="nav-toggle"
+                aria-controls="main-navigation"
+                aria-expanded="false"
+                aria-label="Open menu">
+            <span class="nav-toggle-bars" aria-hidden="true"></span>
+        </button>
+        {% endif %}
+        <a href="{% url 'dashboard:dashboard' %}" class="brand">
+            <span class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M8 24c4-9 8-13 16-16-1 8-5 14-16 16Z" fill="currentColor" opacity=".95"/>
+                    <path d="M12 22c.5-6 4-10 10-13" stroke="#d7f0df" stroke-width="1.6" stroke-linecap="round"/>
+                    <path d="M12 22V8" stroke="#d7f0df" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span class="brand-copy">
+                <span class="brand-name">Farm System</span>
+            </span>
+        </a>
+    </div>
     <div class="user-box">
         {% if user.is_authenticated %}
-            <div>
-                <a href="{% url 'accounts:profile' %}">
-                    {{ user.get_full_name|default:user.get_username }}
-                </a>
-                {% if account_role_display %}
-                    <small>{{ account_role_display }}</small>
-                {% endif %}
-            </div>
-            <form method="post" action="{% url 'accounts:logout' %}">
+            {% with display_name=user.get_full_name|default:user.get_username %}
+            <a href="{% url 'accounts:profile' %}" class="user-identity">
+                <span class="user-avatar">{{ display_name|slice:":1"|upper }}</span>
+                <span class="user-meta">
+                    <span class="user-name">{{ display_name }}</span>
+                    {% if account_role_display %}
+                    <span class="user-role">{{ account_role_display }}</span>
+                    {% endif %}
+                </span>
+            </a>
+            {% endwith %}
+            <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
                 {% csrf_token %}
-                <button type="submit">Log out</button>
+                <button type="submit" class="button-ghost">Log out</button>
             </form>
         {% else %}
-            <a href="{% url 'accounts:login' %}">Log in</a>
+            <a href="{% url 'accounts:login' %}" class="button-ghost">Log in</a>
         {% endif %}
     </div>
 </header>
