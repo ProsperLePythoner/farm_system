@@ -1,5 +1,7 @@
 # sales/admin.py
 
+"""Admin interfaces for orders, line items, and payment records."""
+
 from django.contrib import admin
 
 from .forms import OrderItemForm

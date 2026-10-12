@@ -1,3 +1,5 @@
+"""Customer contact records used by the sales app."""
+
 from django.db import models
 
 
@@ -5,6 +7,8 @@ class Customer(models.Model):
     """
     Person or business
     buying produce.
+
+    Orders retain a protected reference to this customer.
     """
 
     customer_name = models.CharField(

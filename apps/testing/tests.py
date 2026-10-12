@@ -1,9 +1,13 @@
+"""Regression tests ensuring testing utilities remain behind authentication."""
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
 
 class TestingUtilityAccessTests(TestCase):
+    """Verify anonymous access is redirected and signed-in access still works."""
+
     def test_testing_utilities_require_authentication(self):
         response = self.client.get(reverse("testing:testing"))
         self.assertEqual(response.status_code, 302)

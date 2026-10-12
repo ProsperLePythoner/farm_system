@@ -1,3 +1,5 @@
+"""Regression tests for harvest validation, history, and planting lifecycle."""
+
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -16,6 +18,8 @@ from .models import Harvest
 
 
 class HarvestTests(TestCase):
+    """Cover expected windows, record actions, unit snapshots, and deletion rules."""
+
     def setUp(self):
         admin = get_user_model().objects.create_superuser(
             username="workflow-admin",

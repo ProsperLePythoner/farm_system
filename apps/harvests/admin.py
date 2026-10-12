@@ -1,5 +1,7 @@
 # harvests/admin.py
 
+"""Admin list configuration for harvest records."""
+
 from django.contrib import admin
 
 from .models import Harvest

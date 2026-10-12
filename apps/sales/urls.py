@@ -1,3 +1,5 @@
+"""Named URL patterns for customer sales orders."""
+
 from django.urls import path
 
 from . import views

@@ -1,3 +1,5 @@
+"""Authentication, profile, and administrator-only account management views."""
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -100,10 +102,12 @@ class UserCreateView(
 
 
 def is_trusted_administrator(user):
+    """Identify accounts that satisfy the last-administrator safeguard."""
     return user.is_superuser or user.groups.filter(name=ROLE_ADMINISTRATOR).exists()
 
 
 def active_trusted_administrator_count():
+    """Count active superusers and application Administrators without duplicates."""
     return (
         User.objects.filter(is_active=True)
         .filter(Q(is_superuser=True) | Q(groups__name=ROLE_ADMINISTRATOR))
@@ -113,6 +117,7 @@ def active_trusted_administrator_count():
 
 
 def can_manage_user(request_user, target_user):
+    """Allow superusers broadly; protect self, superusers, and fellow admins."""
     if request_user.is_superuser:
         return True
     return (
@@ -147,6 +152,7 @@ class UserUpdateView(
         return kwargs
 
     def form_valid(self, form):
+        """Serialize edits before applying the last-active-admin safety checks."""
         with transaction.atomic():
             list(User.objects.select_for_update().order_by("pk"))
             target_user = self.object
@@ -186,6 +192,7 @@ class UserUpdateView(
 @login_required
 @require_POST
 def user_toggle_active(request, pk):
+    """Toggle a managed account without allowing self-lockout or admin lockout."""
     if not is_account_administrator(request.user):
         raise PermissionDenied
 

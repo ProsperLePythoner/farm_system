@@ -1,3 +1,5 @@
+"""Regression tests for order totals, harvest-linked items, and protection rules."""
+
 from datetime import date
 from decimal import Decimal
 
@@ -15,6 +17,8 @@ from .models import Order, OrderItem, Payment
 
 
 class SalesOrderWorkflowTests(TestCase):
+    """Exercise the currently implemented order lifecycle and legacy item path."""
+
     def setUp(self):
         admin = get_user_model().objects.create_superuser(
             username="workflow-admin",

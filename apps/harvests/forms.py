@@ -1,3 +1,5 @@
+"""Form for recording or editing a harvest's date, quantity, and notes."""
+
 from django import forms
 
 from .models import Harvest

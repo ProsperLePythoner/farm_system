@@ -1,3 +1,5 @@
+"""Model forms for the crop catalogue, fields, and planting records."""
+
 from django import forms
 from .models import Crop, Field, Planting
 

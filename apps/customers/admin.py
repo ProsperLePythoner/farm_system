@@ -1,3 +1,5 @@
+"""Admin list configuration for customer records."""
+
 from django.contrib import admin
 
 from .models import Customer

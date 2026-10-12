@@ -1,3 +1,5 @@
+"""Canonical application roles and the Django model permissions they receive."""
+
 ROLE_ADMINISTRATOR = "Administrator"
 ROLE_FARM_MANAGER = "Farm Manager"
 ROLE_HARVEST_MANAGER = "Harvest Manager"
@@ -21,6 +23,7 @@ OPERATIONAL_MODELS = {
 
 
 def model_permissions(app_label, model_names, actions):
+    """Build Django's ``app_label.action_model`` permission identifiers."""
     return tuple(
         f"{app_label}.{action}_{model_name}"
         for model_name in model_names
@@ -44,6 +47,8 @@ READ_OPERATIONAL_PERMISSIONS = tuple(
 )
 
 ROLE_PERMISSIONS = {
+    # These are generated Django model permissions; custom view checks and
+    # template visibility still need to request the relevant permissions.
     ROLE_ADMINISTRATOR: ALL_OPERATIONAL_PERMISSIONS + (
         "auth.view_user",
         "auth.add_user",

@@ -16,6 +16,7 @@
     {% csrf_token %}
     {{ form.as_p }}
 
+    {# The management form carries formset row counts Django needs to save items. #}
     <section>
         <h2>Order Items</h2>
         {{ item_formset.management_form }}

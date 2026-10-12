@@ -1,5 +1,6 @@
 <header class="navbar{% if not user.is_authenticated %} navbar-anonymous{% endif %}">
     <div class="navbar-start">
+        {# The mobile menu control exists only when the authenticated sidebar exists. #}
         {% if user.is_authenticated %}
         <button type="button"
                 class="nav-toggle"
@@ -23,6 +24,7 @@
         </a>
     </div>
     <div class="user-box">
+        {# The context processor supplies the first recognized role for display. #}
         {% if user.is_authenticated %}
             {% with display_name=user.get_full_name|default:user.get_username %}
             <a href="{% url 'accounts:profile' %}" class="user-identity">

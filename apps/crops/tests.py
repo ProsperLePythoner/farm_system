@@ -1,3 +1,5 @@
+"""Regression tests for production catalogue and planting CRUD behavior."""
+
 from datetime import date
 from decimal import Decimal
 
@@ -14,6 +16,8 @@ from .models import Crop, Field, Planting
 
 
 class CropAndFieldWorkflowTests(TestCase):
+    """Test model-backed pages, reference protection, and workflow links."""
+
     def setUp(self):
         admin = get_user_model().objects.create_superuser(
             username="workflow-admin",

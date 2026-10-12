@@ -2,6 +2,7 @@
 <aside class="sidebar" id="main-navigation">
     <nav aria-label="Main navigation">
         <ul>
+            {# Permission checks hide unavailable links; view checks enforce access. #}
             {% if user.is_authenticated %}
             <li>
                 <a href="{% url 'dashboard:dashboard' %}"

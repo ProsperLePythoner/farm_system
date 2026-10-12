@@ -1,3 +1,5 @@
+"""Production catalogue models and the calculated planting harvest window."""
+
 from datetime import timedelta
 from django.core.validators import MinValueValidator
 
@@ -13,6 +15,8 @@ class Field(models.Model):
     - Block A
     - Greenhouse 1
     - Plot C
+
+    The stored field size is measured in acres.
     """
 
     field_name = models.CharField(
@@ -44,6 +48,8 @@ class Crop(models.Model):
     - Tomatoes
     - Sweet Corn
     - Capsicum
+
+    The maturity period and output unit support planting and harvest records.
     """
 
     class Unit(models.TextChoices):
@@ -88,6 +94,8 @@ class Planting(models.Model):
 
     Tomatoes planted in Block A
     on 1 January 2026. (lol, the dev's birthday 🙂)
+
+    Expected harvest dates are calculated from the crop's maturity period.
     """
 
     crop = models.ForeignKey(
@@ -132,6 +140,7 @@ class Planting(models.Model):
 
         Calculated dynamically.
         Not stored in database.
+        Specifically, this is planting_date plus the crop's maturity_days.
         """
         return (
             self.planting_date
@@ -142,6 +151,8 @@ class Planting(models.Model):
     def harvest_end(self):
         """
         Last day of a three-calendar-day harvest window, including harvest_start.
+
+        The inclusive window ends at harvest_start plus two days.
         """
         return self.harvest_start + timedelta(days=2)
 

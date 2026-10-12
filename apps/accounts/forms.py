@@ -1,3 +1,5 @@
+"""Forms for editing a user's own profile and managing application accounts."""
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -9,6 +11,8 @@ User = get_user_model()
 
 
 class ProfileForm(forms.ModelForm):
+    """Limit self-service profile changes to the user's display names."""
+
     class Meta:
         model = User
         fields = ("first_name", "last_name")
@@ -21,6 +25,8 @@ class ProfileForm(forms.ModelForm):
 
 
 class UserCreateForm(UserCreationForm):
+    """Create a user with one role and an explicit activation choice."""
+
     role = forms.ModelChoiceField(
         queryset=Group.objects.none(),
         label="Role",
@@ -36,6 +42,7 @@ class UserCreateForm(UserCreationForm):
         fields = ("first_name", "last_name", "username")
 
     def __init__(self, *args, request_user, **kwargs):
+        """Keep the Administrator role assignable only by a Django superuser."""
         super().__init__(*args, **kwargs)
         role_names = ROLE_NAMES
         if not request_user.is_superuser:
@@ -60,6 +67,8 @@ class UserCreateForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    """Edit account details, activation, and one application role."""
+
     role = forms.ModelChoiceField(
         queryset=Group.objects.none(),
         label="Role",
@@ -71,6 +80,7 @@ class UserUpdateForm(forms.ModelForm):
         fields = ("first_name", "last_name", "username", "is_active")
 
     def __init__(self, *args, request_user, **kwargs):
+        """Limit role choices and initialize the user's current role."""
         super().__init__(*args, **kwargs)
         role_names = ROLE_NAMES
         if not request_user.is_superuser:

@@ -1,3 +1,5 @@
+"""Regression tests for customer CRUD, validation, and order history."""
+
 from datetime import date
 from decimal import Decimal
 
@@ -13,6 +15,8 @@ from .models import Customer
 
 
 class CustomerWorkflowTests(TestCase):
+    """Verify customer pages and preserve customers referenced by orders."""
+
     def setUp(self):
         admin = get_user_model().objects.create_superuser(
             username="workflow-admin",

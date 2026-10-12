@@ -1,3 +1,5 @@
+"""Idempotently synchronize standard application groups with the role matrix."""
+
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand, CommandError
 
@@ -8,6 +10,7 @@ class Command(BaseCommand):
     help = "Create or update the standard farm-management role groups."
 
     def handle(self, *args, **options):
+        """Fail clearly if migrations have not created a required permission."""
         requested = {
             permission
             for permissions in ROLE_PERMISSIONS.values()

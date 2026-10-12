@@ -1,3 +1,5 @@
+"""Named routes for the sign-in-protected testing utilities."""
+
 from django.urls import path
 from . import views
 

@@ -1,3 +1,5 @@
+"""Named URL patterns for crop, field, and planting workflows."""
+
 from django.urls import path
 
 from . import views

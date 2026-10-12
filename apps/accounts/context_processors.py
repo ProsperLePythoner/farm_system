@@ -1,7 +1,10 @@
+"""Template context values shared by pages that render account identity."""
+
 from .roles import ROLE_NAMES
 
 
 def account_role(request):
+    """Expose one recognized group name for the shared navigation bar."""
     role_display = ""
     if request.user.is_authenticated:
         role_display = (

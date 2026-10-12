@@ -1,3 +1,5 @@
+"""Form for creating and editing customer contact details."""
+
 from django import forms
 
 from .models import Customer

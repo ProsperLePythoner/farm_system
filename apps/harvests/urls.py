@@ -1,3 +1,5 @@
+"""Named routes for the harvest list and planting-linked harvest actions."""
+
 from django.urls import path
 
 from . import views

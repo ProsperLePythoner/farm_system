@@ -1,9 +1,13 @@
+"""Regression tests for the dashboard shell and root redirect."""
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
 
 class DashboardTests(TestCase):
+    """Ensure the landing page uses one shared document shell."""
+
     def setUp(self):
         admin = get_user_model().objects.create_superuser(
             username="dashboard-admin",

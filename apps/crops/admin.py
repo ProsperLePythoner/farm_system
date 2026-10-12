@@ -1,3 +1,5 @@
+"""Admin list configuration for crops, fields, and plantings."""
+
 from django.contrib import admin
 
 from .models import Field, Crop, Planting

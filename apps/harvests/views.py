@@ -1,3 +1,5 @@
+"""Permission-checked harvest listing and planting-specific record workflows."""
+
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -13,6 +15,8 @@ from .models import Harvest
 
 
 class HarvestListView(PermissionRequiredMixin, ListView):
+    """Show actual harvest rows and plantings whose expected window has not ended."""
+
     permission_required = (
         "harvests.view_harvest",
         "crops.view_planting",
@@ -30,6 +34,7 @@ class HarvestListView(PermissionRequiredMixin, ListView):
         )
 
     def get_context_data(self, **kwargs):
+        """Keep started-but-not-ended windows visible and order by expected date."""
         context = super().get_context_data(**kwargs)
         today = timezone.localdate()
         plantings = (
@@ -49,6 +54,8 @@ class HarvestListView(PermissionRequiredMixin, ListView):
 
 
 class HarvestCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    """Create a harvest attached to the planting named in the URL."""
+
     permission_required = (
         "harvests.add_harvest",
         "crops.view_planting",
@@ -73,6 +80,7 @@ class HarvestCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
         return kwargs
 
     def form_valid(self, form):
+        """Set the planting and preserve the crop's unit on this harvest record."""
         form.instance.planting = self.planting
         form.instance.unit = self.planting.crop.unit
         return super().form_valid(form)
@@ -115,6 +123,8 @@ class HarvestUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 
 
 class HarvestDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    """Protect harvests already referenced by order items."""
+
     permission_required = (
         "harvests.delete_harvest",
         "crops.view_planting",

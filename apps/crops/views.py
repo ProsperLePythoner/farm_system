@@ -1,3 +1,5 @@
+"""Permission-checked CRUD views for crops, fields, and planting records."""
+
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Count, Prefetch
@@ -20,6 +22,8 @@ from .models import Crop, Field, Planting
 
 
 class CropsOverviewView(PermissionRequiredMixin, TemplateView):
+    """Show catalogue counts and the most recently created plantings."""
+
     permission_required = (
         "crops.view_crop",
         "crops.view_field",
@@ -100,6 +104,8 @@ class FieldDetailView(PermissionRequiredMixin, DetailView):
 
 
 class ProtectedDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    """Combine model permissions with the shared protected-delete behavior."""
+
     blocked_message = "This record is in use and cannot be deleted."
 
 
@@ -123,6 +129,8 @@ class CropUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
 class CropDeleteView(ProtectedDeleteView):
+    """Prevent removing crops referenced by plantings or historic sales."""
+
     permission_required = "crops.delete_crop"
     model = Crop
     template_name = "crops/crop_confirm_delete.html"
@@ -158,6 +166,8 @@ class FieldUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
 class FieldDeleteView(ProtectedDeleteView):
+    """Prevent removing a field that still has planting records."""
+
     permission_required = "crops.delete_field"
     model = Field
     template_name = "crops/field_confirm_delete.html"
@@ -189,6 +199,8 @@ class PlantingListView(PermissionRequiredMixin, ListView):
 
 
 class PlantingDetailView(PermissionRequiredMixin, DetailView):
+    """Show a planting with its crop, field, and recorded harvests."""
+
     permission_required = (
         "crops.view_planting",
         "crops.view_crop",
@@ -242,6 +254,8 @@ class PlantingUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateVie
 
 
 class PlantingDeleteView(ProtectedDeleteView):
+    """Prevent removing a planting that already has harvest history."""
+
     permission_required = "crops.delete_planting"
     model = Planting
     template_name = "crops/planting_confirm_delete.html"

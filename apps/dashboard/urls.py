@@ -1,3 +1,5 @@
+"""Named route for the authenticated dashboard landing page."""
+
 from django.urls import path
 from . import views
 

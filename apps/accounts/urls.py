@@ -1,3 +1,5 @@
+"""Named routes for sign-in, profile editing, and account administration."""
+
 from django.urls import path
 
 from . import views

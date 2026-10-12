@@ -1,3 +1,5 @@
+"""Permission-checked order pages with atomic save of order and its line items."""
+
 from django.db import transaction
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
@@ -49,6 +51,8 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
 
 
 class OrderFormsetViewMixin:
+    """Share inline-item formset handling between order create and edit views."""
+
     def get_item_formset(self):
         instance = self.object if getattr(self, "object", None) else Order()
         return OrderItemFormSet(
@@ -63,6 +67,7 @@ class OrderFormsetViewMixin:
         return context
 
     def form_valid(self, form):
+        """Save the parent and items together so invalid items cannot leave a partial order."""
         item_formset = self.get_item_formset()
         if not item_formset.is_valid():
             return self.form_invalid(form)
@@ -114,6 +119,8 @@ class OrderUpdateView(PermissionRequiredMixin, OrderFormsetViewMixin, UpdateView
 
 
 class OrderDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    """Prevent deleting orders whose payment history must be retained."""
+
     permission_required = ("sales.delete_order", "sales.delete_orderitem")
     model = Order
     template_name = "sales/order_confirm_delete.html"

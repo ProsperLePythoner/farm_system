@@ -1,3 +1,5 @@
+"""Forms and inline formset validation for orders and their line items."""
+
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
@@ -17,6 +19,8 @@ class OrderForm(forms.ModelForm):
 
 
 class OrderItemForm(forms.ModelForm):
+    """Select a harvest for each new sale line and capture quantity and price."""
+
     harvest = forms.ModelChoiceField(
         queryset=Harvest.objects.none(),
         required=False,
@@ -58,6 +62,8 @@ class OrderItemForm(forms.ModelForm):
 
 
 class BaseOrderItemFormSet(BaseInlineFormSet):
+    """Require an order to keep at least one non-deleted item."""
+
     def clean(self):
         super().clean()
         if any(self.errors):

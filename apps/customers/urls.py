@@ -1,3 +1,5 @@
+"""Named URL patterns for customer CRUD and customer history."""
+
 from django.urls import path
 
 from . import views

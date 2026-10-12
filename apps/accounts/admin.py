@@ -1,3 +1,5 @@
+"""Constrain Django admin account management to trusted superusers."""
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
@@ -13,6 +15,8 @@ admin.site.unregister(Group)
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
+    """Keep app-level administrators from changing privileged Django accounts."""
+
     def has_add_permission(self, request):
         return request.user.is_superuser and super().has_add_permission(request)
 
@@ -32,6 +36,7 @@ class UserAdmin(DjangoUserAdmin):
         return False
 
     def get_fieldsets(self, request, obj=None):
+        """Hide credentials and fields the current admin must not edit."""
         fieldsets = super().get_fieldsets(request, obj)
         protected_fields = {"password"}
         if not request.user.is_superuser:

@@ -1,3 +1,5 @@
+"""Permission-checked customer CRUD pages and related order history."""
+
 from django.db.models import Prefetch
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -21,6 +23,8 @@ class CustomerListView(PermissionRequiredMixin, ListView):
 
 
 class CustomerDetailView(PermissionRequiredMixin, DetailView):
+    """Show one customer and its related orders without per-row fetches."""
+
     permission_required = (
         "customers.view_customer",
         "sales.view_order",
@@ -62,6 +66,8 @@ class CustomerUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateVie
 
 
 class CustomerDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView):
+    """Prevent deleting a customer when doing so would erase order history."""
+
     permission_required = "customers.delete_customer"
     model = Customer
     template_name = "customers/customer_confirm_delete.html"

@@ -1,3 +1,5 @@
+"""Regression tests for authentication, account administration, and role gates."""
+
 from datetime import date
 from decimal import Decimal
 from io import StringIO
@@ -25,6 +27,8 @@ TEST_PASSWORD = "Strong-Agriculture-52!"
 
 
 class AccountFeatureTests(TestCase):
+    """Exercise sign-in, account safeguards, role permissions, and page access."""
+
     @classmethod
     def setUpTestData(cls):
         call_command("setup_roles", stdout=StringIO())

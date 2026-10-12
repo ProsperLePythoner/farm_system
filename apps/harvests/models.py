@@ -1,3 +1,5 @@
+"""Harvest event model and validation for a planting's recorded output."""
+
 from django.db import models
 from decimal import Decimal
 
@@ -11,6 +13,8 @@ class Harvest(models.Model):
 
     One planting can produce
     many harvest records.
+
+    Each record retains the unit used when that harvest was recorded.
     """
 
     planting = models.ForeignKey(
@@ -35,6 +39,7 @@ class Harvest(models.Model):
         ordering = ["-harvesting_date", "-pk"]
 
     def clean(self):
+        """Reject a harvest date that precedes its associated planting."""
         super().clean()
         if (
             self.planting_id

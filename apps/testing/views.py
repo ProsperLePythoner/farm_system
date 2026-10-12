@@ -1,3 +1,5 @@
+"""Authenticated demonstration endpoints; these are not farm workflows."""
+
 from multiprocessing import context
 
 from django.template.loader import get_template
