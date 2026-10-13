@@ -127,3 +127,24 @@ pnpm-debug.log*
 # Misc
 # --------------------------------------------
 .cache/
+
+# Python bytecode and cache directories
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local databases
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Keep example configuration files available in Git
+!.env.example
+
+# Virtual environments
+.venv/
+venv/
