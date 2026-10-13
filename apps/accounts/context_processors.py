@@ -6,12 +6,13 @@ from .roles import ROLE_NAMES
 def account_role(request):
     """Expose one recognized group name for the shared navigation bar."""
     role_display = ""
-    if request.user.is_authenticated:
+    user = getattr(request, "user", None)
+    if user and user.is_authenticated:
         role_display = (
-            request.user.groups.filter(name__in=ROLE_NAMES)
+            user.groups.filter(name__in=ROLE_NAMES)
             .order_by("name")
             .values_list("name", flat=True)
             .first()
-            or ("Superuser" if request.user.is_superuser else "")
+            or ("Superuser" if user.is_superuser else "")
         )
     return {"account_role_display": role_display}
