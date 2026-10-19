@@ -14,6 +14,12 @@
 2. Not sure what the `delete` button is doing after the Order Item/Item 1 etc. make it clearer for the user to understand
 3. Numerical values for prices lack commas for easier readability
 
+# 4. Calendar
+Remember to add a calendar feature later on!
+
+# 5. Notification
+Also don't forget to enable email reminders for harvests approaching their expected harvest window.
+
 # User Interface (UI)
 1. Add consistent and smoother styling
 2. Make tables and font more responsive for mobile users
