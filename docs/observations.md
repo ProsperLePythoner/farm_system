@@ -1,0 +1,21 @@
+# Observations Made on `Farm System`'s UI/UX
+
+# User Experience (UX)
+## 1. Harvests
+1. It's kinda inconvenient to have to remember how much I planted when registering a new harvest
+2. No validation exists for when the user records a harvest quantity that exceeds the planting quantity
+
+## 2. User Account Management
+1. The app isn't indicating that I'm the superuser admin.
+2. The `deactivate` button isn't styled right. It's uncomfortably large as of present.
+
+## 3. Orders
+1. The `New Order` page isn't being very verbose about the unit price attribute (seems isolated, if you ask me)
+2. Not sure what the `delete` button is doing after the Order Item/Item 1 etc. make it clearer for the user to understand
+3. Numerical values for prices lack commas for easier readability
+
+# User Interface (UI)
+1. Add consistent and smoother styling
+2. Make tables and font more responsive for mobile users
+3. Add relevant icons against action links to make the site more universally understood
+4. Optionally enable visual display themes (e.g. light, dark, etc.) later on
