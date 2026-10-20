@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Crops{% endblock %}
 
@@ -9,11 +10,12 @@
         <p>Manage the crop catalogue used for planting and harvest records.</p>
     </div>
     {% if perms.crops.add_crop %}
-        <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+        <a class="button" href="{% url 'crops:crop-create' %}">{% include "base/icon.html" with icon="add" %}New Crop</a>
     {% endif %}
 </div>
 
 {% if crops %}
+<div class="table-scroll" role="region" aria-label="Crops" tabindex="0">
 <table>
     <thead>
         <tr>
@@ -30,19 +32,20 @@
             <td><a href="{% url 'crops:crop-detail' crop.pk %}">{{ crop.crop_name }}</a></td>
             <td>{{ crop.maturity_days }} days</td>
             <td>{{ crop.get_unit_display }}</td>
-            <td>{{ crop.planting_count }}</td>
+            <td>{{ crop.planting_count|intcomma }}</td>
             <td>
                 {% if perms.crops.change_crop %}
-                    <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'crops:crop-update' crop.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
                 {% endif %}
                 {% if perms.crops.delete_crop %}
-                    <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+                    <a class="button button-danger button-small" href="{% url 'crops:crop-delete' crop.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <div class="empty-state">
     <p>No crops have been added yet.</p>

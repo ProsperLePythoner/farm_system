@@ -30,6 +30,15 @@ class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
         fields = ["harvest", "quantity", "unit_price"]
+        labels = {
+            "unit_price": "Unit price",
+        }
+        help_texts = {
+            "unit_price": (
+                "Price for one unit of the selected harvest produce. "
+                "Quantity multiplied by unit price gives the line total."
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -63,6 +72,13 @@ class OrderItemForm(forms.ModelForm):
 
 class BaseOrderItemFormSet(BaseInlineFormSet):
     """Require an order to keep at least one non-deleted item."""
+
+    def add_fields(self, form, index):
+        """Explain that selecting DELETE removes this row when the order is saved."""
+        super().add_fields(form, index)
+        if "DELETE" in form.fields:
+            form.fields["DELETE"].label = "Remove this item"
+            form.fields["DELETE"].help_text = "Removed when you save the order."
 
     def clean(self):
         super().clean()

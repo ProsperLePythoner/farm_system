@@ -707,3 +707,189 @@ dd{margin:0}
         max-width: 4.25rem;
     }
 }
+
+/* Shared controls and mobile-safe content improvements. */
+button,
+.button {
+    align-items: center;
+    border-radius: 6px;
+    display: inline-flex;
+    font-weight: 650;
+    gap: .45rem;
+    justify-content: center;
+    min-height: 2.65rem;
+    text-align: center;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+a.button {
+    color: #fff;
+    text-decoration: none;
+}
+
+.button-secondary {
+    background: #eef4ef;
+    border: 1px solid #cbd9cf;
+    color: #254c34;
+}
+
+.button-secondary:hover {
+    background: #e1ece4;
+    color: #173b25;
+}
+
+a.button-secondary {
+    color: #254c34;
+}
+
+a.button-secondary:hover {
+    color: #173b25;
+}
+
+.button-danger {
+    background: #a52c25;
+    color: #fff;
+}
+
+.button-danger:hover {
+    background: #84211c;
+}
+
+.button-small {
+    min-height: 2.35rem;
+    padding: .4rem .7rem;
+    font-size: .9rem;
+}
+
+.account-action-form {
+    background: transparent;
+    border: 0;
+    display: inline-flex;
+    margin: 0;
+    max-width: none;
+    padding: 0;
+    width: auto;
+}
+
+.account-action-form button {
+    width: auto;
+}
+
+.role-badge {
+    background: #edf2ee;
+    border-radius: 999px;
+    color: #365343;
+    display: inline-block;
+    font-size: .78rem;
+    font-weight: 700;
+    padding: .2rem .55rem;
+}
+
+.superuser-badge {
+    background: #d7eadc;
+    color: #174c2d;
+}
+
+.user-role.superuser-badge {
+    align-items: center;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: .65rem;
+    padding: .12rem .4rem;
+    width: fit-content;
+}
+
+.action-icon {
+    flex: 0 0 auto;
+    height: 1rem;
+    width: 1rem;
+}
+
+.action-links {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+    display: table;
+    margin: 1rem 0;
+    min-width: 38rem;
+    overflow: visible;
+    width: 100%;
+}
+
+form p {
+    min-width: 0;
+}
+
+form small,
+.helptext {
+    color: #596b61;
+    display: block;
+    font-size: .88rem;
+    margin-top: .25rem;
+}
+
+.errorlist,
+.errorlist li {
+    color: #9b211b;
+    margin: .25rem 0;
+    padding-left: 1.25rem;
+}
+
+form fieldset {
+    border: 1px solid #dce5df;
+    border-radius: 8px;
+    margin: 1rem 0;
+    min-width: 0;
+    padding: 1rem;
+}
+
+form legend {
+    color: #294333;
+    font-weight: 700;
+    padding: 0 .35rem;
+}
+
+input,
+select,
+textarea {
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .table-scroll {
+        margin-inline: -.25rem;
+        max-width: calc(100% + .5rem);
+    }
+
+    .table-scroll table {
+        min-width: 38rem;
+    }
+
+    .page-header .action-links {
+        width: 100%;
+    }
+
+    .page-header .action-links .button {
+        flex: 1 1 auto;
+    }
+
+    form {
+        max-width: 100%;
+        padding: 1rem;
+    }
+
+    form fieldset {
+        padding: .75rem;
+    }
+}

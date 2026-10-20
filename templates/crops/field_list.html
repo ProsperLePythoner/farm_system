@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Fields{% endblock %}
 
@@ -9,11 +10,12 @@
         <p>Manage farm blocks, plots, and greenhouses.</p>
     </div>
     {% if perms.crops.add_field %}
-        <a class="button" href="{% url 'crops:field-create' %}">New Field</a>
+        <a class="button" href="{% url 'crops:field-create' %}">{% include "base/icon.html" with icon="add" %}New Field</a>
     {% endif %}
 </div>
 
 {% if fields %}
+<div class="table-scroll" role="region" aria-label="Fields" tabindex="0">
 <table>
     <thead>
         <tr>
@@ -27,20 +29,21 @@
         {% for field in fields %}
         <tr>
             <td><a href="{% url 'crops:field-detail' field.pk %}">{{ field.field_name }}</a></td>
-            <td>{{ field.field_size }} acres</td>
-            <td>{{ field.planting_count }}</td>
+            <td>{{ field.field_size|intcomma }} acres</td>
+            <td>{{ field.planting_count|intcomma }}</td>
             <td>
                 {% if perms.crops.change_field %}
-                    <a href="{% url 'crops:field-update' field.pk %}">Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'crops:field-update' field.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
                 {% endif %}
                 {% if perms.crops.delete_field %}
-                    <a href="{% url 'crops:field-delete' field.pk %}">Delete</a>
+                    <a class="button button-danger button-small" href="{% url 'crops:field-delete' field.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <div class="empty-state">
     <p>No fields have been added yet.</p>

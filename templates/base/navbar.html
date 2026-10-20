@@ -31,8 +31,11 @@
                 <span class="user-avatar">{{ display_name|slice:":1"|upper }}</span>
                 <span class="user-meta">
                     <span class="user-name">{{ display_name }}</span>
-                    {% if account_role_display %}
+                    {% if account_role_display and account_role_display != "Superuser" %}
                     <span class="user-role">{{ account_role_display }}</span>
+                    {% endif %}
+                    {% if user.is_superuser %}
+                    <span class="user-role superuser-badge">Django superuser</span>
                     {% endif %}
                 </span>
             </a>

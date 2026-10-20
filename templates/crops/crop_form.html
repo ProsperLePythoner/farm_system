@@ -16,6 +16,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">{% if object %}Save Changes{% else %}Create Crop{% endif %}</button>
-    <a href="{% if object %}{% url 'crops:crop-detail' object.pk %}{% else %}{% url 'crops:crop-list' %}{% endif %}">Cancel</a>
+    <a class="button button-secondary" href="{% if object %}{% url 'crops:crop-detail' object.pk %}{% else %}{% url 'crops:crop-list' %}{% endif %}">Cancel</a>
 </form>
 {% endblock %}

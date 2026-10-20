@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Harvests{% endblock %}
 
@@ -14,6 +15,7 @@
     <h2>Upcoming Harvest Windows</h2>
     {# Plantings remain listed through the end of their calculated three-day window. #}
     {% if upcoming_plantings %}
+    <div class="table-scroll" role="region" aria-label="Upcoming harvest windows" tabindex="0">
     <table>
         <thead>
             <tr>
@@ -35,8 +37,8 @@
                 <td>{{ planting.harvest_start }} – {{ planting.harvest_end }}</td>
                 <td>
                     {% if perms.harvests.add_harvest %}
-                    <a href="{% url 'harvests:harvest-create' planting.pk %}">
-                        Record Harvest
+                    <a class="button button-small" href="{% url 'harvests:harvest-create' planting.pk %}">
+                        {% include "base/icon.html" with icon="harvest" %}Record Harvest
                     </a>
                     {% endif %}
                 </td>
@@ -44,6 +46,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
     <p>No upcoming harvest windows.</p>
     {% endif %}
@@ -52,6 +55,7 @@
 <section>
     <h2>Recorded Harvests</h2>
     {% if harvests %}
+    <div class="table-scroll" role="region" aria-label="Recorded harvests" tabindex="0">
     <table>
         <thead>
             <tr>
@@ -71,15 +75,15 @@
                 <td>{{ harvest.planting.crop.crop_name }}</td>
                 <td>{{ harvest.planting.field.field_name }}</td>
                 <td>{{ harvest.harvesting_date }}</td>
-                <td>{{ harvest.quantity_harvested }} {{ harvest.unit }}</td>
+                <td>{{ harvest.quantity_harvested|intcomma }} {{ harvest.unit }}</td>
                 <td>{{ harvest.notes|default:"—" }}</td>
                 {% if perms.harvests.change_harvest or perms.harvests.delete_harvest %}
                 <td>
                     {% if perms.harvests.change_harvest %}
-                    <a href="{% url 'harvests:harvest-update' harvest.pk %}">Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'harvests:harvest-update' harvest.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
                     {% endif %}
                     {% if perms.harvests.delete_harvest %}
-                    <a href="{% url 'harvests:harvest-delete' harvest.pk %}">Delete</a>
+                    <a class="button button-danger button-small" href="{% url 'harvests:harvest-delete' harvest.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
                     {% endif %}
                 </td>
                 {% endif %}
@@ -87,6 +91,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
     <p>No harvests have been recorded yet.</p>
     {% endif %}

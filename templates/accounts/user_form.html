@@ -20,6 +20,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">{% if managed_user %}Save changes{% else %}Create user{% endif %}</button>
-    <a href="{% url 'accounts:user-list' %}">Cancel</a>
+    <a class="button button-secondary" href="{% url 'accounts:user-list' %}">Cancel</a>
 </form>
 {% endblock %}

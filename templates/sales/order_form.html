@@ -19,6 +19,7 @@
     {# The management form carries formset row counts Django needs to save items. #}
     <section>
         <h2>Order Items</h2>
+        <p>Enter the quantity and price per unit for each harvest. Each line total is quantity × unit price; the order total is the sum of its line totals.</p>
         {{ item_formset.management_form }}
         {{ item_formset.non_form_errors }}
         {% for item_form in item_formset %}
@@ -31,9 +32,9 @@
 
     <button type="submit">{% if object %}Save Order{% else %}Create Order{% endif %}</button>
     {% if object %}
-    <a href="{% url 'sales:order-detail' object.pk %}">Cancel</a>
+    <a class="button button-secondary" href="{% url 'sales:order-detail' object.pk %}">Cancel</a>
     {% else %}
-    <a href="{% url 'sales:order-list' %}">Cancel</a>
+    <a class="button button-secondary" href="{% url 'sales:order-list' %}">Cancel</a>
     {% endif %}
 </form>
 {% endblock %}

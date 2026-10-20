@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}{{ field.field_name }}{% endblock %}
 
@@ -6,14 +7,14 @@
 <div class="page-header">
     <div>
         <h1>{{ field.field_name }}</h1>
-        <p>{{ field.field_size }} acres</p>
+        <p>{{ field.field_size|intcomma }} acres</p>
     </div>
-    <div>
+    <div class="action-links">
         {% if perms.crops.change_field %}
-        <a href="{% url 'crops:field-update' field.pk %}">Edit</a>
+        <a class="button button-secondary" href="{% url 'crops:field-update' field.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
         {% endif %}
         {% if perms.crops.delete_field %}
-        <a href="{% url 'crops:field-delete' field.pk %}">Delete</a>
+        <a class="button button-danger" href="{% url 'crops:field-delete' field.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
         {% endif %}
     </div>
 </div>
@@ -29,7 +30,7 @@
     <div class="page-header">
         <div><h2>Plantings</h2></div>
         {% if perms.crops.add_planting %}
-            <a href="{% url 'crops:planting-create' %}">New Planting</a>
+            <a class="button button-small" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}New Planting</a>
         {% endif %}
     </div>
     {% with plantings=field.plantings.all %}

@@ -5,6 +5,12 @@
 1. It's kinda inconvenient to have to remember how much I planted when registering a new harvest
 2. No validation exists for when the user records a harvest quantity that exceeds the planting quantity
 
+Implementation note: planting input units are free text (for example, seeds or
+kg), while harvest quantity uses the crop's output unit. These values are not
+necessarily comparable, and a planting may produce multiple harvests. Do not
+enforce an individual or cumulative cap until the farm's yield rule and any unit
+conversion requirements are defined.
+
 ## 2. User Account Management
 1. The app isn't indicating that I'm the superuser admin.
 2. The `deactivate` button isn't styled right. It's uncomfortably large as of present.

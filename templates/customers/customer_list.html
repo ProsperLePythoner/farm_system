@@ -9,11 +9,12 @@
         <p>Manage people and businesses buying produce.</p>
     </div>
     {% if perms.customers.add_customer %}
-        <a href="{% url 'customers:customer-create' %}">Add Customer</a>
+        <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="add" %}Add Customer</a>
     {% endif %}
 </div>
 
 {% if customers %}
+<div class="table-scroll" role="region" aria-label="Customers" tabindex="0">
 <table>
     <thead>
         <tr>
@@ -35,20 +36,21 @@
             <td>{{ customer.customer_location|default:"—" }}</td>
             <td>
                 {% if perms.customers.change_customer %}
-                <a href="{% url 'customers:customer-update' customer.pk %}">Edit</a>
+                <a class="button button-secondary button-small" href="{% url 'customers:customer-update' customer.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
                 {% endif %}
                 {% if perms.customers.delete_customer %}
-                <a href="{% url 'customers:customer-delete' customer.pk %}">Delete</a>
+                <a class="button button-danger button-small" href="{% url 'customers:customer-delete' customer.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <p>No customers have been added yet.</p>
 {% if perms.customers.add_customer %}
-    <a href="{% url 'customers:customer-create' %}">Add your first customer</a>
+    <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="add" %}Add your first customer</a>
 {% endif %}
 {% endif %}
 {% endblock %}

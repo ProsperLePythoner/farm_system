@@ -8,12 +8,12 @@
         <h1>{{ crop.crop_name }}</h1>
         <p>{{ crop.maturity_days }} days to maturity · {{ crop.get_unit_display }}</p>
     </div>
-    <div>
+    <div class="action-links">
         {% if perms.crops.change_crop %}
-        <a href="{% url 'crops:crop-update' crop.pk %}">Edit</a>
+        <a class="button button-secondary" href="{% url 'crops:crop-update' crop.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
         {% endif %}
         {% if perms.crops.delete_crop %}
-        <a href="{% url 'crops:crop-delete' crop.pk %}">Delete</a>
+        <a class="button button-danger" href="{% url 'crops:crop-delete' crop.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
         {% endif %}
     </div>
 </div>
@@ -29,7 +29,7 @@
     <div class="page-header">
         <div><h2>Plantings</h2></div>
         {% if perms.crops.add_planting %}
-            <a href="{% url 'crops:planting-create' %}">New Planting</a>
+            <a class="button button-small" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}New Planting</a>
         {% endif %}
     </div>
     {% with plantings=crop.plantings.all %}

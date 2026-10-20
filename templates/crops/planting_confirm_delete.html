@@ -19,13 +19,9 @@
 
     {% csrf_token %}
 
-    <button type="submit">
-        Yes, delete
-    </button>
+    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete</button>
 
-    <a href="{% url 'crops:planting-detail' planting.pk %}">
-        Cancel
-    </a>
+    <a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
 
 </form>
 {% endif %}

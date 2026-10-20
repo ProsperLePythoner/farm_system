@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Delete Harvest{% endblock %}
 
@@ -6,7 +7,7 @@
 <div class="page-header">
     <div>
         <h1>Delete Harvest</h1>
-        <p>Delete the {{ harvest.quantity_harvested }} {{ harvest.unit }} harvest for {{ harvest.planting.crop.crop_name }}?</p>
+        <p>Delete the {{ harvest.quantity_harvested|intcomma }} {{ harvest.unit }} harvest for {{ harvest.planting.crop.crop_name }}?</p>
     </div>
 </div>
 
@@ -16,8 +17,8 @@
 {% else %}
 <form method="post">
     {% csrf_token %}
-    <button type="submit">Confirm Delete</button>
-    <a href="{% url 'crops:planting-detail' harvest.planting_id %}">Cancel</a>
+    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Confirm Delete</button>
+    <a class="button button-secondary" href="{% url 'crops:planting-detail' harvest.planting_id %}">Cancel</a>
 </form>
 {% endif %}
 {% endblock %}

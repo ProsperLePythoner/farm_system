@@ -552,10 +552,20 @@ class AccountFeatureTests(TestCase):
         response = self.client.get(reverse("accounts:user-list"))
         self.assertContains(response, "application-admin")
         self.assertContains(response, "Sales Manager")
+        self.assertContains(response, "Django superuser")
         self.assertNotContains(
             response,
             reverse("accounts:user-update", args=(self.administrator.pk,)),
         )
+        self.assertContains(response, "button-small")
+
+    def test_current_superuser_is_identified_in_the_shared_navigation(self):
+        self.login_as(self.superuser)
+
+        response = self.client.get(reverse("dashboard:dashboard"))
+
+        self.assertContains(response, "Django superuser")
+        self.assertContains(response, "superuser-badge")
 
     def test_admin_area_is_denied_to_non_administrator(self):
         self.login_as(self.farm_manager)

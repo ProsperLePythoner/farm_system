@@ -16,8 +16,8 @@
 {% else %}
 <form method="post">
     {% csrf_token %}
-    <button type="submit">Yes, delete customer</button>
-    <a href="{% url 'customers:customer-detail' customer.pk %}">Cancel</a>
+    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete customer</button>
+    <a class="button button-secondary" href="{% url 'customers:customer-detail' customer.pk %}">Cancel</a>
 </form>
 {% endif %}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Plantings{% endblock %}
 
@@ -11,13 +12,14 @@
     </div>
 
     {% if perms.crops.add_planting %}
-        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        <a class="button" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}New Planting</a>
     {% endif %}
 </div>
 
 
 {% if plantings %}
 
+<div class="table-scroll" role="region" aria-label="Plantings" tabindex="0">
 <table>
     <thead>
         <tr>
@@ -46,7 +48,7 @@
             </td>
 
             <td>
-                {{ planting.quantity_planted }}
+                {{ planting.quantity_planted|intcomma }}
                 {{ planting.planting_qty_unit }}
             </td>
 
@@ -72,13 +74,14 @@
 
     </tbody>
 </table>
+</div>
 
 {% else %}
 
 <p>No plantings have been registered yet.</p>
 
 {% if perms.crops.add_planting %}
-    <a href="{% url 'crops:planting-create' %}">Register your first planting</a>
+    <a class="button" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}Register your first planting</a>
 {% endif %}
 
 {% endif %}

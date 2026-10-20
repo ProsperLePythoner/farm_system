@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}{{ customer.customer_name }}{% endblock %}
 
@@ -8,12 +9,12 @@
         <h1>{{ customer.customer_name }}</h1>
         <p>Customer details and order history.</p>
     </div>
-    <div>
+    <div class="action-links">
         {% if perms.customers.change_customer %}
-        <a href="{% url 'customers:customer-update' customer.pk %}">Edit</a>
+        <a class="button button-secondary" href="{% url 'customers:customer-update' customer.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
         {% endif %}
         {% if perms.customers.delete_customer %}
-        <a href="{% url 'customers:customer-delete' customer.pk %}">Delete</a>
+        <a class="button button-danger" href="{% url 'customers:customer-delete' customer.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
         {% endif %}
     </div>
 </div>
@@ -41,6 +42,7 @@
     <h2>Order History</h2>
     {% with orders=customer.orders.all %}
     {% if orders %}
+    <div class="table-scroll" role="region" aria-label="Customer order history" tabindex="0">
     <table>
         <thead>
             <tr>
@@ -58,7 +60,7 @@
                 <td>{{ order.order_date }}</td>
                 <td>
                     {% for item in order.items.all %}
-                        {{ item.crop.crop_name }} ({{ item.quantity }}){% if not forloop.last %}, {% endif %}
+                        {{ item.crop.crop_name }} ({{ item.quantity|intcomma }}){% if not forloop.last %}, {% endif %}
                     {% empty %}
                         No items
                     {% endfor %}
@@ -67,6 +69,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
     <p>No orders have been recorded for this customer.</p>
     {% endif %}

@@ -16,8 +16,8 @@
 {% else %}
 <form method="post">
     {% csrf_token %}
-    <button type="submit">Yes, delete crop</button>
-    <a href="{% url 'crops:crop-detail' crop.pk %}">Cancel</a>
+    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete crop</button>
+    <a class="button button-secondary" href="{% url 'crops:crop-detail' crop.pk %}">Cancel</a>
 </form>
 {% endif %}
 {% endblock %}

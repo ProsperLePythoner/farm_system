@@ -90,7 +90,7 @@ class SalesOrderWorkflowTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Mlimani Market")
-        self.assertContains(response, "TSh 100000.00")
+        self.assertContains(response, "TSh 100,000.00")
         self.assertContains(
             response,
             reverse("sales:order-detail", args=[order.pk]),
@@ -170,9 +170,80 @@ class SalesOrderWorkflowTests(TestCase):
 
         self.assertContains(response, "Tomatoes")
         self.assertContains(response, "North plot")
-        self.assertContains(response, "TSh 100000.00")
-        self.assertContains(response, "TSh 80000.00")
-        self.assertContains(response, "TSh 20000.00")
+        self.assertContains(response, "TSh 2,000.00 / kg")
+        self.assertContains(response, "TSh 100,000.00")
+        self.assertContains(response, "TSh 80,000.00")
+        self.assertContains(response, "TSh 20,000.00")
+
+    def test_order_form_explains_unit_price_and_remove_item_behavior(self):
+        order = self.make_order_with_item()
+
+        response = self.client.get(reverse("sales:order-update", args=[order.pk]))
+
+        self.assertContains(response, "Unit price")
+        self.assertContains(response, "Price for one unit of the selected harvest produce.")
+        self.assertContains(response, "Quantity multiplied by unit price gives the line total.")
+        self.assertContains(response, "Remove this item")
+        self.assertContains(response, "Removed when you save the order.")
+
+    def test_removing_first_middle_or_last_order_item_keeps_other_rows(self):
+        for removed_index in range(3):
+            with self.subTest(removed_index=removed_index):
+                order = self.make_order_with_item()
+                items = [
+                    order.items.get(),
+                    OrderItem.objects.create(
+                        order=order,
+                        crop=self.tomatoes,
+                        harvest=self.tomato_harvest,
+                        quantity=Decimal("10.00"),
+                        unit_price=Decimal("2000.00"),
+                        unit="kg",
+                    ),
+                    OrderItem.objects.create(
+                        order=order,
+                        crop=self.tomatoes,
+                        harvest=self.tomato_harvest,
+                        quantity=Decimal("15.00"),
+                        unit_price=Decimal("2000.00"),
+                        unit="kg",
+                    ),
+                ]
+                data = {
+                    "customer": str(self.customer.pk),
+                    "order_date": "2026-10-05",
+                    "notes": "",
+                    "items-TOTAL_FORMS": "3",
+                    "items-INITIAL_FORMS": "3",
+                    "items-MIN_NUM_FORMS": "0",
+                    "items-MAX_NUM_FORMS": "1000",
+                }
+                for index, item in enumerate(items):
+                    data.update({
+                        f"items-{index}-id": str(item.pk),
+                        f"items-{index}-harvest": str(self.tomato_harvest.pk),
+                        f"items-{index}-quantity": str(item.quantity),
+                        f"items-{index}-unit_price": str(item.unit_price),
+                    })
+                data[f"items-{removed_index}-DELETE"] = "on"
+
+                response = self.client.post(
+                    reverse("sales:order-update", args=[order.pk]),
+                    data,
+                )
+
+                self.assertRedirects(
+                    response,
+                    reverse("sales:order-detail", args=[order.pk]),
+                )
+                remaining_ids = set(
+                    order.items.values_list("pk", flat=True)
+                )
+                expected_ids = {
+                    item.pk for index, item in enumerate(items)
+                    if index != removed_index
+                }
+                self.assertEqual(remaining_ids, expected_ids)
 
     def test_order_can_be_updated_without_losing_existing_line(self):
         order = self.make_order_with_item()

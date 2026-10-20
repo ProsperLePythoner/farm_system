@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}
     {% if object %}Edit Harvest{% else %}Record Harvest{% endif %}
@@ -12,10 +13,26 @@
     </div>
 </div>
 
+<section class="planting-summary" aria-labelledby="planting-summary-title">
+    <h2 id="planting-summary-title">Selected planting</h2>
+    <dl>
+        <dt>Crop and field</dt>
+        <dd>{{ planting.crop.crop_name }} — {{ planting.field.field_name }}</dd>
+        <dt>Quantity planted</dt>
+        <dd>
+            {{ planting.quantity_planted|default_if_none:"Not recorded"|intcomma }}
+            {% if planting.planting_qty_unit %}{{ planting.planting_qty_unit }}{% endif %}
+        </dd>
+        <dt>Harvest output unit</dt>
+        <dd>{% if object %}{{ object.unit }}{% else %}{{ planting.crop.get_unit_display }}{% endif %}</dd>
+    </dl>
+    <p>Planted input and harvested produce may use different units; enter the harvest output in its own unit.</p>
+</section>
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">{% if object %}Save Changes{% else %}Record Harvest{% endif %}</button>
-    <a href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
+    <a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
 </form>
 {% endblock %}

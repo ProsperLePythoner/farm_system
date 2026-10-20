@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Sales Orders{% endblock %}
 
@@ -13,11 +14,12 @@
         {% endif %}
     </div>
     {% if perms.sales.add_order and perms.sales.add_orderitem %}
-    <a href="{% url 'sales:order-create' %}">New Order</a>
+    <a class="button" href="{% url 'sales:order-create' %}">{% include "base/icon.html" with icon="add" %}New Order</a>
     {% endif %}
 </div>
 
 {% if orders %}
+<div class="table-scroll" role="region" aria-label="Sales orders" tabindex="0">
 <table>
     <thead>
         <tr>
@@ -37,19 +39,20 @@
             <td><a href="{% url 'sales:order-detail' order.pk %}">#{{ order.pk }}</a></td>
             <td>{{ order.customer.customer_name }}</td>
             <td>{{ order.order_date }}</td>
-            <td>TSh {{ order.total_amount|floatformat:2 }}</td>
+            <td>TSh {{ order.total_amount|floatformat:2|intcomma }}</td>
             {% if perms.sales.view_payment %}
-            <td>TSh {{ order.total_paid|floatformat:2 }}</td>
-            <td>TSh {{ order.outstanding_balance|floatformat:2 }}</td>
+            <td>TSh {{ order.total_paid|floatformat:2|intcomma }}</td>
+            <td>TSh {{ order.outstanding_balance|floatformat:2|intcomma }}</td>
             {% endif %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <p>No orders have been recorded yet.</p>
 {% if perms.sales.add_order and perms.sales.add_orderitem %}
-    <a href="{% url 'sales:order-create' %}">Create the first order</a>
+    <a class="button" href="{% url 'sales:order-create' %}">{% include "base/icon.html" with icon="add" %}Create the first order</a>
 {% endif %}
 {% endif %}
 {% endblock %}

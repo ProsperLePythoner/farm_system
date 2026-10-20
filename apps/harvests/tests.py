@@ -57,6 +57,98 @@ class HarvestTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("harvesting_date", form.errors)
 
+    def test_record_harvest_page_displays_planting_quantity_and_unit(self):
+        response = self.client.get(
+            reverse("harvests:harvest-create", args=[self.planting.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Quantity planted")
+        self.assertContains(response, "20.00")
+        self.assertContains(response, "seeds")
+        self.assertContains(response, "Kilogram (kg)")
+        self.assertContains(response, "may use a different unit")
+
+    def test_smallest_positive_harvest_quantity_is_accepted(self):
+        response = self.client.post(
+            reverse("harvests:harvest-create", args=[self.planting.pk]),
+            {
+                "harvesting_date": "2026-02-01",
+                "quantity_harvested": "0.01",
+                "notes": "",
+            },
+        )
+
+        self.assertRedirects(
+            response,
+            reverse("crops:planting-detail", args=[self.planting.pk]),
+        )
+        self.assertEqual(Harvest.objects.get().quantity_harvested, Decimal("0.01"))
+
+    def test_zero_harvest_quantity_is_rejected_without_creating_a_record(self):
+        response = self.client.post(
+            reverse("harvests:harvest-create", args=[self.planting.pk]),
+            {
+                "harvesting_date": "2026-02-01",
+                "quantity_harvested": "0",
+                "notes": "Keep this note when validation fails",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ensure this value is greater than or equal to 0.01.")
+        self.assertContains(response, "Keep this note when validation fails")
+        self.assertFalse(Harvest.objects.exists())
+
+    def test_harvest_is_not_compared_to_incompatible_planting_input_units(self):
+        self.planting.quantity_planted = Decimal("20.00")
+        self.planting.planting_qty_unit = "seeds"
+        self.planting.save(update_fields=["quantity_planted", "planting_qty_unit"])
+
+        response = self.client.post(
+            reverse("harvests:harvest-create", args=[self.planting.pk]),
+            {
+                "harvesting_date": "2026-02-01",
+                "quantity_harvested": "25.00",
+                "notes": "",
+            },
+        )
+
+        self.assertRedirects(
+            response,
+            reverse("crops:planting-detail", args=[self.planting.pk]),
+        )
+        harvest = Harvest.objects.get()
+        self.assertEqual(harvest.quantity_harvested, Decimal("25.00"))
+        self.assertEqual(harvest.unit, "kg")
+
+    def test_multiple_harvests_are_not_capped_by_unrelated_planting_units(self):
+        self.planting.quantity_planted = Decimal("20.00")
+        self.planting.planting_qty_unit = "seeds"
+        self.planting.save(update_fields=["quantity_planted", "planting_qty_unit"])
+        create_url = reverse("harvests:harvest-create", args=[self.planting.pk])
+
+        for harvested_quantity in ("15.00", "15.00"):
+            response = self.client.post(
+                create_url,
+                {
+                    "harvesting_date": "2026-02-01",
+                    "quantity_harvested": harvested_quantity,
+                    "notes": "",
+                },
+            )
+            self.assertRedirects(
+                response,
+                reverse("crops:planting-detail", args=[self.planting.pk]),
+            )
+
+        total_harvested_kg = sum(
+            Harvest.objects.values_list("quantity_harvested", flat=True),
+            Decimal("0.00"),
+        )
+        self.assertEqual(total_harvested_kg, Decimal("30.00"))
+        self.assertEqual(Harvest.objects.count(), 2)
+
     def test_quantity_must_be_positive(self):
         harvest = Harvest(
             planting=self.planting,

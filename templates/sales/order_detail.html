@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 
 {% block title %}Order #{{ order.pk }}{% endblock %}
 
@@ -8,12 +9,12 @@
         <h1>Order #{{ order.pk }}</h1>
         <p>{{ order.customer.customer_name }} — {{ order.order_date }}</p>
     </div>
-    <div>
+    <div class="action-links">
         {% if perms.sales.change_order and perms.sales.change_orderitem %}
-        <a href="{% url 'sales:order-update' order.pk %}">Edit</a>
+        <a class="button button-secondary" href="{% url 'sales:order-update' order.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
         {% endif %}
         {% if perms.sales.delete_order and perms.sales.delete_orderitem %}
-        <a href="{% url 'sales:order-delete' order.pk %}">Delete</a>
+        <a class="button button-danger" href="{% url 'sales:order-delete' order.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
         {% endif %}
     </div>
 </div>
@@ -26,6 +27,7 @@
     <h2>Items</h2>
     {% with items=order.items.all %}
     {% if items %}
+    <div class="table-scroll" role="region" aria-label="Order items" tabindex="0">
     <table>
         <thead>
             <tr>
@@ -47,13 +49,14 @@
                         Legacy crop-only item
                     {% endif %}
                 </td>
-                <td>{{ item.quantity }} {{ item.unit }}</td>
-                <td>TSh {{ item.unit_price|floatformat:2 }} / {{ item.unit }}</td>
-                <td>TSh {{ item.line_total|floatformat:2 }}</td>
+                <td>{{ item.quantity|intcomma }} {{ item.unit }}</td>
+                <td>TSh {{ item.unit_price|floatformat:2|intcomma }} / {{ item.unit }}</td>
+                <td>TSh {{ item.line_total|floatformat:2|intcomma }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
     <p>This order has no items.</p>
     {% endif %}
@@ -64,12 +67,12 @@
     <h2>Order Summary</h2>
     <dl>
         <dt>Total</dt>
-        <dd>TSh {{ order.total_amount|floatformat:2 }}</dd>
+        <dd>TSh {{ order.total_amount|floatformat:2|intcomma }}</dd>
         {% if perms.sales.view_payment %}
             <dt>Paid</dt>
-            <dd>TSh {{ order.total_paid|floatformat:2 }}</dd>
+            <dd>TSh {{ order.total_paid|floatformat:2|intcomma }}</dd>
             <dt>Outstanding</dt>
-            <dd>TSh {{ order.outstanding_balance|floatformat:2 }}</dd>
+            <dd>TSh {{ order.outstanding_balance|floatformat:2|intcomma }}</dd>
             <dt>Payment status</dt>
             <dd>{{ order.status|title }}</dd>
         {% endif %}

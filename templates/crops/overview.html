@@ -10,10 +10,10 @@
     </div>
     <div>
         {% if perms.crops.add_crop %}
-        <a class="button" href="{% url 'crops:crop-create' %}">New Crop</a>
+        <a class="button" href="{% url 'crops:crop-create' %}">{% include "base/icon.html" with icon="add" %}New Crop</a>
         {% endif %}
         {% if perms.crops.add_field %}
-        <a class="button" href="{% url 'crops:field-create' %}">New Field</a>
+        <a class="button" href="{% url 'crops:field-create' %}">{% include "base/icon.html" with icon="add" %}New Field</a>
         {% endif %}
     </div>
 </div>
@@ -32,7 +32,7 @@
     <div class="page-header">
         <div><h2>Recent Plantings</h2></div>
         {% if perms.crops.add_planting %}
-            <a href="{% url 'crops:planting-create' %}">New Planting</a>
+            <a class="button button-small" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}New Planting</a>
         {% endif %}
     </div>
     {% if recent_plantings %}
