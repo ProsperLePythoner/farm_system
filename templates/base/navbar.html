@@ -7,7 +7,7 @@
                 aria-controls="main-navigation"
                 aria-expanded="false"
                 aria-label="Open menu">
-            <span class="nav-toggle-bars" aria-hidden="true"></span>
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
         </button>
         {% endif %}
         <a href="{% url 'dashboard:dashboard' %}" class="brand">
@@ -39,7 +39,7 @@
             {% endwith %}
             <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
                 {% csrf_token %}
-                <button type="submit" class="button-ghost">Log out</button>
+                <button type="submit" class="button-ghost">{% include "base/icon.html" with icon="logout" class_name="action-icon" %}Log out</button>
             </form>
         {% else %}
             <a href="{% url 'accounts:login' %}" class="button-ghost">Log in</a>

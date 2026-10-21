@@ -11,7 +11,7 @@
     </div>
 
     {% if perms.crops.add_planting %}
-        <a href="{% url 'crops:planting-create' %}">New Planting</a>
+        <a class="button" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}New Planting</a>
     {% endif %}
 </div>
 
@@ -78,7 +78,7 @@
 <p>No plantings have been registered yet.</p>
 
 {% if perms.crops.add_planting %}
-    <a href="{% url 'crops:planting-create' %}">Register your first planting</a>
+    <a class="button" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}Register your first planting</a>
 {% endif %}
 
 {% endif %}

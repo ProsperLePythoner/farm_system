@@ -7,7 +7,7 @@
             <li>
                 <a href="{% url 'dashboard:dashboard' %}"
                    {% if request.resolver_match.app_name == "dashboard" %}aria-current="page"{% endif %}>
-                    Dashboard
+                    <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>Dashboard
                 </a>
             </li>
             {% endif %}
@@ -19,7 +19,7 @@
                     <li>
                         <a href="{% url 'crops:overview' %}"
                            {% if request.resolver_match.url_name == "overview" %}aria-current="page"{% endif %}>
-                            Overview
+                            <span class="material-symbols-outlined" aria-hidden="true">space_dashboard</span>Overview
                         </a>
                     </li>
                     {% endif %}
@@ -27,7 +27,7 @@
                     <li>
                         <a href="{% url 'crops:crop-list' %}"
                            {% if request.resolver_match.url_name == "crop-list" or request.resolver_match.url_name == "crop-detail" or request.resolver_match.url_name == "crop-create" or request.resolver_match.url_name == "crop-update" or request.resolver_match.url_name == "crop-delete" %}aria-current="page"{% endif %}>
-                            Crops
+                            <span class="material-symbols-outlined" aria-hidden="true">grass</span>Crops
                         </a>
                     </li>
                     {% endif %}
@@ -35,7 +35,7 @@
                     <li>
                         <a href="{% url 'crops:field-list' %}"
                            {% if request.resolver_match.url_name == "field-list" or request.resolver_match.url_name == "field-detail" or request.resolver_match.url_name == "field-create" or request.resolver_match.url_name == "field-update" or request.resolver_match.url_name == "field-delete" %}aria-current="page"{% endif %}>
-                            Fields
+                            <span class="material-symbols-outlined" aria-hidden="true">landscape</span>Fields
                         </a>
                     </li>
                     {% endif %}
@@ -43,7 +43,7 @@
                     <li>
                         <a href="{% url 'crops:planting-list' %}"
                            {% if request.resolver_match.url_name|slice:":8" == "planting" %}aria-current="page"{% endif %}>
-                            Plantings
+                            <span class="material-symbols-outlined" aria-hidden="true">event_available</span>Plantings
                         </a>
                     </li>
                     {% endif %}
@@ -51,7 +51,7 @@
                     <li>
                         <a href="{% url 'harvests:harvest-list' %}"
                            {% if request.resolver_match.app_name == "harvests" %}aria-current="page"{% endif %}>
-                            Harvests
+                            <span class="material-symbols-outlined" aria-hidden="true">agriculture</span>Harvests
                         </a>
                     </li>
                     {% endif %}
@@ -62,7 +62,7 @@
             <li>
                 <a href="{% url 'accounts:user-list' %}"
                    {% if request.resolver_match.app_name == "accounts" and request.resolver_match.url_name|slice:":4" == "user" %}aria-current="page"{% endif %}>
-                    User accounts
+                    <span class="material-symbols-outlined" aria-hidden="true">manage_accounts</span>User accounts
                 </a>
             </li>
             {% endif %}
@@ -70,7 +70,7 @@
             <li>
                 <a href="{% url 'customers:customer-list' %}"
                    {% if request.resolver_match.app_name == "customers" %}aria-current="page"{% endif %}>
-                    Customers
+                    <span class="material-symbols-outlined" aria-hidden="true">people</span>Customers
                 </a>
             </li>
             {% endif %}
@@ -78,7 +78,7 @@
             <li>
                 <a href="{% url 'sales:order-list' %}"
                    {% if request.resolver_match.app_name == "sales" %}aria-current="page"{% endif %}>
-                    Sales
+                    <span class="material-symbols-outlined" aria-hidden="true">point_of_sale</span>Sales
                 </a>
             </li>
             {% endif %}

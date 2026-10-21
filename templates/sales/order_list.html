@@ -13,7 +13,7 @@
         {% endif %}
     </div>
     {% if perms.sales.add_order and perms.sales.add_orderitem %}
-    <a href="{% url 'sales:order-create' %}">New Order</a>
+    <a class="button" href="{% url 'sales:order-create' %}">{% include "base/icon.html" with icon="add" %}New Order</a>
     {% endif %}
 </div>
 
@@ -49,7 +49,7 @@
 {% else %}
 <p>No orders have been recorded yet.</p>
 {% if perms.sales.add_order and perms.sales.add_orderitem %}
-    <a href="{% url 'sales:order-create' %}">Create the first order</a>
+    <a class="button" href="{% url 'sales:order-create' %}">{% include "base/icon.html" with icon="add" %}Create the first order</a>
 {% endif %}
 {% endif %}
 {% endblock %}

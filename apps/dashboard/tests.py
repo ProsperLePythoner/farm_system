@@ -23,6 +23,22 @@ class DashboardTests(TestCase):
         self.assertContains(response, "Farm Dashboard")
         self.assertEqual(response.content.lower().count(b"<html"), 1)
 
+    def test_shared_navigation_keeps_labels_with_decorative_material_symbols(self):
+        response = self.client.get(reverse("dashboard:dashboard"))
+
+        self.assertContains(response, "dashboard</span>Dashboard", html=False)
+        self.assertContains(response, "grass</span>Crops", html=False)
+        self.assertContains(response, "landscape</span>Fields", html=False)
+        self.assertContains(response, "point_of_sale</span>Sales", html=False)
+        self.assertContains(response, 'class="material-symbols-outlined" aria-hidden="true"')
+
+    def test_shared_shell_preloads_local_inter_without_google_font_links(self):
+        response = self.client.get(reverse("dashboard:dashboard"))
+
+        self.assertContains(response, "fonts/inter/inter-latin.woff2")
+        self.assertNotContains(response, "fonts.googleapis.com")
+        self.assertNotContains(response, "fonts.gstatic.com")
+
     def test_root_redirect_uses_named_dashboard_route(self):
         response = self.client.get("/")
 
