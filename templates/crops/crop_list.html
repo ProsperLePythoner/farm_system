@@ -35,10 +35,10 @@
             <td>{{ crop.planting_count|intcomma }}</td>
             <td>
                 {% if perms.crops.change_crop %}
-                    <a class="button button-secondary button-small" href="{% url 'crops:crop-update' crop.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'crops:crop-update' crop.pk %}">{% include "base/icon.html" with icon="edit" class_name="action-icon" %}Edit</a>
                 {% endif %}
                 {% if perms.crops.delete_crop %}
-                    <a class="button button-danger button-small" href="{% url 'crops:crop-delete' crop.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
+                    <a class="button button-danger button-small" href="{% url 'crops:crop-delete' crop.pk %}">{% include "base/icon.html" with icon="delete" class_name="action-icon" %}Delete</a>
                 {% endif %}
             </td>
         </tr>
@@ -50,7 +50,7 @@
 <div class="empty-state">
     <p>No crops have been added yet.</p>
     {% if perms.crops.add_crop %}
-        <a href="{% url 'crops:crop-create' %}">Add your first crop</a>
+        <a href="{% url 'crops:crop-create' %}">{% include "base/icon.html" with icon="add" class_name="action-icon" %}Add your first crop</a>
     {% endif %}
 </div>
 {% endif %}

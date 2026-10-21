@@ -548,11 +548,27 @@ class AccountFeatureTests(TestCase):
         self.assertTrue(inactive.is_active)
 
     def test_admin_list_displays_roles_and_hides_unavailable_actions(self):
+        User.objects.create_user(
+            username="inactive-worker",
+            password=TEST_PASSWORD,
+            is_active=False,
+        )
         self.login_as(self.administrator)
         response = self.client.get(reverse("accounts:user-list"))
         self.assertContains(response, "application-admin")
         self.assertContains(response, "Sales Manager")
-        self.assertContains(response, "Django superuser")
+        self.assertContains(
+            response,
+            'class="material-symbols-outlined action-icon" aria-hidden="true">lock</span>',
+            html=False,
+        )
+        self.assertContains(response, "Deactivate")
+        self.assertContains(
+            response,
+            'class="material-symbols-outlined action-icon" aria-hidden="true">lock_open</span>',
+            html=False,
+        )
+        self.assertContains(response, "Activate")
         self.assertNotContains(
             response,
             reverse("accounts:user-update", args=(self.administrator.pk,)),

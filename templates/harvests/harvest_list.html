@@ -38,7 +38,8 @@
                 <td>
                     {% if perms.harvests.add_harvest %}
                     <a class="button button-small" href="{% url 'harvests:harvest-create' planting.pk %}">
-                        {% include "base/icon.html" with icon="harvest" %}Record Harvest
+                        {% include "base/icon.html" with icon="agriculture" class_name="action-icon" %}
+                        Record Harvest
                     </a>
                     {% endif %}
                 </td>
@@ -80,10 +81,10 @@
                 {% if perms.harvests.change_harvest or perms.harvests.delete_harvest %}
                 <td>
                     {% if perms.harvests.change_harvest %}
-                    <a class="button button-secondary button-small" href="{% url 'harvests:harvest-update' harvest.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'harvests:harvest-update' harvest.pk %}">{% include "base/icon.html" with icon="edit" class_name="action-icon" %}Edit</a>
                     {% endif %}
                     {% if perms.harvests.delete_harvest %}
-                    <a class="button button-danger button-small" href="{% url 'harvests:harvest-delete' harvest.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
+                    <a class="button button-danger button-small" href="{% url 'harvests:harvest-delete' harvest.pk %}">{% include "base/icon.html" with icon="delete" class_name="action-icon" %}Delete</a>
                     {% endif %}
                 </td>
                 {% endif %}

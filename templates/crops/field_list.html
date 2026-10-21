@@ -33,10 +33,10 @@
             <td>{{ field.planting_count|intcomma }}</td>
             <td>
                 {% if perms.crops.change_field %}
-                    <a class="button button-secondary button-small" href="{% url 'crops:field-update' field.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'crops:field-update' field.pk %}">{% include "base/icon.html" with icon="edit" class_name="action-icon" %}Edit</a>
                 {% endif %}
                 {% if perms.crops.delete_field %}
-                    <a class="button button-danger button-small" href="{% url 'crops:field-delete' field.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
+                    <a class="button button-danger button-small" href="{% url 'crops:field-delete' field.pk %}">{% include "base/icon.html" with icon="delete" class_name="action-icon" %}Delete</a>
                 {% endif %}
             </td>
         </tr>
@@ -48,7 +48,7 @@
 <div class="empty-state">
     <p>No fields have been added yet.</p>
     {% if perms.crops.add_field %}
-        <a href="{% url 'crops:field-create' %}">Add your first field</a>
+        <a href="{% url 'crops:field-create' %}">{% include "base/icon.html" with icon="add" class_name="action-icon" %}Add your first field</a>
     {% endif %}
 </div>
 {% endif %}

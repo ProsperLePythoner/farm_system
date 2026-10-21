@@ -9,7 +9,7 @@
         <p>Manage sign-in access and application roles.</p>
     </div>
     {% if perms.auth.add_user %}
-        <a class="button" href="{% url 'accounts:user-create' %}">{% include "base/icon.html" with icon="add" %}Create user</a>
+        <a class="button" href="{% url 'accounts:user-create' %}">{% include "base/icon.html" with icon="person_add" %}Create user</a>
     {% endif %}
 </div>
 
@@ -41,14 +41,13 @@
             <td>{{ managed_user.last_login|date:"DATETIME_FORMAT"|default:"Never" }}</td>
             <td>
                 {% if managed_user.can_be_managed %}
-                    <a class="button button-secondary button-small" href="{% url 'accounts:user-update' managed_user.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
+                    <a class="button button-secondary button-small" href="{% url 'accounts:user-update' managed_user.pk %}">{% include "base/icon.html" with icon="edit" class_name="action-icon" %}Edit</a>
                 {% endif %}
                 {% if managed_user.can_be_toggled %}
                     <form class="account-action-form" method="post" action="{% url 'accounts:user-toggle-active' managed_user.pk %}">
                         {% csrf_token %}
                         <button type="submit" class="button-small {% if managed_user.is_active %}button-danger{% else %}button-secondary{% endif %}">
-                            {% if managed_user.is_active %}{% include "base/icon.html" with icon="lock" %}{% else %}{% include "base/icon.html" with icon="add" %}{% endif %}
-                            {% if managed_user.is_active %}Deactivate{% else %}Activate{% endif %}
+                            {% if managed_user.is_active %}{% include "base/icon.html" with icon="lock" class_name="action-icon" %}Deactivate{% else %}{% include "base/icon.html" with icon="lock_open" class_name="action-icon" %}Activate{% endif %}
                         </button>
                     </form>
                 {% endif %}

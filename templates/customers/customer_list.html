@@ -9,7 +9,7 @@
         <p>Manage people and businesses buying produce.</p>
     </div>
     {% if perms.customers.add_customer %}
-        <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="add" %}Add Customer</a>
+        <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="person_add" %}Add Customer</a>
     {% endif %}
 </div>
 
@@ -36,10 +36,10 @@
             <td>{{ customer.customer_location|default:"—" }}</td>
             <td>
                 {% if perms.customers.change_customer %}
-                <a class="button button-secondary button-small" href="{% url 'customers:customer-update' customer.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
+                <a class="button button-secondary button-small" href="{% url 'customers:customer-update' customer.pk %}">{% include "base/icon.html" with icon="edit" class_name="action-icon" %}Edit</a>
                 {% endif %}
                 {% if perms.customers.delete_customer %}
-                <a class="button button-danger button-small" href="{% url 'customers:customer-delete' customer.pk %}">{% include "base/icon.html" with icon="delete" %}Delete</a>
+                <a class="button button-danger button-small" href="{% url 'customers:customer-delete' customer.pk %}">{% include "base/icon.html" with icon="delete" class_name="action-icon" %}Delete</a>
                 {% endif %}
             </td>
         </tr>
@@ -50,7 +50,7 @@
 {% else %}
 <p>No customers have been added yet.</p>
 {% if perms.customers.add_customer %}
-    <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="add" %}Add your first customer</a>
+    <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="person_add" %}Add your first customer</a>
 {% endif %}
 {% endif %}
 {% endblock %}
