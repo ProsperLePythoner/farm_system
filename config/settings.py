@@ -144,7 +144,9 @@ if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
-            conn_max_age=0,
+            conn_max_age=int(os.environ.get("DB_CONN_MAX_AGE", "60")),
+            conn_health_checks=True,
+            disable_server_side_cursors=True,
             ssl_require=True,
         )
     }
@@ -196,9 +198,11 @@ LOGOUT_REDIRECT_URL = "accounts:login"
 
 LANGUAGE_CODE = 'en-us'
 
-# Aware datetimes are stored using UTC; template/date localization may convert
-# them for display, but this project currently has no farm-local timezone setting.
-TIME_ZONE = 'UTC'
+# Aware datetimes are always stored as UTC in the database. TIME_ZONE controls
+# what "today" means and how times are displayed. Harvest windows, reminders and
+# the dashboard all compare calendar dates, so this must be the farm's own zone.
+# Override with DJANGO_TIME_ZONE if needed.
+TIME_ZONE = os.environ.get("DJANGO_TIME_ZONE", "Africa/Dar_es_Salaam")
 
 USE_I18N = True
 
