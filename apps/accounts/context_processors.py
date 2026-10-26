@@ -1,6 +1,6 @@
 """Template context values shared by pages that render account identity."""
 
-from .roles import ROLE_NAMES
+from .permissions import get_role_names
 
 
 def account_role(request):
@@ -8,11 +8,10 @@ def account_role(request):
     role_display = ""
     user = getattr(request, "user", None)
     if user and user.is_authenticated:
+        # Shares the per-request role lookup with the permission mixins.
+        role_names = sorted(get_role_names(user))
         role_display = (
-            user.groups.filter(name__in=ROLE_NAMES)
-            .order_by("name")
-            .values_list("name", flat=True)
-            .first()
-            or ("Superuser" if user.is_superuser else "")
+            role_names[0] if role_names
+            else ("Superuser" if user.is_superuser else "")
         )
     return {"account_role_display": role_display}
