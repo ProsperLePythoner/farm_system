@@ -1,0 +1,251 @@
+{% extends "base/base.html" %}
+{% load humanize %}
+
+{% block title %}Field Board{% endblock %}
+
+{% block content %}
+<div class="field-board">
+    <header class="page-header fb-header">
+        <div>
+            <p class="fb-eyebrow">Production overview</p>
+            <h1>Field Board</h1>
+            <p>{{ planting_count }} planting{{ planting_count|pluralize }} · {{ field_count }} field{{ field_count|pluralize }} in production</p>
+        </div>
+        {% if perms.crops.add_planting %}
+        <a class="button" href="{% url 'crops:planting-create' %}">
+            <span class="material-symbols-outlined" aria-hidden="true">add</span>
+            New planting
+        </a>
+        {% endif %}
+    </header>
+
+    <section class="fb-stats" aria-label="Production summary">
+        <article class="fb-stat">
+            <span class="fb-stat-label">Fields in production</span>
+            <strong>{{ field_count|intcomma }}</strong>
+            <span class="fb-stat-note">with open plantings</span>
+        </article>
+        <article class="fb-stat fb-stat-open">
+            <span class="fb-stat-label">Windows open now</span>
+            <strong>{{ open_window_count|intcomma }}</strong>
+            <span class="fb-stat-note">ready or part-harvested</span>
+        </article>
+        <article class="fb-stat fb-stat-soon">
+            <span class="fb-stat-label">Opening within 7 days</span>
+            <strong>{{ opening_soon_count|intcomma }}</strong>
+            <span class="fb-stat-note">upcoming windows</span>
+        </article>
+        <article class="fb-stat fb-stat-missed">
+            <span class="fb-stat-label">Missed windows</span>
+            <strong>{{ missed_window_count|intcomma }}</strong>
+            <span class="fb-stat-note">needs attention</span>
+        </article>
+    </section>
+
+    <form class="fb-filters" method="get" aria-label="Filter field board">
+        <div class="fb-filter-search">
+            <label for="field-board-search">Search fields or crops</label>
+            <input id="field-board-search" type="search" name="q" value="{{ search_query }}" maxlength="100" placeholder="e.g. North field">
+        </div>
+        <div>
+            <label for="field-board-crop">Crop</label>
+            <select id="field-board-crop" name="crop">
+                <option value="">All crops</option>
+                {% for crop in crop_options %}
+                <option value="{{ crop.pk }}"{% if selected_crop == crop.pk|stringformat:"s" %} selected{% endif %}>{{ crop.crop_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="field-board-range">Timeline</label>
+            <select id="field-board-range" name="weeks">
+                <option value="8"{% if selected_weeks == "8" %} selected{% endif %}>8 weeks</option>
+                <option value="14"{% if selected_weeks == "14" %} selected{% endif %}>14 weeks</option>
+                <option value="26"{% if selected_weeks == "26" %} selected{% endif %}>26 weeks</option>
+            </select>
+        </div>
+        <div>
+            <label for="field-board-view">Show</label>
+            <select id="field-board-view" name="view">
+                <option value="timeline"{% if view_mode == "timeline" %} selected{% endif %}>Open plantings</option>
+                <option value="all"{% if view_mode == "all" %} selected{% endif %}>All plantings</option>
+            </select>
+        </div>
+        <button class="button button-secondary fb-filter-submit" type="submit">Update board</button>
+    </form>
+
+    <section class="fb-panel fb-timeline-panel" aria-labelledby="field-timeline-title">
+        <div class="fb-panel-heading">
+            <div>
+                <p class="fb-eyebrow">Season plan</p>
+                <h2 id="field-timeline-title">Plantings by field</h2>
+                <p>Harvest windows are shown as markers; recorded harvests appear as dots.</p>
+            </div>
+            <span class="fb-today-label">Today · {{ today|date:"M j" }}</span>
+        </div>
+
+        {% if field_rows %}
+        <div class="fb-timeline-scroll" role="region" aria-label="Planting timeline by field" tabindex="0">
+            <div class="fb-timeline">
+                <div class="fb-axis-row" aria-hidden="true">
+                    <span></span>
+                    <div class="fb-axis">
+                        {% for label in axis_labels %}
+                        <span style="left: {{ label.position }}%">{% if label.is_today %}Today{% else %}{{ label.date|date:"M j" }}{% endif %}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% for row in field_rows %}
+                <div class="fb-field-row">
+                    <div class="fb-field-label">
+                        {% if perms.crops.view_field %}
+                        <a href="{% url 'crops:field-detail' row.field.pk %}">{{ row.field.field_name }}</a>
+                        {% else %}
+                        <strong>{{ row.field.field_name }}</strong>
+                        {% endif %}
+                        <span>{{ row.field.field_size|intcomma }} acres</span>
+                    </div>
+                    <div class="fb-field-plantings">
+                        {% for item in row.plantings %}
+                        <article class="fb-planting-row">
+                            <div class="fb-planting-meta">
+                                <span class="fb-crop-name">
+                                    <span class="fb-crop-swatch" style="--crop-color: {{ item.crop_color }}" aria-hidden="true"></span>
+                                    {{ item.planting.crop.crop_name }}
+                                </span>
+                                <span class="fb-status fb-status-{{ item.status }}">{{ item.status_label }}</span>
+                            </div>
+                            <div class="fb-track" aria-label="{{ item.accessible_label }}">
+                                <a class="fb-growth-bar" href="{% url 'crops:planting-detail' item.planting.pk %}" aria-label="{{ item.accessible_label }}" title="{{ item.accessible_label }}" style="--crop-color: {{ item.crop_color }}; --bar-start: {{ item.growth_start }}%; --bar-width: {{ item.growth_width }}%"></a>
+                                <a class="fb-window-marker fb-marker-{{ item.status }}" href="{% url 'crops:planting-detail' item.planting.pk %}" aria-label="{{ item.accessible_label }}" title="{{ item.planting.harvest_start|date:'M j, Y' }} – {{ item.planting.harvest_end|date:'M j, Y' }} · {{ item.status_label }}" style="--window-position: {{ item.window_position }}%"></a>
+                                {% for event in item.harvest_events %}
+                                <span class="fb-harvest-dot" style="left: {{ event.timeline_position }}%" title="{{ event.harvest.harvesting_date|date:'M j, Y' }} · {{ event.harvest.quantity_harvested|intcomma }} {{ event.harvest.unit }}" aria-label="Harvest recorded {{ event.harvest.harvesting_date|date:'M j, Y' }}: {{ event.harvest.quantity_harvested|intcomma }} {{ event.harvest.unit }}"></span>
+                                {% endfor %}
+                            </div>
+                            <span class="fb-day-indicator">{{ item.day_indicator }}</span>
+                            <details class="fb-details">
+                                <summary>Planting details</summary>
+                                <div class="fb-detail-content">
+                                    <p><strong>Planted:</strong> {{ item.planting.planting_date|date:"M j, Y" }} · {{ item.planting.crop.maturity_days }} days to maturity</p>
+                                    <p><strong>Expected window:</strong> {{ item.planting.harvest_start|date:"M j, Y" }} – {{ item.planting.harvest_end|date:"M j, Y" }}</p>
+                                    {% if item.totals_by_unit %}
+                                    <p><strong>Recorded:</strong>
+                                        {% for total in item.totals_by_unit %}{{ total.quantity|intcomma }} {{ total.unit }}{% if not forloop.last %} · {% endif %}{% endfor %}
+                                    </p>
+                                    {% else %}
+                                    <p>No harvest has been recorded.</p>
+                                    {% endif %}
+                                    <div class="fb-detail-actions">
+                                        <a href="{% url 'crops:planting-detail' item.planting.pk %}">View planting</a>
+                                        {% if perms.harvests.add_harvest %}
+                                        <a class="button button-small" href="{% url 'harvests:harvest-create' item.planting.pk %}">
+                                            <span class="material-symbols-outlined action-icon" aria-hidden="true">agriculture</span>
+                                            Record harvest
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </details>
+                        </article>
+                        {% empty %}
+                        <p class="fb-no-plantings">{% if filter_active %}No plantings match these filters.{% else %}No open plantings.{% endif %}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="fb-empty">
+            <h3>No fields yet</h3>
+            <p>Add a field and a planting to start planning your harvest windows.</p>
+            {% if perms.crops.add_planting %}
+            <a class="button" href="{% url 'crops:planting-create' %}">Add a planting</a>
+            {% elif perms.crops.add_field %}
+            <a class="button" href="{% url 'crops:field-create' %}">Add a field</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+
+    <div class="fb-insights">
+        <section class="fb-panel" aria-labelledby="needs-picking-title">
+            <div class="fb-panel-heading">
+                <div>
+                    <p class="fb-eyebrow">Priority list</p>
+                    <h2 id="needs-picking-title">Needs picking</h2>
+                </div>
+                <span class="fb-count-pill">{{ needs_picking|length }}</span>
+            </div>
+            {% if needs_picking %}
+            <ul class="fb-picking-list">
+                {% for item in needs_picking %}
+                <li class="fb-picking-item">
+                    <span class="fb-picking-status fb-status-{{ item.status }}" aria-hidden="true"></span>
+                    <div class="fb-picking-copy">
+                        <a href="{% url 'crops:planting-detail' item.planting.pk %}">{{ item.planting.crop.crop_name }}</a>
+                        <span>{{ item.planting.field.field_name }} · {{ item.day_indicator }}</span>
+                    </div>
+                    {% if perms.harvests.add_harvest %}
+                    <a class="fb-record-link" href="{% url 'harvests:harvest-create' item.planting.pk %}" aria-label="Record harvest for {{ item.planting.crop.crop_name }} in {{ item.planting.field.field_name }}">
+                        <span class="material-symbols-outlined" aria-hidden="true">agriculture</span>
+                        Record
+                    </a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="fb-quiet">No open, imminent, or missed harvest windows.</p>
+            {% endif %}
+        </section>
+
+        <section class="fb-panel" aria-labelledby="crop-mix-title">
+            <div class="fb-panel-heading">
+                <div>
+                    <p class="fb-eyebrow">Active plantings</p>
+                    <h2 id="crop-mix-title">Plantings by crop</h2>
+                </div>
+            </div>
+            {% if crop_segments %}
+            <div class="fb-crop-mix">
+                <div class="fb-donut" role="img" aria-label="Active plantings by crop" style="background: {{ crop_donut_style }}">
+                    <span>{{ active_planting_count }}</span>
+                    <small>plantings</small>
+                </div>
+                <ul class="fb-crop-legend">
+                    {% for segment in crop_segments %}
+                    <li>
+                        <span class="fb-crop-swatch" style="--crop-color: {{ segment.color }}" aria-hidden="true"></span>
+                        <a href="?crop={{ segment.crop.pk }}&amp;weeks={{ selected_weeks }}">{{ segment.crop.crop_name }}</a>
+                        <strong>{{ segment.count }}</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <p class="fb-quiet">No active plantings to group by crop.</p>
+            {% endif %}
+        </section>
+
+        <section class="fb-panel fb-activity-panel" aria-labelledby="harvest-activity-title">
+            <div class="fb-panel-heading">
+                <div>
+                    <p class="fb-eyebrow">Recorded events</p>
+                    <h2 id="harvest-activity-title">Harvest activity</h2>
+                </div>
+                <span class="fb-quiet">By week · last 8 weeks</span>
+            </div>
+            <div class="fb-activity-chart" role="img" aria-label="Weekly harvest event counts for the last eight weeks">
+                {% for week in activity_weeks %}
+                <div class="fb-activity-column" aria-label="{{ week.start|date:'M j' }}: {{ week.count }} harvest events">
+                    <span class="fb-activity-count">{{ week.count }}</span>
+                    <span class="fb-activity-bar" style="--bar-height: {{ week.height_percent }}%"></span>
+                    <span class="fb-activity-date">{{ week.start|date:"M j" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

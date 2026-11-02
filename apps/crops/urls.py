@@ -9,6 +9,7 @@ app_name = "crops"
 
 urlpatterns = [
     path("", views.CropsOverviewView.as_view(), name="overview"),
+    path("dashboard/", views.FieldBoardView.as_view(), name="field-board"),
     path("crops/", views.CropListView.as_view(), name="crop-list"),
     path("crops/new/", views.CropCreateView.as_view(), name="crop-create"),
     path("crops/<int:pk>/", views.CropDetailView.as_view(), name="crop-detail"),

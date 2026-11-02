@@ -23,6 +23,14 @@
                         </a>
                     </li>
                     {% endif %}
+                    {% if perms.crops.view_crop and perms.crops.view_field and perms.crops.view_planting and perms.harvests.view_harvest %}
+                    <li>
+                        <a href="{% url 'crops:field-board' %}"
+                           {% if request.resolver_match.url_name == "field-board" %}aria-current="page"{% endif %}>
+                            <span class="material-symbols-outlined" aria-hidden="true">space_dashboard</span>Field Board
+                        </a>
+                    </li>
+                    {% endif %}
                     {% if perms.crops.view_crop %}
                     <li>
                         <a href="{% url 'crops:crop-list' %}"

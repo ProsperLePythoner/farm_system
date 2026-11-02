@@ -36,6 +36,8 @@ sales orders. Active-page links use a consistent accent treatment.
 - **Harvests:** list, record/edit form, and delete confirmation pages; planting
   detail includes that planting's harvest history.
 - **Dashboard:** landing page in the shared shell; no operational metrics yet.
+- **Field Board:** production timeline at `/crops/dashboard/`, with field rows,
+  planting harvest windows, recorded events, and derived picking statuses.
 - **Customers:** list, detail with order history, create, edit, and delete.
 - **Sales:** order list, detail, create/edit with harvest-linked items, and
   delete.
@@ -45,6 +47,7 @@ sales orders. Active-page links use a consistent accent treatment.
 ```text
 Dashboard
 ├── Production
+│   ├── Field Board
 │   ├── Crops and fields
 │   ├── Plantings
 │   └── Harvests
@@ -57,6 +60,10 @@ have dedicated user-facing workflows. Navigation should mirror business tasks
 rather than expose database tables directly.
 
 ## Future dashboard content
+
+The Field Board is the first operational production view. It derives planting
+status and harvest-window dates from the existing planting and harvest records;
+it does not store duplicate status or acreage data.
 
 Once the underlying workflows and rules exist, the dashboard can surface:
 

@@ -1,10 +1,11 @@
 """Regression tests for production catalogue and planting CRUD behavior."""
 
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 from django.urls import reverse
 
 from apps.harvests.models import Harvest
@@ -220,6 +221,118 @@ class CropAndFieldWorkflowTests(TestCase):
         self.assertContains(response, "1 crops")
         self.assertContains(response, "1 fields")
         self.assertContains(response, "1 plantings")
+
+    def test_planting_status_is_derived_from_the_harvest_window(self):
+        today = timezone.localdate()
+        self.assertEqual(
+            self.planting.is_ready_for_harvest,
+            today >= self.planting.harvest_start,
+        )
+
+        def planting_for_window(start_offset, with_harvest=False):
+            planting = Planting.objects.create(
+                crop=self.crop,
+                field=self.field,
+                planting_qty_unit="seeds",
+                quantity_planted=Decimal("10.00"),
+                planting_date=(
+                    today
+                    + timedelta(days=start_offset - self.crop.maturity_days)
+                ),
+            )
+            if with_harvest:
+                Harvest.objects.create(
+                    planting=planting,
+                    harvesting_date=today,
+                    quantity_harvested=Decimal("2.00"),
+                    unit="kg",
+                )
+            return planting
+
+        self.assertEqual(planting_for_window(8).status, "growing")
+        self.assertEqual(planting_for_window(7).status, "soon")
+        self.assertEqual(
+            planting_for_window(8, with_harvest=True).status,
+            "growing",
+        )
+        self.assertEqual(planting_for_window(-1).status, "ready")
+        self.assertEqual(
+            planting_for_window(-1, with_harvest=True).status,
+            "partial",
+        )
+        self.assertEqual(planting_for_window(-5).status, "missed")
+        self.assertEqual(
+            planting_for_window(-5, with_harvest=True).status,
+            "done",
+        )
+
+    def test_field_board_renders_planting_summary_and_harvest_action(self):
+        response = self.client.get(reverse("crops:field-board"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Field Board")
+        self.assertContains(response, "Fields in production")
+        self.assertContains(response, "Plantings by field")
+        self.assertContains(response, "Plantings by crop")
+        self.assertContains(response, "Harvest activity")
+        self.assertContains(response, "Tomatoes")
+        self.assertContains(response, "North plot")
+        self.assertContains(
+            response,
+            reverse("harvests:harvest-create", args=[self.planting.pk]),
+        )
+        self.assertEqual(response.context["field_count"], 1)
+        self.assertEqual(response.context["planting_count"], 1)
+
+    def test_field_board_filters_by_crop_and_search(self):
+        other_crop = Crop.objects.create(
+            crop_name="Green beans",
+            maturity_days=50,
+            unit=Crop.Unit.KILOGRAM,
+        )
+        Planting.objects.create(
+            crop=other_crop,
+            field=self.field,
+            planting_qty_unit="seeds",
+            quantity_planted=Decimal("15.00"),
+            planting_date=date(2026, 10, 5),
+        )
+
+        response = self.client.get(
+            reverse("crops:field-board"),
+            {"crop": other_crop.pk, "q": "North"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Green beans")
+        displayed_crops = {
+            item["planting"].crop.crop_name
+            for row in response.context["field_rows"]
+            for item in row["plantings"]
+        }
+        self.assertEqual(displayed_crops, {"Green beans"})
+        self.assertEqual(response.context["planting_count"], 1)
+
+    def test_field_board_rejects_invalid_filters(self):
+        response = self.client.get(
+            reverse("crops:field-board"),
+            {"weeks": "999"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_field_board_requires_an_application_role_and_permissions(self):
+        url = reverse("crops:field-board")
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+        self.client.logout()
+        self.assertEqual(self.client.get(url).status_code, 302)
+
+        user = get_user_model().objects.create_user(
+            username="no-role",
+        )
+        self.client.force_login(user)
+        self.assertEqual(self.client.get(url).status_code, 403)
 
     def test_delete_planting_with_harvest_renders_blocked_state(self):
         Harvest.objects.create(

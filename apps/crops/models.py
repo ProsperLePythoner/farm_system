@@ -162,7 +162,25 @@ class Planting(models.Model):
         Returns True if crop should
         already be harvestable.
         """
-        return timezone.now().date() >= self.harvest_start
+        return timezone.localdate() >= self.harvest_start
+
+    @property
+    def status(self):
+        """Return the planting's current state from its harvest window and records."""
+        today = timezone.localdate()
+        has_harvests = self.harvests.exists()
+
+        if today > self.harvest_end:
+            return "done" if has_harvests else "missed"
+        if has_harvests and today >= self.harvest_start:
+            return "partial"
+        if not has_harvests and today >= self.harvest_start:
+            return "ready"
+
+        days_until_start = (self.harvest_start - today).days
+        if not has_harvests and 0 < days_until_start <= 7:
+            return "soon"
+        return "growing"
 
     def __str__(self):
         return f"{self.crop.crop_name} - {self.field.field_name}"
