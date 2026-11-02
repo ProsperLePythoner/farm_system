@@ -1,0 +1,17 @@
+add
+agriculture
+dashboard
+delete
+edit
+event_available
+grass
+landscape
+lock
+lock_open
+logout
+manage_accounts
+menu
+people
+person_add
+point_of_sale
+space_dashboard
