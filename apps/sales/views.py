@@ -1,6 +1,7 @@
 """Permission-checked order pages with atomic save of order and its line items."""
 
 from django.db import transaction
+from django.db.models import Prefetch
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -8,8 +9,8 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 from django.contrib import messages
 
 from config.view_mixins import ProtectedDeleteMixin
-from .forms import OrderForm, OrderItemFormSet
-from .models import Order
+from .forms import OrderForm, OrderItem, OrderItemFormSet
+from .models import Order, OrderItem, Payment
 
 
 class OrderListView(PermissionRequiredMixin, ListView):
@@ -21,12 +22,14 @@ class OrderListView(PermissionRequiredMixin, ListView):
     model = Order
     template_name = "sales/order_list.html"
     context_object_name = "orders"
-    queryset = (
-        Order.objects
-        .select_related("customer")
-        .prefetch_related("items__crop", "payments")
-        .order_by("-order_date", "-pk")
-    )
+
+    def get_queryset(self):
+        return (
+            Order.objects
+            .select_related("customer")
+            .with_totals()
+            .order_by("-order_date", "-pk")
+        )
 
 
 class OrderDetailView(PermissionRequiredMixin, DetailView):
@@ -42,11 +45,18 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
     context_object_name = "order"
 
     def get_queryset(self):
+        # One joined query for items instead of several separate ones.
+        items = OrderItem.objects.select_related(
+            "crop", "harvest__planting__field"
+        ).order_by("pk")
+        payments = Payment.objects.order_by("-payment_date", "-pk")
         return (
             Order.objects
             .select_related("customer")
-            .prefetch_related("items__crop", "items__harvest__planting__field")
-            .prefetch_related("payments")
+            .prefetch_related(
+                Prefetch("items", queryset=items),
+                Prefetch("payments", queryset=payments),
+            )
         )
 
 
