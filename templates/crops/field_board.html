@@ -1,14 +1,14 @@
 {% extends "base/base.html" %}
 {% load humanize %}
 
-{% block title %}Field Board{% endblock %}
+{% block title %}Crop Timeline{% endblock %}
 
 {% block content %}
 <div class="field-board">
     <header class="page-header fb-header">
         <div>
             <p class="fb-eyebrow">Production overview</p>
-            <h1>Field Board</h1>
+            <h1>Crop Timeline</h1>
             <p>{{ planting_count }} planting{{ planting_count|pluralize }} · {{ field_count }} field{{ field_count|pluralize }} in production</p>
         </div>
         {% if perms.crops.add_planting %}

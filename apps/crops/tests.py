@@ -270,7 +270,7 @@ class CropAndFieldWorkflowTests(TestCase):
         response = self.client.get(reverse("crops:field-board"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Field Board")
+        self.assertContains(response, "Crop Timeline")
         self.assertContains(response, "Fields in production")
         self.assertContains(response, "Plantings by field")
         self.assertContains(response, "Plantings by crop")
