@@ -22,6 +22,7 @@ class OrderListView(PermissionRequiredMixin, ListView):
     model = Order
     template_name = "sales/order_list.html"
     context_object_name = "orders"
+    paginate_by = 25
 
     def get_queryset(self):
         return (

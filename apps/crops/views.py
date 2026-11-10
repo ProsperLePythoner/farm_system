@@ -480,6 +480,7 @@ class PlantingListView(PermissionRequiredMixin, ListView):
     model = Planting
     template_name = "crops/planting_list.html"
     context_object_name = "plantings"
+    paginate_by = 25
 
     def get_queryset(self):
         return (

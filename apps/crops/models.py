@@ -5,7 +5,13 @@ from django.core.validators import MinValueValidator
 
 from django.db import models
 from django.utils import timezone
+from django.db.models import DateField, DurationField, ExpressionWrapper, F
+from django.db.models.functions import Cast
 
+# Length of the harvest window after its first day (three calendar days in
+# total, inclusive). Shared by Planting.harvest_end and the SQL version below
+# so the two can never disagree.
+HARVEST_WINDOW_EXTRA_DAYS = 2
 
 class Field(models.Model):
     """
@@ -85,6 +91,29 @@ class Crop(models.Model):
     def __str__(self):
         return self.crop_name
 
+class PlantingQuerySet(models.QuerySet):
+    """Planting queries that can calculate harvest windows inside the database."""
+
+    def with_harvest_window(self):
+        """Annotate ``window_start`` and ``window_end`` (dates).
+
+        These equal ``Planting.harvest_start`` and ``Planting.harvest_end`` but
+        are computed by the database, so a page can ask for "windows that end
+        today or later" without loading every planting ever recorded into
+        Python and filtering there.
+        """
+        one_day = timedelta(days=1)
+        start = Cast(
+            F("planting_date")
+            + ExpressionWrapper(F("crop__maturity_days") * one_day, output_field=DurationField()),
+            DateField(),
+        )
+        return self.annotate(window_start=start).annotate(
+            window_end=Cast(
+                F("window_start") + timedelta(days=HARVEST_WINDOW_EXTRA_DAYS),
+                DateField(),
+            )
+        )
 
 class Planting(models.Model):
     """
@@ -129,6 +158,8 @@ class Planting(models.Model):
         blank=True,
     )
 
+    objects = PlantingQuerySet.as_manager()
+
     # ------------------------------
     # Computed Properties
     # ------------------------------
@@ -154,7 +185,7 @@ class Planting(models.Model):
 
         The inclusive window ends at harvest_start plus two days.
         """
-        return self.harvest_start + timedelta(days=2)
+        return self.harvest_start + timedelta(days=HARVEST_WINDOW_EXTRA_DAYS)
 
     @property
     def is_ready_for_harvest(self):
@@ -162,6 +193,8 @@ class Planting(models.Model):
         Returns True if crop should
         already be harvestable.
         """
+        # localdate(), not now().date(): the latter is the UTC date and would
+        # flip to "ready" a few hours early or late for a farm in another zone.
         return timezone.localdate() >= self.harvest_start
 
     @property

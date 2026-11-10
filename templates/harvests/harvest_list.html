@@ -93,6 +93,7 @@
         </tbody>
     </table>
     </div>
+    {% include "base/pagination.html" with label="harvests" %}
     {% else %}
     <p>No harvests have been recorded yet.</p>
     {% endif %}

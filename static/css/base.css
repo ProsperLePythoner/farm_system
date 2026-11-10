@@ -1564,6 +1564,17 @@ textarea {
     font-size: .84rem;
 }
 
+.pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    justify-content: center;
+    margin: 1rem 0;
+}
+.pagination-count { color: #5c6b64; }
+.button.is-disabled { cursor: not-allowed; opacity: .5; }
+
 @keyframes fb-missed-pulse {
     0% { box-shadow: 0 0 0 0 rgba(196, 85, 62, .35); }
     70% { box-shadow: 0 0 0 .45rem rgba(196, 85, 62, 0); }

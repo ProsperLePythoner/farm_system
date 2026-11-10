@@ -49,6 +49,8 @@
     </tbody>
 </table>
 </div>
+{% include "base/pagination.html" with label="orders" %}
+
 {% else %}
 <p>No orders have been recorded yet.</p>
 {% if perms.sales.add_order and perms.sales.add_orderitem %}

@@ -19,6 +19,7 @@ class CustomerListView(PermissionRequiredMixin, ListView):
     model = Customer
     template_name = "customers/customer_list.html"
     context_object_name = "customers"
+    paginate_by = 50
     queryset = Customer.objects.order_by("customer_name", "pk")
 
 

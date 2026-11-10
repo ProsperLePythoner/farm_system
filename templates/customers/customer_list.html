@@ -47,6 +47,8 @@
     </tbody>
 </table>
 </div>
+{% include "base/pagination.html" with label="customers" %}
+
 {% else %}
 <p>No customers have been added yet.</p>
 {% if perms.customers.add_customer %}

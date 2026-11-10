@@ -26,6 +26,7 @@ class HarvestListView(PermissionRequiredMixin, ListView):
     model = Harvest
     template_name = "harvests/harvest_list.html"
     context_object_name = "harvests"
+    paginate_by = 25
 
     def get_queryset(self):
         return Harvest.objects.select_related(
@@ -37,18 +38,12 @@ class HarvestListView(PermissionRequiredMixin, ListView):
         """Keep started-but-not-ended windows visible and order by expected date."""
         context = super().get_context_data(**kwargs)
         today = timezone.localdate()
-        plantings = (
+        context["upcoming_plantings"] = list(
             Planting.objects
             .select_related("crop", "field")
-            .order_by("planting_date", "pk")
-        )
-        context["upcoming_plantings"] = sorted(
-            [
-                planting
-                for planting in plantings
-                if planting.harvest_end >= today
-            ],
-            key=lambda planting: (planting.harvest_start, planting.pk),
+            .with_harvest_window()
+            .filter(window_end__gte=today)
+            .order_by("window_start", "pk")
         )
         return context
 
