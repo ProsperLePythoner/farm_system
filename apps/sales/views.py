@@ -3,13 +3,13 @@
 from django.db import transaction
 from django.db.models import Prefetch
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from django.contrib import messages
 
 from config.view_mixins import ProtectedDeleteMixin
-from .forms import OrderForm, OrderItem, OrderItemFormSet
+from .forms import OrderForm, OrderItemFormSet, PaymentForm
 from .models import Order, OrderItem, Payment
 
 
@@ -150,3 +150,72 @@ class OrderDeleteView(PermissionRequiredMixin, ProtectedDeleteMixin, DeleteView)
 
     def is_deletion_blocked(self):
         return self.object.payments.exists()
+
+
+class PaymentCreateView(PermissionRequiredMixin, CreateView):
+    """Record a payment installment on one order.
+
+    Payments are append-only here: corrections go through the Django admin so
+    financial history is never edited casually.
+    """
+
+    permission_required = (
+        "sales.add_payment",
+        "sales.view_payment",
+        "sales.view_order",
+        "sales.view_orderitem",
+        "customers.view_customer",
+    )
+    model = Payment
+    form_class = PaymentForm
+    template_name = "sales/payment_form.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Permission is checked first; only then is the order looked up, so
+        # unauthorised users learn nothing about which orders exist.
+        if not self.has_permission():
+            return super().dispatch(request, *args, **kwargs)
+        self.order = get_object_or_404(
+            Order.objects.select_related("customer").with_totals(),
+            pk=kwargs["pk"],
+        )
+        if self.order.outstanding_balance <= 0:
+            messages.info(request, "This order is already fully paid.")
+            return redirect("sales:order-detail", pk=self.order.pk)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["order"] = self.order
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["order"] = self.order
+        return context
+
+    def form_valid(self, form):
+        """Re-check the balance under a row lock, then save.
+
+        Two people recording a payment for the same order at the same moment
+        would otherwise both pass the form's balance check against the same
+        old balance and together overpay. Locking the order row makes the
+        second request wait, then see the first payment.
+        """
+        with transaction.atomic():
+            Order.objects.select_for_update().filter(pk=self.order.pk).values_list("pk").first()
+            fresh = Order.objects.with_totals().get(pk=self.order.pk)
+            if form.cleaned_data["amount_paid"] > fresh.outstanding_balance:
+                form.add_error(
+                    "amount_paid",
+                    f"Another payment was just recorded. The outstanding balance is now TSh {fresh.outstanding_balance:,.2f}.",
+                )
+                self.order = Order.objects.select_related("customer").with_totals().get(pk=self.order.pk)
+                return self.form_invalid(form)
+            form.instance.order_id = self.order.pk
+            self.object = form.save()
+        messages.success(
+            self.request,
+            f"Payment of TSh {self.object.amount_paid:,.2f} recorded for order #{self.order.pk}.",
+        )
+        return redirect("sales:order-detail", pk=self.order.pk)

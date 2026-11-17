@@ -10,6 +10,9 @@
         <p>{{ order.customer.customer_name }} — {{ order.order_date }}</p>
     </div>
     <div class="action-links">
+        {% if perms.sales.add_payment and perms.sales.view_payment and order.outstanding_balance > 0 %}
+        <a class="button" href="{% url 'sales:payment-create' order.pk %}">{% include "base/icon.html" %}Record payment</a>
+        {% endif %}
         {% if perms.sales.change_order and perms.sales.change_orderitem %}
         <a class="button button-secondary" href="{% url 'sales:order-update' order.pk %}">{% include "base/icon.html" with icon="edit" %}Edit</a>
         {% endif %}
@@ -78,4 +81,35 @@
         {% endif %}
     </dl>
 </section>
+
+{% if perms.sales.view_payment %}
+<section>
+    <h2>Payments</h2>
+    {% with payments=order.payments.all %}
+    {% if payments %}
+    <div class="table-scroll" role="region" aria-label="Payments received" tabindex="0">
+    <table>
+        <thead>
+            <tr>
+                <th>Date received</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.payment_date }}</td>
+                <td>TSh {{ payment.amount_paid|floatformat:2|intcomma }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p>No payments have been recorded for this order yet.</p>
+    {% endif %}
+    {% endwith %}
+</section>
+{% endif %}
+
 {% endblock %}

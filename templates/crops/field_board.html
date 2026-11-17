@@ -23,7 +23,7 @@
         <article class="fb-stat">
             <span class="fb-stat-label">Fields in production</span>
             <strong>{{ field_count|intcomma }}</strong>
-            <span class="fb-stat-note">with open plantings</span>
+            <span class="fb-stat-note">with open plantings</span> <!-- those that haven't been harvested yet -->
         </article>
         <article class="fb-stat fb-stat-open">
             <span class="fb-stat-label">Windows open now</span>
@@ -32,7 +32,7 @@
         </article>
         <article class="fb-stat fb-stat-soon">
             <span class="fb-stat-label">Opening within 7 days</span>
-            <strong>{{ opening_soon_count|intcomma }}</strong>
+            <strong>{{ opening_soon_count|intcomma }}</strong> <!-- I'm not sure this is working right -->
             <span class="fb-stat-note">upcoming windows</span>
         </article>
         <article class="fb-stat fb-stat-missed">
@@ -59,9 +59,10 @@
         <div>
             <label for="field-board-range">Timeline</label>
             <select id="field-board-range" name="weeks">
-                <option value="8"{% if selected_weeks == "8" %} selected{% endif %}>8 weeks</option>
-                <option value="14"{% if selected_weeks == "14" %} selected{% endif %}>14 weeks</option>
-                <option value="26"{% if selected_weeks == "26" %} selected{% endif %}>26 weeks</option>
+                <option value="4"{% if selected_weeks == "4" %} selected{% endif %}>4 weeks</option>
+                <option value="12"{% if selected_weeks == "8" %} selected{% endif %}>12 weeks</option>
+                <option value="18"{% if selected_weeks == "14" %} selected{% endif %}>18 weeks</option>
+                <option value="48"{% if selected_weeks == "26" %} selected{% endif %}>48 weeks</option>
             </select>
         </div>
         <div>

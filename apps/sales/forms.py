@@ -2,10 +2,10 @@
 
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
+from django.utils import timezone
 
 from apps.harvests.models import Harvest
-
-from .models import Order, OrderItem
+from .models import Order, OrderItem, Payment
 
 
 class OrderForm(forms.ModelForm):
@@ -105,3 +105,48 @@ OrderItemFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+
+class PaymentForm(forms.ModelForm):
+    """Record one payment installment against a single order.
+
+    The order comes from the URL, not from the form, so a payment cannot be
+    attached to a different order by editing the submitted data. A payment may
+    not exceed what the customer still owes, which keeps the outstanding
+    balance from silently going negative.
+    """
+
+    class Meta:
+        model = Payment
+        fields = ["amount_paid", "payment_date"]
+        labels = {
+            "amount_paid": "Amount received (TSh)",
+            "payment_date": "Date received",
+        }
+        widgets = {
+            "payment_date": forms.DateInput(attrs={"type": "date"}),
+            "amount_paid": forms.NumberInput(attrs={"step": "0.01", "min": "0.01", "inputmode": "decimal"}),
+        }
+
+    def __init__(self, *args, order, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.order = order
+        self.fields["payment_date"].initial = timezone.localdate()
+        self.fields["amount_paid"].help_text = (
+            f"Outstanding balance: TSh {order.outstanding_balance:,.2f}."
+        )
+
+    def clean_amount_paid(self):
+        amount = self.cleaned_data["amount_paid"]
+        balance = self.order.outstanding_balance
+        if amount > balance:
+            raise forms.ValidationError(
+                f"This is more than the outstanding balance of TSh {balance:,.2f}."
+            )
+        return amount
+
+    def clean_payment_date(self):
+        payment_date = self.cleaned_data["payment_date"]
+        if payment_date > timezone.localdate():
+            raise forms.ValidationError("The payment date cannot be in the future.")
+        return payment_date
