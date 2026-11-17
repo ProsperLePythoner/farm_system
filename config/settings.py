@@ -224,3 +224,39 @@ STATICFILES_DIRS = [
 
 # Destination for collected static files during deployment.
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Dashboard and reminders
+# --------------------------------------------------------------------------
+
+# A harvest window counts as "coming up" this many days ahead in the daily
+# email digest.
+HARVEST_REMINDER_LEAD_DAYS = int(os.environ.get("HARVEST_REMINDER_LEAD_DAYS", "3"))
+
+# Orders still unpaid this many days after the order date appear in the email
+# digest. (The dashboard always lists every unpaid order.)
+PAYMENT_REMINDER_AFTER_DAYS = int(os.environ.get("PAYMENT_REMINDER_AFTER_DAYS", "7"))
+
+# Public base URL used for links inside reminder emails, e.g.
+# "https://your-domain.example". Emails omit links when it is not set.
+SITE_URL = os.environ.get("DJANGO_SITE_URL", "").rstrip("/")
+
+# Shared secret that authorises the scheduled digest endpoint. Vercel Cron sends
+# it as "Authorization: Bearer <CRON_SECRET>". When unset the endpoint refuses
+# every request.
+CRON_SECRET = os.environ.get("CRON_SECRET", "")
+
+# Email: set EMAIL_HOST (plus the related variables) to send real mail. Without
+# EMAIL_HOST, messages are printed to the server log so nothing is sent by
+# accident during development.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_BACKEND = (
+    "django.core.mail.backends.smtp.EmailBackend"
+    if EMAIL_HOST
+    else "django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_TIMEOUT = 8  # stay well inside a serverless function's time limit
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "Farm System <no-reply@localhost>")

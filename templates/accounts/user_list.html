@@ -20,6 +20,7 @@
         <tr>
             <th>Name</th>
             <th>Username</th>
+            <th>Email</th>
             <th>Role</th>
             <th>Status</th>
             <th>Last sign-in</th>
@@ -31,6 +32,7 @@
         <tr>
             <td>{{ managed_user.get_full_name|default:"—" }}</td>
             <td>{{ managed_user.get_username }}</td>
+            <td>{{ managed_user.email|default:"—" }}</td>
             <td>
                 {{ managed_user.account_role|default:"—" }}
                 {% if managed_user.is_superuser %}

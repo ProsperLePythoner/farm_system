@@ -24,6 +24,10 @@ conversion requirements are defined.
 from during user creation; apparently you can't even create a new user unless their role is 
 specified. Also, we need a very clear distinction of the level of access that 
 every kind of user gets from farm_system.
+4. We don't want to have empty *action* fields to show users that there's some functionality 
+they're limited from accessing. That should be the developer's secret (and of course, other admins).
+5. I managed to add the email field to the Update User form, but the user's email only shows up on 
+the user list after I manually update that field in the admin site! Dammit.
 
 ## 3. Orders
 1. The `New Order` page isn't being very verbose about the unit price attribute (seems isolated, if you ask me)
@@ -52,7 +56,7 @@ viewing the application.
 3. Add relevant icons against action links to make the site more universally understood
 4. Optionally enable visual display themes (e.g. light, dark, etc.) later on
 5. Restyle all links (at least) so that they're displayed as clickable buttons, to favor 
-mobile users.
+mobile users. Mobile-native (even desktop) UI, modern everything, but still minimalist.
 6. Notice how *Crop Timeline* has nice and smooth shadows, borders and font styling. Extend this 
 to other templates as well. Is it really good to have shadows btw?? Idk. We'll figure it out.
 7. Optionally, add a settings link where the user can quickly adjust preferences and even core functionality for 

@@ -9,13 +9,27 @@ from .roles import ROLE_ADMINISTRATOR, ROLE_NAMES
 
 User = get_user_model()
 
+EMAIL_HELP = "Optional. Used for the daily farm briefing email."
 
-class ProfileForm(forms.ModelForm):
+
+class EmailNormalizationMixin:
+    """Store email addresses trimmed and in lower case.
+
+    Django calls ``clean_<fieldname>`` automatically, so any form that has an
+    ``email`` field and lists this mixin first gets the behaviour.
+    """
+
+    def clean_email(self):
+        return self.cleaned_data["email"].strip().lower()
+
+
+class ProfileForm(EmailNormalizationMixin, forms.ModelForm):
     """Limit self-service profile changes to the user's display names."""
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name")
+        fields = ("first_name", "last_name", "email")
+        help_texts = {"email": EMAIL_HELP}
 
     def clean_first_name(self):
         return self.cleaned_data["first_name"].strip()
@@ -24,7 +38,7 @@ class ProfileForm(forms.ModelForm):
         return self.cleaned_data["last_name"].strip()
 
 
-class UserCreateForm(UserCreationForm):
+class UserCreateForm(EmailNormalizationMixin, UserCreationForm):
     """Create a user with one role and an explicit activation choice."""
 
     role = forms.ModelChoiceField(
@@ -39,7 +53,8 @@ class UserCreateForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ("first_name", "last_name", "username")
+        fields = ("first_name", "last_name", "username", "email")
+        help_texts = {"email": EMAIL_HELP}
 
     def __init__(self, *args, request_user, **kwargs):
         """Keep the Administrator role assignable only by a Django superuser."""
@@ -66,7 +81,7 @@ class UserCreateForm(UserCreationForm):
         return user
 
 
-class UserUpdateForm(forms.ModelForm):
+class UserUpdateForm(EmailNormalizationMixin, forms.ModelForm):
     """Edit account details, activation, and one application role."""
 
     role = forms.ModelChoiceField(
@@ -77,7 +92,8 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "username", "is_active")
+        fields = ("first_name", "last_name", "username", "email", "is_active")
+        help_texts = {"email": EMAIL_HELP}
 
     def __init__(self, *args, request_user, **kwargs):
         """Limit role choices and initialize the user's current role."""
