@@ -36,4 +36,7 @@ class DailyDigestCronView(View):
         if not secret or not hmac.compare_digest(supplied.encode(), expected.encode()):
             return JsonResponse({"detail": "Forbidden"}, status=403)
         result = send_daily_digests()
-        return JsonResponse(result)
+        # A non-2xx status makes a failed run show up as failed in Vercel's
+        # Cron Jobs page and logs instead of looking like a success.
+        status = 502 if result["failed"] else 200
+        return JsonResponse(result, status=status)
