@@ -60,6 +60,11 @@ once a planting is ready for harvest, it says so expliciitly. However, the syste
 user to know whether a ready-for-harvest planting has in fact *already* been harvested, to prevent 
 ambiguity.
 
+# 9. Sales Orders
+1. The Sales Orders page allows order filtering with only two values, *All orders* and 
+*Unpaid or part-paid*, which isn't helpful enough. The user should be able to filter completely 
+unpaid and partially unpaid orders separately.
+
 # User Interface (UI)
 1. Add consistent and smoother styling. The farm dashboard, for example, could use some improvements for sure.
 2. Make tables and font more responsive for mobile users
