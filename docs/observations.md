@@ -66,12 +66,14 @@ ambiguity.
 unpaid and partially unpaid orders separately.
 
 # User Interface (UI)
-1. Add consistent and smoother styling. The farm dashboard, for example, could use some improvements for sure.
-2. Make tables and font more responsive for mobile users
-3. Add relevant icons against action links to make the site more universally understood
-4. Optionally enable visual display themes (e.g. light, dark, etc.) later on
-5. Restyle all links (at least) so that they're displayed as clickable buttons, to favor 
-mobile users. Mobile-native (even desktop) UI, modern everything, but still minimalist.
+1. Add consistent and smoother styling.
+2. Make tables and font more responsive for mobile users (is a tabular structure modern even? 
+probably should allow the user to select their preferred kind of display)
+3. Add relevant icons against action links to make the site more universally understood [check]
+4. Optionally enable visual display themes (e.g. light, dark, etc.) later on [optional if it 
+introduces much complexity]
+5. Restyle all links (at least, if that's a great idea) so that they're displayed as clickable 
+buttons, to favor mobile users. Mobile-native (even desktop) UI, modern everything, but still minimalist.
 6. Notice how *Crop Timeline* has nice and smooth shadows, borders and font styling. Extend this 
 to other templates as well. Is it really good to have shadows btw?? Idk. We'll figure it out.
 7. Optionally, add a settings link where the user can quickly adjust preferences and even core functionality for 
