@@ -1,0 +1,140 @@
+{% load humanize %}
+{# Everything inside the live-refresh region. Rendered by the page and by the #}
+{# /dashboard/panels/ fragment, so a refresh looks exactly like a page load. #}
+
+<p class="dash-summary" role="status">
+    {% if attention_count %}
+        {% include "base/icon.html" with icon="warning" class_name="action-icon" %}
+        <strong>{{ attention_count }}</strong> item{{ attention_count|pluralize }} need{{ attention_count|pluralize:"s," }} your attention.
+    {% else %}
+        {% include "base/icon.html" with icon="check_circle" class_name="action-icon" %}
+        You are all caught up.
+    {% endif %}
+</p>
+
+{% if sales %}
+<section class="kpi-grid" aria-label="Sales summary">
+    <div class="kpi">
+        <span class="kpi-label">Sales in {{ sales.month_label }}</span>
+        <span class="kpi-value">TSh {{ sales.month_sales|floatformat:0|intcomma }}</span>
+    </div>
+    {% if sales.show_payments %}
+    <div class="kpi">
+        <span class="kpi-label">Collected in {{ sales.month_label }}</span>
+        <span class="kpi-value">TSh {{ sales.collected_this_month|floatformat:0|intcomma }}</span>
+    </div>
+    <div class="kpi {% if sales.unpaid_count %}kpi-warn{% endif %}">
+        <span class="kpi-label">Still owed to you</span>
+        <span class="kpi-value">TSh {{ sales.outstanding_total|floatformat:0|intcomma }}</span>
+        <span class="kpi-note">{{ sales.unpaid_count }} unpaid order{{ sales.unpaid_count|pluralize }}</span>
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if harvests %}
+<section aria-labelledby="harvest-attention-title">
+    <h2 id="harvest-attention-title">{% include "base/icon.html" with icon="agriculture" class_name="action-icon" %}Harvests</h2>
+
+    {% if harvests.open %}
+    <h3>Window open now</h3>
+    <ul class="task-list">
+        {% for item in harvests.open %}
+        <li class="task task-open">
+            <div>
+                <a href="{% url 'crops:planting-detail' item.planting.pk %}">{{ item.planting.crop.crop_name }}</a>
+                <span class="task-meta">{{ item.planting.field.field_name }} · {{ item.window_start|date:"j M" }} – {{ item.window_end|date:"j M" }} · {{ item.label }}{% if item.harvest_count %} · {{ item.harvest_count }} recorded{% endif %}</span>
+            </div>
+            {% if perms.harvests.add_harvest %}
+            <a class="button button-small" href="{% url 'harvests:harvest-create' item.planting.pk %}">Record harvest</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if harvests.missed %}
+    <h3>Window ended, nothing recorded</h3>
+    <ul class="task-list">
+        {% for item in harvests.missed %}
+        <li class="task task-missed">
+            <div>
+                <a href="{% url 'crops:planting-detail' item.planting.pk %}">{{ item.planting.crop.crop_name }}</a>
+                <span class="task-meta">{{ item.planting.field.field_name }} · {{ item.label }}</span>
+            </div>
+            {% if perms.harvests.add_harvest %}
+            <a class="button button-secondary button-small" href="{% url 'harvests:harvest-create' item.planting.pk %}">Record harvest</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if harvests.soon %}
+    <h3>Coming up</h3>
+    <ul class="task-list">
+        {% for item in harvests.soon %}
+        <li class="task {% if item.is_imminent %}task-soon{% endif %}">
+            <div>
+                <a href="{% url 'crops:planting-detail' item.planting.pk %}">{{ item.planting.crop.crop_name }}</a>
+                <span class="task-meta">{{ item.planting.field.field_name }} · {{ item.window_start|date:"j M" }} – {{ item.window_end|date:"j M" }} · {{ item.label }}</span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if not harvests.open and not harvests.missed and not harvests.soon %}
+    <p>No harvest windows are open or opening in the next two weeks.</p>
+    {% endif %}
+</section>
+
+<section aria-labelledby="agenda-title">
+    <h2 id="agenda-title">{% include "base/icon.html" with icon="calendar_month" class_name="action-icon" %}Next 14 days</h2>
+    <ol class="agenda">
+        {% for cell in harvests.agenda %}
+        <li class="agenda-day {% if cell.is_today %}is-today{% endif %} {% if cell.count %}has-harvest{% endif %}"
+            {% if cell.crops %}title="{{ cell.crops|join:', ' }}"{% endif %}>
+            <span class="agenda-dow">{{ cell.day|date:"D" }}</span>
+            <span class="agenda-date">{{ cell.day|date:"j" }}</span>
+            <span class="agenda-count">{% if cell.count %}{{ cell.count }}{% else %}&nbsp;{% endif %}</span>
+        </li>
+        {% endfor %}
+    </ol>
+    <p class="helptext">Number of plantings whose harvest window includes each day. Hover a day for crop names.</p>
+</section>
+{% endif %}
+
+{% if sales and sales.show_payments %}
+<section aria-labelledby="payments-title">
+    <h2 id="payments-title">{% include "base/icon.html" with icon="payments" class_name="action-icon" %}Payments to collect</h2>
+    {% if sales.unpaid_orders %}
+    <ul class="task-list">
+        {% for order in sales.unpaid_orders %}
+        <li class="task task-soon">
+            <div>
+                <a href="{% url 'sales:order-detail' order.pk %}">Order #{{ order.pk }}</a> · {{ order.customer.customer_name }}
+                <span class="task-meta">
+                    <strong>TSh {{ order.annotated_balance|floatformat:0|intcomma }}</strong> owed ·
+                    {{ order.days_outstanding }} day{{ order.days_outstanding|pluralize }} old
+                    {% if order.customer.customer_phone %}· <a href="tel:{{ order.customer.customer_phone }}">{{ order.customer.customer_phone }}</a>{% endif %}
+                </span>
+            </div>
+            {% if perms.sales.add_payment %}
+            <a class="button button-small" href="{% url 'sales:payment-create' order.pk %}">Record payment</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% if sales.unpaid_count > sales.unpaid_orders|length %}
+    <p><a href="{% url 'sales:order-list' %}?payment=unpaid">View all {{ sales.unpaid_count }} unpaid orders</a></p>
+    {% endif %}
+    {% else %}
+    <p>Every order is fully paid.</p>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if not harvests and not sales %}
+<p>Your role does not include live farm figures. Use the links below to open your work areas.</p>
+{% endif %}

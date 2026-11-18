@@ -24,16 +24,36 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from decimal import Decimal
 
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, ExpressionWrapper, F, Sum
+from django.utils import timezone
 
 from apps.crops.models import Planting
+from apps.sales.models import MONEY, Order, OrderItem, Payment
 
 # How far ahead the harvest agenda looks, and how far back a "nothing recorded"
 # window is still worth nagging about (older ones are history, not tasks).
 AGENDA_DAYS = 14
 MISSED_LOOKBACK_DAYS = 30
+
+UNPAID_LIST_LIMIT = 8
+
+# A section is built only for users who hold the permissions that the matching
+# pages already require, so the dashboard never shows more than a user could
+# open elsewhere in the application.
+HARVEST_PERMS = (
+    "crops.view_planting",
+    "crops.view_crop",
+    "crops.view_field",
+    "harvests.view_harvest",
+)
+SALES_PERMS = (
+    "sales.view_order",
+    "sales.view_orderitem",
+    "customers.view_customer",
+)
 
 
 @dataclass
@@ -88,6 +108,23 @@ class HarvestSection:
     def attention_count(self) -> int:
         return len(self.open) + len(self.missed)
 
+@dataclass
+class SalesSection:
+    month_label: str
+    month_sales: Decimal
+    show_payments: bool
+    collected_this_month: Decimal = Decimal("0.00")
+    outstanding_total: Decimal = Decimal("0.00")
+    unpaid_count: int = 0
+    unpaid_orders: list = field(default_factory=list)
+
+
+def can_see_harvests(user) -> bool:
+    return user.has_perms(HARVEST_PERMS)
+
+
+def can_see_sales(user) -> bool:
+    return user.has_perms(SALES_PERMS)
 
 def harvest_section(today: date, lead_days: int | None = None) -> HarvestSection:
     """Classify plantings as open, soon or missed with a single query.
@@ -139,3 +176,60 @@ def harvest_section(today: date, lead_days: int | None = None) -> HarvestSection
     # Most overdue first for missed windows; soonest first elsewhere.
     missed.sort(key=lambda item: -item.days)
     return HarvestSection(opened, soon, missed, agenda)
+
+def _money_sum(queryset, expression):
+    value = queryset.aggregate(total=Sum(expression))["total"]
+    return value or Decimal("0.00")
+
+
+def sales_section(today: date, include_payments: bool) -> SalesSection:
+    """Month-to-date sales and, if permitted, what is still owed."""
+    month_start = today.replace(day=1)
+    line_total = ExpressionWrapper(F("quantity") * F("unit_price"), output_field=MONEY)
+    month_sales = _money_sum(
+        OrderItem.objects.filter(order__order_date__gte=month_start, order__order_date__lte=today),
+        line_total,
+    )
+    section = SalesSection(
+        month_label=today.strftime("%B %Y"),
+        month_sales=month_sales,
+        show_payments=include_payments,
+    )
+    if not include_payments:
+        return section
+
+    section.collected_this_month = _money_sum(
+        Payment.objects.filter(payment_date__gte=month_start, payment_date__lte=today),
+        F("amount_paid"),
+    )
+    unpaid = Order.objects.with_outstanding_balance()
+    totals = unpaid.aggregate(total=Sum("annotated_balance"), count=Count("pk"))
+    section.outstanding_total = totals["total"] or Decimal("0.00")
+    section.unpaid_count = totals["count"] or 0
+    if section.unpaid_count:
+        orders = list(
+            unpaid.select_related("customer")
+            .order_by("order_date", "pk")[:UNPAID_LIST_LIMIT]
+        )
+        for order in orders:
+            order.days_outstanding = max((today - order.order_date).days, 0)
+        section.unpaid_orders = orders
+    return section
+
+
+def build_dashboard(user) -> dict:
+    """Assemble only the sections ``user`` is allowed to see."""
+    today = timezone.localdate()
+    context: dict = {"today": today, "harvests": None, "sales": None}
+    if can_see_harvests(user):
+        context["harvests"] = harvest_section(today)
+    if can_see_sales(user):
+        context["sales"] = sales_section(today, include_payments=user.has_perm("sales.view_payment"))
+
+    attention = 0
+    if context["harvests"]:
+        attention += context["harvests"].attention_count
+    if context["sales"] and context["sales"].show_payments:
+        attention += context["sales"].unpaid_count
+    context["attention_count"] = attention
+    return context

@@ -50,6 +50,16 @@ explicitly created data for this purpose.
 display and aggregation of useful data. Also useful statistics could be included as per type of user 
 viewing the application.
 
+# 7. Dashboard
+1. As of present, the dashboard displays a fixed calendar with a 14-day timespan. This 
+should be customized to enable the user to alter the timespan (e.g. 30 days, 3 months, etc.)
+
+# 8. Plantings
+1. The Plantings template must reflect the real status of actual plantings. It's okay that 
+once a planting is ready for harvest, it says so expliciitly. However, the system must allow the 
+user to know whether a ready-for-harvest planting has in fact *already* been harvested, to prevent 
+ambiguity.
+
 # User Interface (UI)
 1. Add consistent and smoother styling. The farm dashboard, for example, could use some improvements for sure.
 2. Make tables and font more responsive for mobile users

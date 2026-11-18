@@ -228,6 +228,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Dashboard and reminders
 # --------------------------------------------------------------------------
 
+# How often (seconds) an open dashboard tab quietly re-checks for changes. The
+# tab pauses while hidden. This is polling rather than WebSockets because the
+# site runs on serverless functions that cannot keep a connection open.
+DASHBOARD_REFRESH_SECONDS = int(os.environ.get("DASHBOARD_REFRESH_SECONDS", "60"))
+
 # A harvest window counts as "coming up" this many days ahead in the daily
 # email digest.
 HARVEST_REMINDER_LEAD_DAYS = int(os.environ.get("HARVEST_REMINDER_LEAD_DAYS", "3"))

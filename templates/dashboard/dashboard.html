@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -6,25 +7,42 @@
 <div class="page-header">
     <div>
         <h1>Farm Dashboard</h1>
-        <p>Choose an area to manage your farm operations.</p>
+        <p>{{ today|date:"l, j F Y" }}</p>
+    </div>
+    <div class="action-links">
+        <span class="live-status" id="live-status" aria-live="polite">Updated just now</span>
+        <button type="button" class="button button-secondary button-small" id="live-refresh">{% include "base/icon.html" with icon="refresh" class_name="action-icon" %}Refresh</button>
     </div>
 </div>
 
-<div class="dashboard-links">
-    {% if perms.crops.view_crop and perms.crops.view_field and perms.crops.view_planting %}
-    <a href="{% url 'crops:overview' %}">Crops &amp; Fields</a>
-    {% endif %}
-    {% if perms.crops.view_planting %}
-    <a href="{% url 'crops:planting-list' %}">Plantings</a>
-    {% endif %}
-    {% if perms.harvests.view_harvest %}
-    <a href="{% url 'harvests:harvest-list' %}">Harvests</a>
-    {% endif %}
-    {% if perms.customers.view_customer %}
-    <a href="{% url 'customers:customer-list' %}">Customers</a>
-    {% endif %}
-    {% if perms.sales.view_order %}
-    <a href="{% url 'sales:order-list' %}">Sales Orders</a>
-    {% endif %}
+<div id="dashboard-live"
+     data-url="{% url 'dashboard:panels' %}"
+     data-interval="{{ refresh_seconds }}">
+    {% include "dashboard/_panels.html" %}
 </div>
+
+<section aria-labelledby="quick-links-title">
+    <h2 id="quick-links-title">Go to</h2>
+    <div class="dashboard-links">
+        {% if perms.crops.view_crop and perms.crops.view_field and perms.crops.view_planting %}
+        <a href="{% url 'crops:overview' %}">Crops &amp; Fields</a>
+        {% endif %}
+        {% if perms.crops.view_planting %}
+        <a href="{% url 'crops:planting-list' %}">Plantings</a>
+        {% endif %}
+        {% if perms.harvests.view_harvest %}
+        <a href="{% url 'harvests:harvest-list' %}">Harvests</a>
+        {% endif %}
+        {% if perms.customers.view_customer %}
+        <a href="{% url 'customers:customer-list' %}">Customers</a>
+        {% endif %}
+        {% if perms.sales.view_order %}
+        <a href="{% url 'sales:order-list' %}">Sales Orders</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}?v=20261028" defer></script>
 {% endblock %}

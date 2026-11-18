@@ -1,5 +1,7 @@
 add
 agriculture
+calendar_month
+check_circle
 dashboard
 delete
 edit
@@ -11,7 +13,10 @@ lock_open
 logout
 manage_accounts
 menu
+payments
 people
 person_add
 point_of_sale
+refresh
 space_dashboard
+warning

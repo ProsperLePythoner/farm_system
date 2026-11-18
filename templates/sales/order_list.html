@@ -18,6 +18,13 @@
     {% endif %}
 </div>
 
+{% if perms.sales.view_payment %}
+<nav class="filter-tabs" aria-label="Filter orders">
+    <a href="{% url 'sales:order-list' %}" {% if not payment_filter %}aria-current="true"{% endif %}>All orders</a>
+    <a href="{% url 'sales:order-list' %}?payment=unpaid" {% if payment_filter == "unpaid" %}aria-current="true"{% endif %}>Unpaid or part-paid</a>
+</nav>
+{% endif %}
+
 {% if orders %}
 <div class="table-scroll" role="region" aria-label="Sales orders" tabindex="0">
 <table>
@@ -49,7 +56,10 @@
     </tbody>
 </table>
 </div>
-{% include "base/pagination.html" with label="orders" %}
+{% include "base/pagination.html" with label="orders" querystring=pagination_query %}
+
+{% elif payment_filter %}
+<p>Every order is fully paid. Nothing is outstanding.</p>
 
 {% else %}
 <p>No orders have been recorded yet.</p>

@@ -25,12 +25,24 @@ class OrderListView(PermissionRequiredMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        return (
-            Order.objects
-            .select_related("customer")
-            .with_totals()
-            .order_by("-order_date", "-pk")
-        )
+        orders = Order.objects.select_related("customer").with_totals()
+        if self.payment_filter == "unpaid":
+            orders = orders.filter(annotated_balance__gt=0)
+        return orders.order_by("-order_date", "-pk")
+
+    @property
+    def payment_filter(self):
+        # The balance column is only visible to users who may view payments, so
+        # only they may filter on it.
+        if self.request.GET.get("payment") == "unpaid" and self.request.user.has_perm("sales.view_payment"):
+            return "unpaid"
+        return ""
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["payment_filter"] = self.payment_filter
+        context["pagination_query"] = "payment=unpaid" if self.payment_filter else ""
+        return context
 
 
 class OrderDetailView(PermissionRequiredMixin, DetailView):
