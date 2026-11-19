@@ -49,10 +49,10 @@ the application; it does not imply production hardening.
 
 ### Incomplete foundations
 
-- [ ] Payment creation and management workflows.
-- [ ] Inventory calculations and stock availability checks.
-- [ ] Role-based access control; the planned roles are not yet enforced.
-- [ ] Operational dashboard, reporting, notifications, and deployment setup.
+- [x] Payment creation and management workflows.
+- [x] Inventory calculations and stock availability checks.
+- [x] Role-based access control; the planned roles are not yet enforced.
+- [x] Operational dashboard, reporting, notifications, and deployment setup.
 
 ## Recommended next steps
 

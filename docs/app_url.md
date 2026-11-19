@@ -1,3 +1,0 @@
-# To The Dev...
-The current live app url is:
-> **[Here...](https://farm-system-3gybhp3bi-prosperlepythoners-projects.vercel.app/dashboard/)**

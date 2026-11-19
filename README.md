@@ -34,7 +34,7 @@ The application is deployed on Vercel. Visitors are directed to the login page, 
 
 ## Application Preview
 
-![Agribusiness Management System dashboard preview](docs/images/dashboard-preview.png)
+![Agribusiness Management System dashboard preview](docs/images/farm-dashboard.png)
 
 *Application preview. Features and workflows are still under development.*
 
@@ -524,5 +524,22 @@ farm_system/
 This is a simplified overview; the exact files may evolve as the project develops.
 
 ---
+
+## Documentation
+
+| Document | Description |
+|---|---|
+| [User Roles](docs/user_roles_and_permissions.md) | Instructions for using the application, organised by role and workflow. |
+| [UI Architecture](docs/agribusiness_ui_architecture.md) | Frontend styling architecture, themes, and display preferences. |
+| [Database Design](docs/database_design.md) | Data models and their relationships. |
+| [Email Briefing Cron](docs/email_briefing_details_and_customizations_guide.md) | Daily automatic email service for farm alerts.
+| [Deployment](docs/agribusiness_vercel_deployment_checklist.md) | Deployment configuration details. |
+| [Architecture](docs/architecture.md) | Application structure and architectural decisions. |
+| [Business Rules](docs/business_rules.md) | Core operational rules and calculations. |
+| [Codebase](docs/CODEBASE_GUIDE.md) | Guide to the entire codebase, for interested individuals. |
+| [Roadmap](docs/roadmap.md) | Planned development and project priorities. |
+
+- **DISCLAIMER:** Certain parts of this document may or may not be already implemented, its purpose 
+is to serve as a guide into understanding how the web application works to simplify future maintenance.
 
 *Agribusiness Management System — built incrementally, with a focus on practical farm operations, maintainable code, and reliable records.*
