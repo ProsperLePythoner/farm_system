@@ -130,3 +130,4 @@ pnpm-debug.log*
 
 # Local databases
 *.sqlite3
+.vercel
