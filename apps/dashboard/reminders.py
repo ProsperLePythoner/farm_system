@@ -8,7 +8,7 @@ WHAT THIS FILE DOES
 WHO GETS WHAT (the recipient rules the roadmap asked to define first)
     * Only active users who have an email address saved on their account.
     * Harvest section: Administrator, Farm Manager, Harvest Manager.
-    * Payments section: Administrator, Farm Manager, Sales Manager.
+    * Payments section: Administrator, Sales Manager.
     * Django superusers receive both. Staff (read-only) receive none; they can
       still see everything on the dashboard.
     Change the two role tuples below to change the rules.
@@ -51,7 +51,7 @@ from .services import harvest_section
 logger = logging.getLogger(__name__)
 
 HARVEST_RECIPIENT_ROLES = (ROLE_ADMINISTRATOR, ROLE_FARM_MANAGER, ROLE_HARVEST_MANAGER)
-PAYMENT_RECIPIENT_ROLES = (ROLE_ADMINISTRATOR, ROLE_FARM_MANAGER, ROLE_SALES_MANAGER)
+PAYMENT_RECIPIENT_ROLES = (ROLE_ADMINISTRATOR, ROLE_SALES_MANAGER)
 PAYMENT_LIST_LIMIT = 10
 
 

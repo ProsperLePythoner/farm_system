@@ -54,7 +54,18 @@ ROLE_PERMISSIONS = {
         "auth.add_user",
         "auth.change_user",
     ),
-    ROLE_FARM_MANAGER: ALL_OPERATIONAL_PERMISSIONS,
+    ROLE_FARM_MANAGER: (
+        *model_permissions(
+            "crops",
+            ("crop", "field", "planting"),
+            ("view", "add", "change", "delete"),
+        ),
+        *model_permissions(
+            "harvests",
+            ("harvest",),
+            ("view", "add", "change", "delete"),
+        ),
+    ),
     ROLE_HARVEST_MANAGER: (
         *model_permissions("crops", ("crop", "field", "planting"), ("view",)),
         "harvests.view_harvest",

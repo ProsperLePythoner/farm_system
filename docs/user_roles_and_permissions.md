@@ -22,9 +22,9 @@ The following abbreviations are used:
 |---|:---:|:---:|:---:|:---:|:---:|
 | Crops, Fields & Plantings | VAED | VAED | V--- | V--- | V--- |
 | Harvests | VAED | VAED | VAE- | V--- | V--- |
-| Customers | VAED | VAED | ---- | VAE- | V--- |
-| Orders | VAED | VAED | ---- | VAE- | V--- |
-| Payments | VAED | VAED | ---- | VAE- | ---- |
+| Customers | VAED | ---- | ---- | VAE- | V--- |
+| Orders | VAED | ---- | ---- | VAE- | V--- |
+| Payments | VAED | ---- | ---- | VAE- | ---- |
 
 ### Account Management
 

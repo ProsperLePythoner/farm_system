@@ -1,8 +1,13 @@
 """Regression tests for the dashboard shell and root redirect."""
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.urls import reverse
+
+from apps.accounts.roles import ROLE_FARM_MANAGER
+
+from .reminders import _recipients
 
 
 class DashboardTests(TestCase):
@@ -47,3 +52,18 @@ class DashboardTests(TestCase):
             reverse("dashboard:dashboard"),
             fetch_redirect_response=False,
         )
+
+    def test_farm_manager_receives_harvest_but_not_payment_digest(self):
+        farm_manager = get_user_model().objects.create_user(
+            username="farm-manager",
+            email="farm-manager@example.test",
+        )
+        farm_manager.groups.add(
+            Group.objects.get_or_create(name=ROLE_FARM_MANAGER)[0]
+        )
+
+        farm_manager_recipients = [
+            recipient for recipient in _recipients()
+            if recipient[0].pk == farm_manager.pk
+        ]
+        self.assertEqual(farm_manager_recipients, [(farm_manager, True, False)])

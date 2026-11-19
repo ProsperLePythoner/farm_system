@@ -242,7 +242,7 @@ class AccountFeatureTests(TestCase):
 
         roles = (
             (self.administrator, "crops.delete_crop", "auth.add_user"),
-            (self.farm_manager, "sales.delete_order", "sales.add_payment"),
+            (self.farm_manager, "crops.delete_crop", "crops.add_planting"),
             (self.harvest_manager, "harvests.change_harvest", "crops.view_crop"),
             (self.sales_manager, "sales.add_payment", "customers.change_customer"),
             (self.staff, "sales.view_order", "customers.view_customer"),
@@ -252,11 +252,37 @@ class AccountFeatureTests(TestCase):
                 self.assertTrue(user.has_perm(allowed_permission))
                 self.assertTrue(user.has_perm(expected_permission))
 
+        farm_manager_permissions = {
+            "crops": ("crop", "field", "planting"),
+            "harvests": ("harvest",),
+        }
+        for app_label, model_names in farm_manager_permissions.items():
+            for model_name in model_names:
+                for action in ("view", "add", "change", "delete"):
+                    permission = f"{app_label}.{action}_{model_name}"
+                    with self.subTest(role=ROLE_FARM_MANAGER, permission=permission):
+                        self.assertTrue(self.farm_manager.has_perm(permission))
+
+        restricted_farm_manager_permissions = {
+            "customers": ("customer",),
+            "sales": ("order", "orderitem", "payment"),
+        }
+        for app_label, model_names in restricted_farm_manager_permissions.items():
+            for model_name in model_names:
+                for action in ("view", "add", "change", "delete"):
+                    permission = f"{app_label}.{action}_{model_name}"
+                    with self.subTest(role=ROLE_FARM_MANAGER, permission=permission):
+                        self.assertFalse(self.farm_manager.has_perm(permission))
+
+        for action in ("view", "add", "change", "delete"):
+            permission = f"auth.{action}_user"
+            with self.subTest(role=ROLE_FARM_MANAGER, permission=permission):
+                self.assertFalse(self.farm_manager.has_perm(permission))
+
         self.assertFalse(self.harvest_manager.has_perm("harvests.delete_harvest"))
         self.assertFalse(self.sales_manager.has_perm("sales.delete_order"))
         self.assertFalse(self.sales_manager.has_perm("crops.add_crop"))
         self.assertFalse(self.staff.has_perm("sales.view_payment"))
-        self.assertFalse(self.farm_manager.has_perm("auth.view_user"))
         self.assertEqual(
             Group.objects.filter(name=ROLE_ADMINISTRATOR).count(),
             1,
@@ -321,24 +347,49 @@ class AccountFeatureTests(TestCase):
             403,
         )
 
-    def test_farm_manager_can_use_operations_but_not_user_management(self):
+    def test_farm_manager_can_use_production_but_not_sales_or_user_management(self):
         self.login_as(self.farm_manager)
         self.assertEqual(self.client.get(reverse("crops:crop-list")).status_code, 200)
-        response = self.client.post(
-            reverse("customers:customer-create"),
-            {
-                "customer_name": "Farm Manager Buyer",
-                "customer_phone": "0711111111",
-                "customer_location": "",
-                "notes": "",
-            },
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            Customer.objects.filter(customer_name="Farm Manager Buyer").exists()
-        )
         self.assertEqual(
-            self.client.get(reverse("accounts:user-create")).status_code,
+            self.client.get(reverse("harvests:harvest-list")).status_code,
+            200,
+        )
+
+        customer_urls = (
+            reverse("customers:customer-list"),
+            reverse("customers:customer-create"),
+            reverse("customers:customer-detail", args=(self.customer.pk,)),
+            reverse("customers:customer-update", args=(self.customer.pk,)),
+            reverse("customers:customer-delete", args=(self.customer.pk,)),
+        )
+        for url in customer_urls:
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 403)
+
+        order_urls = (
+            reverse("sales:order-list"),
+            reverse("sales:order-create"),
+            reverse("sales:order-detail", args=(self.order.pk,)),
+            reverse("sales:order-update", args=(self.order.pk,)),
+            reverse("sales:order-delete", args=(self.order.pk,)),
+            reverse("sales:payment-create", args=(self.order.pk,)),
+        )
+        for url in order_urls:
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 403)
+
+        user_management_urls = (
+            reverse("accounts:user-list"),
+            reverse("accounts:user-create"),
+            reverse("accounts:user-update", args=(self.staff.pk,)),
+        )
+        for url in user_management_urls:
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 403)
+        self.assertEqual(
+            self.client.post(
+                reverse("accounts:user-toggle-active", args=(self.staff.pk,))
+            ).status_code,
             403,
         )
 
