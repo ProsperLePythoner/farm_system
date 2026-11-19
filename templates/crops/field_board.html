@@ -1,7 +1,11 @@
 {% extends "base/base.html" %}
-{% load humanize %}
+{% load humanize static %}
 
 {% block title %}Crop Timeline{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/field-board.css' %}?v=20261118">
+{% endblock extra_css %}
 
 {% block content %}
 <div class="field-board">

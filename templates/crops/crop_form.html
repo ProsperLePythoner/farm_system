@@ -12,10 +12,12 @@
     </div>
 </div>
 
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">{% if object %}Save Changes{% else %}Create Crop{% endif %}</button>
-    <a class="button button-secondary" href="{% if object %}{% url 'crops:crop-detail' object.pk %}{% else %}{% url 'crops:crop-list' %}{% endif %}">Cancel</a>
+    <div class="form-actions">
+        <button type="submit">{% if object %}Save Changes{% else %}Create Crop{% endif %}</button>
+        <a class="button button-secondary" href="{% if object %}{% url 'crops:crop-detail' object.pk %}{% else %}{% url 'crops:crop-list' %}{% endif %}">Cancel</a>
+    </div>
 </form>
 {% endblock %}

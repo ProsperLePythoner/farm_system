@@ -74,7 +74,8 @@ the application; it does not imply production hardening.
 
 ## Interface foundation
 
-The shared UI uses the existing `static/css/base.css` stylesheet. Tailwind is
+The shared UI uses the hand-written stylesheets in `static/css/` (see
+`docs/css_architecture.md`). Tailwind is
 not configured as an active build pipeline in this checkout, so the unused
 Tailwind demo integration was removed rather than requiring new frontend
 tooling. The current dashboard is a navigation landing page, not an operational

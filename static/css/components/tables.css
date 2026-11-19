@@ -1,0 +1,224 @@
+/* ==========================================================================
+   Tables
+   --------------------------------------------------------------------------
+   Markup:  <div class="table-scroll"><table> ... </table></div>
+
+   Two presentations of the same markup:
+     1. Table  : a real table that scrolls sideways inside .table-scroll if
+                 it is wider than the screen.
+     2. Cards  : each row becomes a small card with "Label  Value" lines.
+                 Used on phones, or whenever the user chooses "Cards" in the
+                 display preferences.
+
+   Cards mode is switched on by the class  html.stack-tables  (set by
+   static/js/prefs-init.js). static/js/tables.js copies each column heading
+   onto its cells as data-label so the card lines can show it. Without
+   JavaScript neither class exists and every table simply stays a table.
+   ========================================================================== */
+
+/* ---- Table presentation ------------------------------------------------------ */
+.table-scroll {
+    -webkit-overflow-scrolling: touch;
+    background: var(--color-surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    margin: 1rem 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+/* A table inside a card does not need a second card around it. */
+main section .table-scroll,
+.card .table-scroll {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 1rem 0 0;
+}
+
+.table-scroll:focus-visible {
+    outline-offset: -3px;
+}
+
+table {
+    border-collapse: collapse;
+    font-size: .94rem;
+    width: 100%;
+}
+
+.table-scroll table {
+    margin: 0;
+    min-width: 36rem;
+}
+
+th,
+td {
+    padding: .85rem 1rem;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: var(--color-surface-head);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--ink-2);
+    font-size: var(--text-xs);
+    font-weight: 650;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+td {
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+tbody tr:hover td {
+    background: var(--color-row-hover);
+}
+
+/* The record's name reads as text; it is still a link. */
+td a:not(.button) {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+td a:not(.button):hover {
+    color: var(--color-link);
+    text-decoration: underline;
+}
+
+td .button,
+td .account-action-form {
+    margin: .1rem .35rem .1rem 0;
+    vertical-align: middle;
+}
+
+/* ---- Cards presentation ---------------------------------------------------------- */
+html.stack-tables .table-scroll {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 1rem 0;
+    overflow: visible;
+}
+
+html.stack-tables main section .table-scroll,
+html.stack-tables .card .table-scroll {
+    margin: 1rem 0 0;
+}
+
+html.stack-tables .table-scroll table,
+html.stack-tables .table-scroll tbody {
+    display: block;
+    min-width: 0;
+}
+
+/* The header row is replaced by the per-cell labels. Keep it for screen
+   readers by hiding it visually rather than removing it. */
+html.stack-tables .table-scroll thead {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+html.stack-tables .table-scroll tr {
+    background: var(--color-surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    display: block;
+    margin: 0 0 .75rem;
+    padding: .4rem 1rem;
+}
+
+/* Inside a card, rows are separated by a hairline instead of nested cards. */
+html.stack-tables main section .table-scroll tr,
+html.stack-tables .card .table-scroll tr {
+    background: var(--color-surface-2);
+    box-shadow: none;
+}
+
+html.stack-tables .table-scroll td {
+    align-items: baseline;
+    background: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: .6rem 0;
+    text-align: right;
+}
+
+html.stack-tables .table-scroll td:last-child {
+    border-bottom: 0;
+}
+
+html.stack-tables .table-scroll tbody tr:hover td {
+    background: none;
+}
+
+html.stack-tables .table-scroll td::before {
+    color: var(--ink-3);
+    content: attr(data-label);
+    flex: 0 1 auto;
+    font-size: var(--text-xs);
+    font-weight: 650;
+    letter-spacing: .05em;
+    max-width: 45%;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+/* First column is the card's title. */
+html.stack-tables .table-scroll td[data-cell="primary"] {
+    font-size: 1.05rem;
+    font-weight: 650;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+html.stack-tables .table-scroll td[data-cell="primary"]::before {
+    display: none;
+}
+
+/* Edit / Delete etc. sit together at the bottom of the card. */
+html.stack-tables .table-scroll td[data-cell="actions"] {
+    flex-wrap: wrap;
+    gap: .5rem;
+    justify-content: flex-start;
+    padding: .8rem 0 .5rem;
+}
+
+html.stack-tables .table-scroll td[data-cell="actions"]::before {
+    display: none;
+}
+
+html.stack-tables .table-scroll td[data-cell="actions"] .button,
+html.stack-tables .table-scroll td[data-cell="actions"] .account-action-form {
+    flex: 1 1 7rem;
+    margin: 0;
+}
+
+html.stack-tables .table-scroll td[data-cell="actions"] .account-action-form button {
+    width: 100%;
+}
+
+/* Cells with nothing in them (for example a hidden action) are skipped. */
+html.stack-tables .table-scroll td[data-empty] {
+    display: none;
+}

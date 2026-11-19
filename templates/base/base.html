@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#124a2d">
 
     <title>
         {% block title %}
@@ -12,10 +14,13 @@
         {% endblock title %}
     </title>
 
+    {# Applies the saved theme and list layout before first paint, so there is no flash. #}
+    <script src="{% static 'js/prefs-init.js' %}?v=20261118"></script>
+
     <!-- Global CSS -->
     <link rel="preload" href="{% static 'fonts/inter/inter-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{% static 'fonts/material-symbols/material-symbols-subset.woff2' %}" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261028">
+    {% include "base/styles.html" %}
 
     {% block extra_css %}
     {% endblock extra_css %}
@@ -48,8 +53,11 @@
     </div>
 
     {% include "base/footer.html" %}
+    {% include "base/prefs_dialog.html" %}
 
     <script src="{% static 'js/shell.js' %}?v=20261012" defer></script>
+    <script src="{% static 'js/prefs.js' %}?v=20261118" defer></script>
+    <script src="{% static 'js/tables.js' %}?v=20261118" defer></script>
     {% block extra_js %}
     {% endblock extra_js %}
 

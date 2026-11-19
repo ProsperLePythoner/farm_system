@@ -59,12 +59,14 @@
 {% include "base/pagination.html" with label="orders" querystring=pagination_query %}
 
 {% elif payment_filter %}
-<p>Every order is fully paid. Nothing is outstanding.</p>
+<div class="empty-state"><p>Every order is fully paid. Nothing is outstanding.</p></div>
 
 {% else %}
-<p>No orders have been recorded yet.</p>
-{% if perms.sales.add_order and perms.sales.add_orderitem %}
-    <a class="button" href="{% url 'sales:order-create' %}">{% include "base/icon.html" with icon="add" %}Create the first order</a>
-{% endif %}
+<div class="empty-state">
+    <p>No orders have been recorded yet.</p>
+    {% if perms.sales.add_order and perms.sales.add_orderitem %}
+        <a class="button" href="{% url 'sales:order-create' %}">{% include "base/icon.html" with icon="add" %}Create the first order</a>
+    {% endif %}
+</div>
 {% endif %}
 {% endblock %}

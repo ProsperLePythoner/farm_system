@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
     {{ form.as_p }}
 
@@ -30,11 +30,13 @@
         {% endfor %}
     </section>
 
-    <button type="submit">{% if object %}Save Order{% else %}Create Order{% endif %}</button>
-    {% if object %}
-    <a class="button button-secondary" href="{% url 'sales:order-detail' object.pk %}">Cancel</a>
-    {% else %}
-    <a class="button button-secondary" href="{% url 'sales:order-list' %}">Cancel</a>
-    {% endif %}
+    <div class="form-actions">
+        <button type="submit">{% if object %}Save Order{% else %}Create Order{% endif %}</button>
+        {% if object %}
+        <a class="button button-secondary" href="{% url 'sales:order-detail' object.pk %}">Cancel</a>
+        {% else %}
+        <a class="button button-secondary" href="{% url 'sales:order-list' %}">Cancel</a>
+        {% endif %}
+    </div>
 </form>
 {% endblock %}

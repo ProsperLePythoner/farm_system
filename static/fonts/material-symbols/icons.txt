@@ -1,13 +1,18 @@
 add
 agriculture
+brightness_auto
 calendar_month
 check_circle
+close
+dark_mode
 dashboard
 delete
+devices
 edit
 event_available
 grass
 landscape
+light_mode
 lock
 lock_open
 logout
@@ -19,4 +24,7 @@ person_add
 point_of_sale
 refresh
 space_dashboard
+table_rows
+tune
+view_agenda
 warning

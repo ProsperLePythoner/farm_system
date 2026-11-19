@@ -13,15 +13,17 @@
 
 {% if delete_blocked %}
 <p class="form-errors">{{ blocked_message }}</p>
-<a href="{% url 'crops:planting-detail' planting.pk %}">Return to planting</a>
+<a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Return to planting</a>
 {% else %}
-<form method="post">
+<form method="post" class="form-card">
 
     {% csrf_token %}
 
-    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete</button>
+    <div class="form-actions">
+        <button class="button-danger button-solid" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete</button>
 
-    <a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
+        <a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
+    </div>
 
 </form>
 {% endif %}

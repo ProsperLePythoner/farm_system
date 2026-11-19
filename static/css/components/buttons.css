@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Buttons
+   --------------------------------------------------------------------------
+   <button> and <a class="button"> share one look so a link that performs an
+   action is as easy to tap as a form button.
+
+     .button            primary (solid green)
+     .button-secondary  tonal; for Edit, Cancel and other secondary actions
+     .button-danger     quiet red (tinted); safe default for row-level Delete
+       + .button-solid  loud red; reserve for the final "Yes, delete" button
+     .button-ghost      outline only
+     .button-small      compact; for table rows and card headers
+     .icon-button       square, icon only (needs an aria-label)
+   ========================================================================== */
+
+button,
+.button {
+    align-items: center;
+    background: var(--color-primary);
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    color: var(--color-on-primary);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-weight: 650;
+    gap: .45rem;
+    justify-content: center;
+    line-height: 1.2;
+    min-height: var(--tap);
+    padding: .6rem 1.1rem;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+button:hover,
+.button:hover {
+    background: var(--color-primary-hover);
+    color: var(--color-on-primary);
+    text-decoration: none;
+}
+
+button:active,
+.button:active {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18);
+}
+
+/* ---- Variants -------------------------------------------------------------- */
+.button-secondary {
+    background: var(--btn-secondary-bg);
+    border-color: var(--btn-secondary-border);
+    color: var(--btn-secondary-fg);
+}
+
+.button-secondary:hover {
+    background: var(--btn-secondary-bg-hover);
+    color: var(--btn-secondary-fg);
+}
+
+.button-danger {
+    background: var(--btn-danger-bg);
+    border-color: var(--btn-danger-border);
+    color: var(--btn-danger-fg);
+}
+
+.button-danger:hover {
+    background: var(--btn-danger-bg-hover);
+    color: var(--btn-danger-fg);
+}
+
+.button-danger.button-solid {
+    background: var(--btn-danger-solid);
+    border-color: transparent;
+    color: #fff;
+}
+
+.button-danger.button-solid:hover {
+    background: var(--btn-danger-solid-hover);
+    color: #fff;
+}
+
+.button-ghost {
+    background: transparent;
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+}
+
+.button-ghost:hover {
+    background: var(--btn-secondary-bg);
+    color: var(--color-text);
+}
+
+/* ---- Sizes ----------------------------------------------------------------- */
+.button-small {
+    font-size: .9rem;
+    min-height: 2.25rem;
+    padding: .35rem .8rem;
+}
+
+.icon-button {
+    background: transparent;
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+    min-height: 2.5rem;
+    padding: 0;
+    width: 2.5rem;
+}
+
+.icon-button:hover {
+    background: var(--btn-secondary-bg);
+    color: var(--color-text);
+}
+
+/* Fingers need more room than a mouse pointer does. */
+@media (pointer: coarse) {
+    .button-small {
+        min-height: 2.5rem;
+    }
+}
+
+/* ---- States ----------------------------------------------------------------- */
+button:disabled,
+.button.is-disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+/* ---- Button groups ------------------------------------------------------------ */
+.action-links {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+/* A small form that wraps a single button inside a table row. */
+.account-action-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .page-header .action-links .button {
+        flex: 1 1 auto;
+    }
+}

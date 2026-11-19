@@ -6,7 +6,7 @@ WHAT THIS DOES
     font is about 4 MB, so every first-time visitor used to download 4 MB to
     show roughly 20 icons. This script keeps only the glyphs for icons that
     are actually referenced in ``templates/`` and ``static/js/`` and pins the
-    variable axes to the values ``static/css/base.css`` uses
+    variable axes to the values ``static/css/base/base.css`` uses
     (FILL 0, wght 400, GRAD 0, opsz 20), which brings the file to a few KB.
 
 WHEN TO RUN IT
@@ -39,7 +39,7 @@ OUT_DIR = ROOT / "static" / "fonts" / "material-symbols"
 OUTPUT = OUT_DIR / "material-symbols-subset.woff2"
 MANIFEST = OUT_DIR / "icons.txt"
 
-# Must match font-variation-settings in static/css/base.css.
+# Must match font-variation-settings in static/css/base/base.css.
 AXES = {"FILL": 0, "wght": 400, "GRAD": 0, "opsz": 20}
 
 # Icons referenced indirectly (not as literal text in a template).

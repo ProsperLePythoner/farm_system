@@ -23,10 +23,12 @@
     </dl>
 </section>
 
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">{% include "base/icon.html" with class_name="action-icon" %}Record payment</button>
-    <a class="button button-secondary" href="{% url 'sales:order-detail' order.pk %}">Cancel</a>
+    <div class="form-actions">
+        <button type="submit">{% include "base/icon.html" with class_name="action-icon" %}Record payment</button>
+        <a class="button button-secondary" href="{% url 'sales:order-detail' order.pk %}">Cancel</a>
+    </div>
 </form>
 {% endblock %}

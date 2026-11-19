@@ -12,13 +12,15 @@
 
 {% if has_payments %}
 <p>This order has payment history and cannot be deleted. Keeping the order preserves its payment records.</p>
-<a href="{% url 'sales:order-detail' order.pk %}">Return to order</a>
+<a class="button button-secondary" href="{% url 'sales:order-detail' order.pk %}">Return to order</a>
 {% else %}
 <p>Are you sure you want to delete this order and its items?</p>
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
-    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete order</button>
-    <a class="button button-secondary" href="{% url 'sales:order-detail' order.pk %}">Cancel</a>
+    <div class="form-actions">
+        <button class="button-danger button-solid" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete order</button>
+        <a class="button button-secondary" href="{% url 'sales:order-detail' order.pk %}">Cancel</a>
+    </div>
 </form>
 {% endif %}
 {% endblock %}

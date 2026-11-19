@@ -3,14 +3,16 @@
 {% block title %}Log in{% endblock %}
 
 {% block content %}
-<section>
+<section class="auth-card">
     <h1>Log in</h1>
     <p>Sign in to access the farm management system.</p>
-    <form method="post">
+    <form method="post" class="form-card">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
         {{ form.as_p }}
-        <button type="submit">Log in</button>
+        <div class="form-actions">
+            <button type="submit">Log in</button>
+        </div>
     </form>
 </section>
 {% endblock %}

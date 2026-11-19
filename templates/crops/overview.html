@@ -21,11 +21,11 @@
 <section>
     <h2>Catalogue</h2>
     <p>{{ crop_count }} crops · {{ field_count }} fields · {{ planting_count }} plantings</p>
-    <p>
-        {% if perms.crops.view_crop %}<a href="{% url 'crops:crop-list' %}">Manage crops</a> ·{% endif %}
-        {% if perms.crops.view_field %}<a href="{% url 'crops:field-list' %}">Manage fields</a> ·{% endif %}
-        {% if perms.crops.view_planting %}<a href="{% url 'crops:planting-list' %}">View plantings</a>{% endif %}
-    </p>
+    <div class="action-links">
+        {% if perms.crops.view_crop %}<a class="button button-secondary button-small" href="{% url 'crops:crop-list' %}">Manage crops</a>{% endif %}
+        {% if perms.crops.view_field %}<a class="button button-secondary button-small" href="{% url 'crops:field-list' %}">Manage fields</a>{% endif %}
+        {% if perms.crops.view_planting %}<a class="button button-secondary button-small" href="{% url 'crops:planting-list' %}">View plantings</a>{% endif %}
+    </div>
 </section>
 
 <section>

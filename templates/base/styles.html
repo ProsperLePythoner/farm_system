@@ -1,0 +1,16 @@
+{% load static %}
+{# Every shared stylesheet, in cascade order, with ONE cache-busting version. #}
+{# Bump v whenever any CSS file changes. Page-only CSS is loaded by that page #}
+{# through {% block extra_css %} (see crops/field_board.html, dashboard/dashboard.html). #}
+{% with v="20261118" %}
+<link rel="stylesheet" href="{% static 'css/base/tokens.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/base/base.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/layout/shell.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/buttons.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/cards.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/tables.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/forms.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/feedback.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/navigation.css' %}?v={{ v }}">
+<link rel="stylesheet" href="{% static 'css/components/preferences.css' %}?v={{ v }}">
+{% endwith %}

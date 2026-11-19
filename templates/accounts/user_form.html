@@ -16,10 +16,12 @@
     </div>
 </div>
 
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">{% if managed_user %}Save changes{% else %}Create user{% endif %}</button>
-    <a class="button button-secondary" href="{% url 'accounts:user-list' %}">Cancel</a>
+    <div class="form-actions">
+        <button type="submit">{% if managed_user %}Save changes{% else %}Create user{% endif %}</button>
+        <a class="button button-secondary" href="{% url 'accounts:user-list' %}">Cancel</a>
+    </div>
 </form>
 {% endblock %}

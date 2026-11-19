@@ -79,11 +79,12 @@
 
 {% else %}
 
-<p>No plantings have been registered yet.</p>
-
-{% if perms.crops.add_planting %}
-    <a class="button" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}Register your first planting</a>
-{% endif %}
+<div class="empty-state">
+    <p>No plantings have been registered yet.</p>
+    {% if perms.crops.add_planting %}
+        <a class="button" href="{% url 'crops:planting-create' %}">{% include "base/icon.html" with icon="add" %}Register your first planting</a>
+    {% endif %}
+</div>
 
 {% endif %}
 

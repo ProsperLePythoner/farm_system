@@ -1,0 +1,450 @@
+/* ==========================================================================
+   Application shell: navbar, sidebar / mobile drawer, main area, footer
+   ========================================================================== */
+
+/* ---- Navbar --------------------------------------------------------------- */
+.navbar {
+    align-items: center;
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: var(--shadow-navbar);
+    color: #fff;
+    display: flex;
+    flex: 0 0 auto;
+    gap: 16px;
+    justify-content: space-between;
+    min-height: var(--navbar-height);
+    padding: 10px clamp(12px, 3vw, 32px);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+}
+
+.navbar-start {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    min-width: 0;
+}
+
+.navbar .brand {
+    align-items: center;
+    color: #fff;
+    display: flex;
+    gap: 10px;
+    min-width: 0;
+    text-decoration: none;
+}
+
+.navbar .brand:hover {
+    text-decoration: none;
+}
+
+.brand-mark {
+    align-items: center;
+    background: rgba(228, 241, 218, .13);
+    border: 1px solid rgba(228, 241, 218, .24);
+    border-radius: 12px;
+    color: #eaf5e4;
+    display: flex;
+    flex: 0 0 auto;
+    height: 36px;
+    justify-content: center;
+    width: 36px;
+}
+
+.brand-mark svg {
+    display: block;
+    height: 24px;
+    width: 24px;
+}
+
+.brand-name {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Controls that sit on the green bar share one look. */
+.navbar .nav-toggle,
+.navbar .icon-button,
+.navbar .button-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 10px;
+    color: #fff;
+    min-height: 2.5rem;
+}
+
+.navbar .nav-toggle:hover,
+.navbar .icon-button:hover,
+.navbar .button-ghost:hover {
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    text-decoration: none;
+}
+
+.navbar .nav-toggle:focus-visible,
+.navbar .icon-button:focus-visible,
+.navbar .button-ghost:focus-visible {
+    outline-color: #fff;
+}
+
+.navbar .nav-toggle {
+    display: none;
+    flex: 0 0 auto;
+    padding: 0;
+    width: 2.5rem;
+}
+
+.navbar .button-ghost {
+    font-size: .875rem;
+    padding: .4rem .85rem;
+    white-space: nowrap;
+}
+
+.nav-toggle .material-symbols-outlined {
+    font-size: 1.35rem;
+}
+
+.nav-backdrop {
+    background: var(--backdrop);
+    display: none;
+    inset: 0;
+    position: fixed;
+    z-index: 20;
+}
+
+/* ---- Signed-in user ---------------------------------------------------------- */
+.user-box {
+    align-items: center;
+    color: #eaf3ed;
+    display: flex;
+    flex: 0 0 auto;
+    font-size: .875rem;
+    gap: 8px;
+    min-width: 0;
+}
+
+.user-identity {
+    align-items: center;
+    border-radius: var(--radius-pill);
+    color: inherit;
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px 10px 4px 4px;
+    text-decoration: none;
+    transition: background-color .15s ease;
+}
+
+.user-identity:hover {
+    background: rgba(255, 255, 255, .12);
+    text-decoration: none;
+}
+
+.user-avatar {
+    align-items: center;
+    background: rgba(255, 255, 255, .18);
+    border-radius: 50%;
+    color: #fff;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: .8rem;
+    font-weight: 700;
+    height: 34px;
+    justify-content: center;
+    width: 34px;
+}
+
+.user-meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.user-name {
+    color: #fff;
+    font-weight: 600;
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-role {
+    color: rgba(255, 255, 255, .78);
+    font-size: .72rem;
+}
+
+/* Shown on the always-dark navbar, so it does not follow the theme. */
+.navbar .user-role.superuser-badge {
+    align-items: center;
+    background: #d7eadc;
+    border-radius: var(--radius-pill);
+    color: #174c2d;
+    display: inline-flex;
+    font-size: .65rem;
+    font-weight: 700;
+    padding: .12rem .45rem;
+    width: fit-content;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+/* ---- Page frame ---------------------------------------------------------------- */
+.app-container {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    padding: clamp(16px, 3vw, 36px);
+    width: 100%;
+}
+
+.main-content > * {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1200px;
+}
+
+.footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    color: var(--ink-3);
+    flex: 0 0 auto;
+    font-size: .85rem;
+    padding: 15px;
+    text-align: center;
+}
+
+/* Title + subtitle on the left, primary actions on the right. */
+.page-header {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    margin-bottom: .15rem;
+}
+
+.page-header p {
+    color: var(--ink-2);
+    margin: 0;
+}
+
+/* ---- Sidebar ------------------------------------------------------------------- */
+.sidebar {
+    align-self: flex-start;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    color: var(--nav-text);
+    flex: 0 0 248px;
+    height: calc(100vh - var(--navbar-height));
+    height: calc(100dvh - var(--navbar-height));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 20px 12px;
+    position: sticky;
+    top: var(--navbar-height);
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar > nav > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar li {
+    min-width: 0;
+}
+
+.sidebar a {
+    align-items: center;
+    border-radius: var(--radius-control);
+    color: var(--nav-text);
+    display: flex;
+    font-size: .94rem;
+    gap: .75rem;
+    line-height: 1.35;
+    padding: 10px 12px;
+    text-decoration: none;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.sidebar a:hover {
+    background: var(--nav-hover-bg);
+    color: var(--nav-hover-fg);
+    text-decoration: none;
+}
+
+.sidebar a[aria-current="page"] {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-fg);
+    font-weight: 700;
+}
+
+.sidebar .nav-heading {
+    color: var(--nav-heading);
+    display: block;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: 20px 12px 7px;
+    text-transform: uppercase;
+}
+
+.sidebar .nav-section ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar .nav-section ul a {
+    padding-left: 22px;
+}
+
+.sidebar .material-symbols-outlined {
+    width: 1.25rem;
+}
+
+/* ---- Small screens ------------------------------------------------------------ */
+@media (max-width: 800px) {
+    .navbar .nav-toggle {
+        display: inline-flex;
+    }
+
+    .app-container {
+        flex-direction: column;
+    }
+
+    /* The sidebar becomes an off-canvas drawer opened by the menu button. */
+    .sidebar {
+        align-self: auto;
+        border-right: 0;
+        bottom: 0;
+        box-shadow: 8px 0 24px rgba(0, 0, 0, .22);
+        flex: 0 0 auto;
+        height: auto;
+        left: 0;
+        padding: calc(var(--navbar-height) + 12px) 12px 24px;
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        transform: translateX(-105%);
+        transition: transform .2s ease, visibility .2s ease;
+        visibility: hidden;
+        width: min(288px, 86vw);
+        z-index: 25;
+    }
+
+    body.nav-open .sidebar {
+        pointer-events: auto;
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    body.nav-open .nav-backdrop {
+        display: block;
+    }
+
+    .sidebar a {
+        font-size: 1rem;
+        min-height: var(--tap);
+    }
+
+    .main-content > * {
+        max-width: none;
+    }
+
+    .user-name {
+        max-width: 10rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        gap: 8px;
+    }
+
+    .navbar-start {
+        gap: 8px;
+    }
+
+    .user-box {
+        gap: 6px;
+    }
+
+    /* Keep the name for screen readers, but show only the avatar. */
+    .user-meta {
+        border: 0;
+        clip-path: inset(50%);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    .user-identity {
+        padding: 0;
+    }
+
+    /* "Log out" becomes an icon-only square button. */
+    .navbar .button-ghost {
+        padding: 0;
+        width: 2.5rem;
+    }
+
+    .navbar .button-ghost .button-label {
+        border: 0;
+        clip-path: inset(50%);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    /* The anonymous header keeps its text button. */
+    .navbar-anonymous .button-ghost {
+        padding: 0 .85rem;
+        width: auto;
+    }
+
+    .page-header {
+        align-items: flex-start;
+    }
+
+    .page-header > .button,
+    .page-header > a.button,
+    .page-header > .action-links,
+    .page-header > div:last-child:not(:first-child) {
+        width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    .brand-name {
+        display: none;
+    }
+}

@@ -25,6 +25,8 @@
         </a>
     </div>
     <div class="user-box">
+        {# Hidden until prefs.js runs, so it never shows without a working dialog. #}
+        <button type="button" class="icon-button" id="prefs-open" aria-haspopup="dialog" aria-label="Display preferences" hidden>{% include "base/icon.html" with icon="tune" %}</button>
         {# The context processor supplies the first recognized role for display. #}
         {% if user.is_authenticated %}
             {% with display_name=user.get_full_name|default:user.get_username %}
@@ -43,10 +45,10 @@
             {% endwith %}
             <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
                 {% csrf_token %}
-                <button type="submit" class="button-ghost">{% include "base/icon.html" with icon="logout" class_name="action-icon" %}Log out</button>
+                <button type="submit" class="button-ghost" aria-label="Log out">{% include "base/icon.html" with icon="logout" class_name="action-icon" %}<span class="button-label">Log out</span></button>
             </form>
         {% else %}
-            <a href="{% url 'accounts:login' %}" class="button-ghost">Log in</a>
+            <a href="{% url 'accounts:login' %}" class="button button-ghost">Log in</a>
         {% endif %}
     </div>
 </header>

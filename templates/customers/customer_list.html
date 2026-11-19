@@ -50,9 +50,11 @@
 {% include "base/pagination.html" with label="customers" %}
 
 {% else %}
-<p>No customers have been added yet.</p>
-{% if perms.customers.add_customer %}
-    <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="person_add" %}Add your first customer</a>
-{% endif %}
+<div class="empty-state">
+    <p>No customers have been added yet.</p>
+    {% if perms.customers.add_customer %}
+        <a class="button" href="{% url 'customers:customer-create' %}">{% include "base/icon.html" with icon="person_add" %}Add your first customer</a>
+    {% endif %}
+</div>
 {% endif %}
 {% endblock %}

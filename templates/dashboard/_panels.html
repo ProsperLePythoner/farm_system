@@ -2,7 +2,7 @@
 {# Everything inside the live-refresh region. Rendered by the page and by the #}
 {# /dashboard/panels/ fragment, so a refresh looks exactly like a page load. #}
 
-<p class="dash-summary" role="status">
+<p class="dash-summary{% if attention_count %} is-attention{% endif %}" role="status">
     {% if attention_count %}
         {% include "base/icon.html" with icon="warning" class_name="action-icon" %}
         <strong>{{ attention_count }}</strong> item{{ attention_count|pluralize }} need{{ attention_count|pluralize:"s," }} your attention.

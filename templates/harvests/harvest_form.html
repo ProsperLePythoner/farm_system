@@ -29,10 +29,12 @@
     <p>Planted input and harvested produce may use different units; enter the harvest output in its own unit.</p>
 </section>
 
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">{% if object %}Save Changes{% else %}Record Harvest{% endif %}</button>
-    <a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
+    <div class="form-actions">
+        <button type="submit">{% if object %}Save Changes{% else %}Record Harvest{% endif %}</button>
+        <a class="button button-secondary" href="{% url 'crops:planting-detail' planting.pk %}">Cancel</a>
+    </div>
 </form>
 {% endblock %}

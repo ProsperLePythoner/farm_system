@@ -3,6 +3,10 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}?v=20261118">
+{% endblock extra_css %}
+
 {% block content %}
 <div class="page-header">
     <div>
@@ -25,19 +29,19 @@
     <h2 id="quick-links-title">Go to</h2>
     <div class="dashboard-links">
         {% if perms.crops.view_crop and perms.crops.view_field and perms.crops.view_planting %}
-        <a href="{% url 'crops:overview' %}">Crops &amp; Fields</a>
+        <a href="{% url 'crops:overview' %}">{% include "base/icon.html" with icon="space_dashboard" %}Crops &amp; Fields</a>
         {% endif %}
         {% if perms.crops.view_planting %}
-        <a href="{% url 'crops:planting-list' %}">Plantings</a>
+        <a href="{% url 'crops:planting-list' %}">{% include "base/icon.html" with icon="calendar_month" %}Plantings</a>
         {% endif %}
         {% if perms.harvests.view_harvest %}
-        <a href="{% url 'harvests:harvest-list' %}">Harvests</a>
+        <a href="{% url 'harvests:harvest-list' %}">{% include "base/icon.html" with icon="agriculture" %}Harvests</a>
         {% endif %}
         {% if perms.customers.view_customer %}
-        <a href="{% url 'customers:customer-list' %}">Customers</a>
+        <a href="{% url 'customers:customer-list' %}">{% include "base/icon.html" with icon="people" %}Customers</a>
         {% endif %}
         {% if perms.sales.view_order %}
-        <a href="{% url 'sales:order-list' %}">Sales Orders</a>
+        <a href="{% url 'sales:order-list' %}">{% include "base/icon.html" with icon="payments" %}Sales Orders</a>
         {% endif %}
     </div>
 </section>

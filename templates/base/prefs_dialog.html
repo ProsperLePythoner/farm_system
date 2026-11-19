@@ -1,0 +1,46 @@
+{# Display preferences. Opened by #prefs-open in navbar.html; see static/js/prefs.js. #}
+<dialog class="prefs-dialog" id="prefs-dialog" aria-labelledby="prefs-title">
+    <form method="dialog" class="prefs-form">
+        <div class="prefs-header">
+            <h2 id="prefs-title">Display preferences</h2>
+            <button type="submit" class="icon-button" aria-label="Close preferences">{% include "base/icon.html" with icon="close" %}</button>
+        </div>
+
+        <fieldset class="prefs-group">
+            <legend>Theme</legend>
+            <div class="segmented">
+                <label>
+                    <input type="radio" name="theme" value="auto">
+                    <span class="seg-label">{% include "base/icon.html" with icon="brightness_auto" %}System</span>
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="light">
+                    <span class="seg-label">{% include "base/icon.html" with icon="light_mode" %}Light</span>
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="dark">
+                    <span class="seg-label">{% include "base/icon.html" with icon="dark_mode" %}Dark</span>
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset class="prefs-group">
+            <legend>Lists and tables</legend>
+            <div class="segmented">
+                <label>
+                    <input type="radio" name="lists" value="auto">
+                    <span class="seg-label">{% include "base/icon.html" with icon="devices" %}Auto</span>
+                </label>
+                <label>
+                    <input type="radio" name="lists" value="table">
+                    <span class="seg-label">{% include "base/icon.html" with icon="table_rows" %}Table</span>
+                </label>
+                <label>
+                    <input type="radio" name="lists" value="cards">
+                    <span class="seg-label">{% include "base/icon.html" with icon="view_agenda" %}Cards</span>
+                </label>
+            </div>
+            <p class="helptext">Auto shows cards on phones and tables on larger screens. Saved on this device only.</p>
+        </fieldset>
+    </form>
+</dialog>

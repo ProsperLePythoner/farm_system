@@ -48,7 +48,7 @@
 <div class="empty-state">
     <p>No fields have been added yet.</p>
     {% if perms.crops.add_field %}
-        <a href="{% url 'crops:field-create' %}">{% include "base/icon.html" with icon="add" class_name="action-icon" %}Add your first field</a>
+        <a class="button" href="{% url 'crops:field-create' %}">{% include "base/icon.html" with icon="add" %}Add your first field</a>
     {% endif %}
 </div>
 {% endif %}

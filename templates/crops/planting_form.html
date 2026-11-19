@@ -27,7 +27,7 @@
 </div>
 
 
-<form method="post">
+<form method="post" class="form-card">
 
     {% csrf_token %}
 
@@ -60,17 +60,19 @@
     {% endfor %}
     {{ form.non_field_errors }}
 
-    <button type="submit">
-        {% if object %}
-            Save Changes
-        {% else %}
-            Register Planting
-        {% endif %}
-    </button>
+    <div class="form-actions">
+        <button type="submit">
+            {% if object %}
+                Save Changes
+            {% else %}
+                Register Planting
+            {% endif %}
+        </button>
 
-    <a class="button button-secondary" href="{% url 'crops:planting-list' %}">
-        Cancel
-    </a>
+        <a class="button button-secondary" href="{% url 'crops:planting-list' %}">
+            Cancel
+        </a>
+    </div>
 
 </form>
 

@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Cards and detail lists
+   --------------------------------------------------------------------------
+   Every <section> inside <main> is a card, and .card does the same for any
+   other element. The look (no border, soft shadow, large radius) comes from
+   the Crop Timeline and is controlled by --radius-card and --shadow-card.
+   ========================================================================== */
+
+main section,
+.card {
+    background: var(--color-surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    margin: 1.25rem 0;
+    padding: 1.5rem;
+}
+
+main section > :first-child,
+.card > :first-child {
+    margin-top: 0;
+}
+
+main section > :last-child,
+.card > :last-child {
+    margin-bottom: 0;
+}
+
+/* A card header with its own action button, e.g. "Harvest Records [Record]". */
+main section .page-header {
+    margin-bottom: 1rem;
+}
+
+/* ---- Key / value lists ----------------------------------------------------- */
+dl {
+    display: grid;
+    gap: .6rem 1.5rem;
+    grid-template-columns: max-content 1fr;
+}
+
+dt {
+    color: var(--ink-2);
+    font-weight: 600;
+}
+
+dd {
+    color: var(--ink);
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* ---- Plain lists inside cards: one tidy row per item ----------------------- */
+main section > ul:not([class]) {
+    list-style: none;
+}
+
+main section > ul:not([class]) > li {
+    align-items: center;
+    border-top: 1px solid var(--color-border-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem .75rem;
+    justify-content: space-between;
+    padding: .7rem 0;
+}
+
+main section > ul:not([class]) > li:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+main section > ul:not([class]) > li > a:not(.button) {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+main section > ul:not([class]) > li > a:not(.button):hover {
+    color: var(--color-link);
+    text-decoration: underline;
+}
+
+/* Login card: narrow and centred. */
+.auth-card {
+    max-width: 28rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 600px) {
+    main section,
+    .card {
+        margin: 1rem 0;
+        padding: 1.1rem;
+    }
+
+    dl {
+        gap: .15rem;
+        grid-template-columns: 1fr;
+    }
+
+    dd {
+        margin-bottom: .6rem;
+    }
+}

@@ -3,8 +3,9 @@
 ## Current shared application shell
 
 The web UI uses a shared Django template shell styled by the project's
-hand-written `static/css/base.css`. The sidebar is vertical on wider screens
-and becomes one horizontally scrollable navigation row on smaller screens:
+hand-written stylesheets in `static/css/` (see `docs/css_architecture.md`). The
+sidebar is vertical and sticky on wider screens and becomes an off-canvas drawer
+(opened from the navbar menu button) on screens up to 800px wide:
 
 ```text
 +--------------------------------------------------------------+

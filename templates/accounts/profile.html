@@ -10,9 +10,11 @@
     </div>
 </div>
 
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save profile</button>
+    <div class="form-actions">
+        <button type="submit">Save profile</button>
+    </div>
 </form>
 {% endblock %}

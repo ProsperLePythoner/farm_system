@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Base: fonts, reset, document defaults, typography, icons, helpers
+   ========================================================================== */
+
+/* ---- Fonts (self-hosted; nothing is requested from Google at runtime) ---- */
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../../fonts/inter/inter-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../../fonts/inter/inter-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Material Symbols Outlined";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: block;
+    src: url("../../fonts/material-symbols/material-symbols-subset.woff2") format("woff2");
+}
+
+/* ---- Reset ---------------------------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::selection {
+    background-color: #197540;
+    color: #fff;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* "clip" (unlike "hidden") does not create a scroll container, so the
+       sticky navbar and sidebar keep working. */
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+}
+
+body.nav-open {
+    overflow: hidden;
+}
+
+/* ---- Typography ------------------------------------------------------------ */
+h1, h2, h3 {
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.25;
+    margin: 0 0 .75rem;
+}
+
+h1 { font-size: var(--text-2xl); font-weight: 700; }
+h2 { font-size: var(--text-xl); }
+h3 { font-size: 1.05rem; }
+
+p { margin: .5rem 0 1rem; }
+
+strong { font-weight: 650; }
+
+a { color: var(--color-link); }
+a:hover { text-decoration: underline; }
+
+/* Money and quantities line up when digits have equal width. */
+table,
+.kpi-value,
+.field-board {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Focus ----------------------------------------------------------------- */
+:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+a:focus-visible {
+    border-radius: 3px;
+}
+
+/* ---- Icons (Material Symbols ligatures) ---------------------------------- */
+/* tools/subset_icons.py pins the font axes to FILL 0, wght 400, GRAD 0,
+   opsz 20; keep the font-variation-settings below in sync with it. */
+.material-symbols-outlined {
+    direction: ltr;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: "Material Symbols Outlined";
+    font-feature-settings: "liga";
+    font-size: 1.25rem;
+    font-style: normal;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+    font-weight: 400;
+    justify-content: center;
+    letter-spacing: normal;
+    line-height: 1;
+    text-transform: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+
+/* Smaller icon used inside buttons and headings. */
+.action-icon {
+    font-size: 1.15rem;
+    height: 1.15rem;
+    width: 1.15rem;
+}
+
+/* ---- Helpers ---------------------------------------------------------------- */
+.visually-hidden {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}

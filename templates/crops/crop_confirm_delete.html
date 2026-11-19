@@ -12,12 +12,14 @@
 
 {% if delete_blocked %}
 <p class="form-errors">{{ blocked_message }}</p>
-<a href="{% url 'crops:crop-detail' crop.pk %}">Return to crop</a>
+<a class="button button-secondary" href="{% url 'crops:crop-detail' crop.pk %}">Return to crop</a>
 {% else %}
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
-    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete crop</button>
-    <a class="button button-secondary" href="{% url 'crops:crop-detail' crop.pk %}">Cancel</a>
+    <div class="form-actions">
+        <button class="button-danger button-solid" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete crop</button>
+        <a class="button button-secondary" href="{% url 'crops:crop-detail' crop.pk %}">Cancel</a>
+    </div>
 </form>
 {% endif %}
 {% endblock %}

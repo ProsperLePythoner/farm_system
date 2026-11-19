@@ -1,0 +1,228 @@
+/* ==========================================================================
+   Design tokens
+   --------------------------------------------------------------------------
+   The ONLY file that contains raw colours, radii, shadows and font stacks.
+   Every other stylesheet refers to these variables, which is what makes the
+   dark theme possible: it overrides the colour tokens below and nothing else.
+
+   Theme switching: static/js/prefs-init.js sets data-theme="light" or
+   data-theme="dark" on <html> before the first paint (see base/base.html).
+   Without JavaScript the light theme is used.
+
+   Colour pairs were checked against WCAG 2.2 AA (4.5:1 for text, 3:1 for
+   large text and control borders / focus rings).
+   ========================================================================== */
+
+:root {
+    color-scheme: light;
+
+    /* ---- Brand --------------------------------------------------------- */
+    --color-forest: #165a34;          /* brand colour used for text/accents */
+    --color-forest-deep: #0f3f24;
+    --color-primary: #1d6b3d;         /* solid button background */
+    --color-primary-hover: #15542f;
+    --color-on-primary: #ffffff;
+    --color-link: #17633a;
+    --color-focus: #2f8f5b;           /* focus ring: 4:1 on white, 3.7:1 on page bg */
+
+    /* ---- Surfaces ------------------------------------------------------ */
+    --color-bg: #f2f6f3;              /* page background */
+    --color-surface: #ffffff;         /* cards, sidebar, inputs, tables */
+    --color-surface-2: #f6f9f7;       /* subtle fills inside a card */
+    --color-surface-head: #f4f7f5;    /* table header row */
+    --color-row-hover: #f6faf7;
+    --mint: #e7f2e9;
+    --mint-soft: #f1f7f2;
+    --color-border: #e1e7e3;
+    --color-border-subtle: #edf1ee;   /* hairlines between rows */
+    --color-border-strong: #cbd9cf;
+    --card-border: transparent;       /* invisible, but shows in forced-colors mode */
+
+    /* ---- Text ---------------------------------------------------------- */
+    --color-text: #243039;            /* body */
+    --ink: #15231b;                   /* headings, strong values */
+    --ink-2: #4b5c53;                 /* secondary */
+    --ink-3: #5f6f66;                 /* tertiary / captions (5.3:1 on white) */
+
+    /* ---- Form controls ------------------------------------------------- */
+    --input-bg: #ffffff;
+    --input-border: #7e9086;          /* 3.4:1 on white (WCAG 1.4.11) */
+    --input-border-hover: #5f7368;
+
+    /* ---- Buttons ------------------------------------------------------- */
+    --btn-secondary-bg: #eef4ef;
+    --btn-secondary-bg-hover: #e1ece4;
+    --btn-secondary-border: #cbd9cf;
+    --btn-secondary-fg: #254c34;
+    --btn-danger-bg: #fbeceb;
+    --btn-danger-bg-hover: #f6d9d6;
+    --btn-danger-border: #efc4c0;
+    --btn-danger-fg: #a52c25;
+    --btn-danger-solid: #a52c25;
+    --btn-danger-solid-hover: #84211c;
+
+    /* ---- Navigation shell ---------------------------------------------- */
+    --navbar-bg: linear-gradient(110deg, #155a35 0%, #124a2d 100%);
+    --navbar-border: rgba(9, 48, 26, .38);
+    --navbar-height: 4rem;
+    --nav-text: #38473e;
+    --nav-heading: #5f6f66;
+    --nav-hover-bg: #f1f6f2;
+    --nav-hover-fg: #15542f;
+    --nav-active-bg: #e7f2e9;
+    --nav-active-fg: #15542f;
+    --backdrop: rgba(15, 28, 20, .45);
+
+    /* ---- Status colours (solid: dots, markers, big numbers) ------------ */
+    --status-growing: #4c9a5b;
+    --status-open: #bf7410;
+    --status-missed: #c4553e;
+    --status-recorded: #3f83a8;
+
+    /* ---- Status chips (tinted background + readable text) -------------- */
+    --chip-growing-bg: #eaf4eb;  --chip-growing-fg: #397746;
+    --chip-open-bg: #fff2dd;     --chip-open-fg: #9a5b12;
+    --chip-done-bg: #e9f2f7;     --chip-done-fg: #326b8a;
+    --chip-missed-bg: #faece8;   --chip-missed-fg: #a54534;
+    --badge-bg: #edf2ee;         --badge-fg: #365343;
+    --badge-accent-bg: #d7eadc;  --badge-accent-fg: #174c2d;
+
+    /* ---- Feedback messages --------------------------------------------- */
+    --msg-success-bg: #e3f5e8;   --msg-success-fg: #15542f;
+    --msg-error-bg: #fce8e6;     --msg-error-fg: #8b1f16;
+    --msg-warning-bg: #fff4d6;   --msg-warning-fg: #6c5100;
+    --msg-info-bg: #e6f2fb;      --msg-info-fg: #164c73;
+    --color-error: #a32218;
+
+    /* ---- Dashboard / timeline helpers ---------------------------------- */
+    --warn-bg: #fffaf0;          --warn-border: #e8cf8a;
+    --task-open-bg: #f4faf6;     --task-open-accent: #165a34;
+    --task-soon-accent: #d49b1f;
+    --task-missed-bg: #fdf6f5;   --task-missed-accent: #a52c25;
+    --agenda-hit-bg: #e3f5e8;    --agenda-hit-border: #9fcfae;  --agenda-hit-fg: #15542f;
+    --track-bg: #f3f6f4;
+    --grid-line: #e3eae5;
+    --bar-gradient: linear-gradient(180deg, #73b47d, #3f8550);
+
+    /* ---- Shape & depth ------------------------------------------------- */
+    --radius-sm: 8px;
+    --radius-control: 12px;           /* buttons and inputs */
+    --radius-card: 20px;              /* cards (taken from the Crop Timeline) */
+    --radius-pill: 999px;
+    --shadow-card: 0 2px 4px rgba(16, 40, 26, .04), 0 14px 30px -18px rgba(16, 60, 35, .28);
+    --shadow-sm: 0 1px 2px rgba(16, 40, 26, .12);
+    --shadow-raised: 0 18px 48px -12px rgba(10, 30, 18, .35);
+    --shadow-navbar: 0 3px 12px rgba(19, 45, 30, .14);
+
+    /* ---- Typography ---------------------------------------------------- */
+    --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --text-xs: .75rem;
+    --text-sm: .875rem;
+    --text-md: 1rem;
+    --text-xl: 1.3rem;
+    --text-2xl: clamp(1.5rem, 1.25rem + 1vw, 1.8rem);
+
+    /* ---- Spacing & touch ----------------------------------------------- */
+    --space-1: .25rem;
+    --space-2: .5rem;
+    --space-3: .75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --tap: 2.75rem;                   /* minimum comfortable touch target (44px) */
+}
+
+/* Dark theme: colours only. Geometry and typography are inherited. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-forest: #7fcf9f;
+    --color-forest-deep: #a9e0bf;
+    --color-primary: #2b8052;
+    --color-primary-hover: #25704a;
+    --color-link: #7fcf9f;
+    --color-focus: #5fc08a;
+
+    --color-bg: #0e1612;
+    --color-surface: #16211b;
+    --color-surface-2: #1b2822;
+    --color-surface-head: #1a261f;
+    --color-row-hover: #1b2922;
+    --mint: #1f3a2b;
+    --mint-soft: #1a2b22;
+    --color-border: #263329;
+    --color-border-subtle: #212d26;
+    --color-border-strong: #34463b;
+    --card-border: #223028;
+
+    --color-text: #dfe9e2;
+    --ink: #f0f6f2;
+    --ink-2: #aebdb4;
+    --ink-3: #8a9b91;
+
+    --input-bg: #111b16;
+    --input-border: #6b8071;
+    --input-border-hover: #8aa192;
+
+    --btn-secondary-bg: #1f2f26;
+    --btn-secondary-bg-hover: #284036;
+    --btn-secondary-border: #34463b;
+    --btn-secondary-fg: #cfe6d8;
+    --btn-danger-bg: #3a1f1d;
+    --btn-danger-bg-hover: #4c2724;
+    --btn-danger-border: #5b2f2b;
+    --btn-danger-fg: #ffb4ab;
+    --btn-danger-solid: #b3352d;
+    --btn-danger-solid-hover: #c9433a;
+
+    --navbar-bg: linear-gradient(110deg, #103f27 0%, #0c3120 100%);
+    --navbar-border: rgba(0, 0, 0, .4);
+    --nav-text: #cdd9d1;
+    --nav-heading: #8a9b91;
+    --nav-hover-bg: #1d2b23;
+    --nav-hover-fg: #a9e0bf;
+    --nav-active-bg: #1f3a2b;
+    --nav-active-fg: #a9e0bf;
+    --backdrop: rgba(0, 0, 0, .6);
+
+    --status-growing: #6bbf7b;
+    --status-open: #e8a23a;
+    --status-missed: #e8725a;
+    --status-recorded: #6fb4d8;
+
+    --chip-growing-bg: #1d3a28;  --chip-growing-fg: #9fdcae;
+    --chip-open-bg: #3d2e12;     --chip-open-fg: #f5c987;
+    --chip-done-bg: #173342;     --chip-done-fg: #9fd0eb;
+    --chip-missed-bg: #43211b;   --chip-missed-fg: #ffb4a3;
+    --badge-bg: #22322a;         --badge-fg: #cfe6d8;
+    --badge-accent-bg: #1f3a2b;  --badge-accent-fg: #a9e0bf;
+
+    --msg-success-bg: #173a26;   --msg-success-fg: #a9e0bf;
+    --msg-error-bg: #43211f;     --msg-error-fg: #ffb4ab;
+    --msg-warning-bg: #3d3210;   --msg-warning-fg: #f5d98a;
+    --msg-info-bg: #17324a;      --msg-info-fg: #a9d4f5;
+    --color-error: #ff9d92;
+
+    --warn-bg: #2a2410;          --warn-border: #5e4d1a;
+    --task-open-bg: #17281f;     --task-open-accent: #5fc08a;
+    --task-soon-accent: #e0a92f;
+    --task-missed-bg: #2c1a18;   --task-missed-accent: #e8725a;
+    --agenda-hit-bg: #1d3a28;    --agenda-hit-border: #2f6b47;  --agenda-hit-fg: #a9e0bf;
+    --track-bg: #1d2a23;
+    --grid-line: #2b3b32;
+    --bar-gradient: linear-gradient(180deg, #5fbf7a, #2f7d4a);
+
+    /* Shadows are nearly invisible on dark surfaces; a hairline does the job. */
+    --shadow-card: 0 0 0 1px var(--card-border);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
+    --shadow-raised: 0 18px 48px -12px rgba(0, 0, 0, .7);
+    --shadow-navbar: 0 3px 12px rgba(0, 0, 0, .4);
+}
+
+/* Slightly tighter cards on phones. */
+@media (max-width: 600px) {
+    :root {
+        --radius-card: 16px;
+        --navbar-height: 3.75rem;
+    }
+}

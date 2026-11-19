@@ -12,12 +12,14 @@
 
 {% if has_order_history %}
 <p>This customer has order history and cannot be deleted. Keeping the customer record preserves the order history.</p>
-<a href="{% url 'customers:customer-detail' customer.pk %}">Return to customer</a>
+<a class="button button-secondary" href="{% url 'customers:customer-detail' customer.pk %}">Return to customer</a>
 {% else %}
-<form method="post">
+<form method="post" class="form-card">
     {% csrf_token %}
-    <button class="button-danger" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete customer</button>
-    <a class="button button-secondary" href="{% url 'customers:customer-detail' customer.pk %}">Cancel</a>
+    <div class="form-actions">
+        <button class="button-danger button-solid" type="submit">{% include "base/icon.html" with icon="delete" %}Yes, delete customer</button>
+        <a class="button button-secondary" href="{% url 'customers:customer-detail' customer.pk %}">Cancel</a>
+    </div>
 </form>
 {% endif %}
 {% endblock %}

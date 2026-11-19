@@ -1,0 +1,178 @@
+/* ==========================================================================
+   Forms
+   --------------------------------------------------------------------------
+   Page forms are marked  <form class="form-card">  and end with
+   <div class="form-actions"> holding the submit button and Cancel link.
+   Inputs are 44px tall with 16px text, which also stops iOS from zooming
+   the page when a field is focused.
+   ========================================================================== */
+
+.form-card {
+    background: var(--color-surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    margin: 1rem 0;
+    max-width: 46rem;
+    padding: 1.5rem;
+}
+
+/* A form that sits inside a card already (the login page) adds no second card. */
+main section .form-card {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    max-width: none;
+    padding: 0;
+}
+
+form p {
+    margin: 0 0 1.1rem;
+    min-width: 0;
+}
+
+label {
+    color: var(--ink);
+    display: block;
+    font-size: .92rem;
+    font-weight: 600;
+    margin-bottom: .35rem;
+}
+
+input,
+select,
+textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-control);
+    color: var(--color-text);
+    display: block;
+    font: inherit;
+    max-width: 100%;
+    min-height: var(--tap);
+    min-width: 0;
+    padding: .6rem .8rem;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    width: 100%;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+    border-color: var(--input-border-hover);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    border-color: var(--color-focus);
+    outline-offset: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--ink-3);
+    opacity: 1;
+}
+
+/* The native arrow already takes room on the right; less padding avoids clipped text. */
+select {
+    padding-left: .7rem;
+    padding-right: .35rem;
+}
+
+textarea {
+    min-height: 7rem;
+    resize: vertical;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--color-primary);
+    display: inline-block;
+    height: 1.2rem;
+    min-height: 0;
+    padding: 0;
+    vertical-align: middle;
+    width: 1.2rem;
+}
+
+/* ---- Hints and errors ------------------------------------------------------------ */
+form small,
+.helptext {
+    color: var(--ink-2);
+    display: block;
+    font-size: .875rem;
+    line-height: 1.45;
+    margin-top: .25rem;
+}
+
+.errorlist,
+.errorlist li {
+    color: var(--color-error);
+    margin: .25rem 0;
+    padding-left: 0;
+}
+
+.errorlist {
+    list-style: none;
+}
+
+.form-errors,
+.field-errors {
+    color: var(--color-error);
+}
+
+/* ---- Grouping ----------------------------------------------------------------------- */
+form fieldset {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    margin: 1rem 0;
+    min-width: 0;
+    padding: 1rem;
+}
+
+form legend {
+    color: var(--ink);
+    font-weight: 700;
+    padding: 0 .35rem;
+}
+
+/* A section nested in a form (the order's item list) is a quiet group, not a card. */
+.form-card section {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-control);
+    box-shadow: none;
+    margin: 1.25rem 0;
+    padding: 1rem;
+}
+
+.form-card section fieldset {
+    background: var(--color-surface);
+}
+
+/* ---- Buttons at the bottom of a form -------------------------------------------- */
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .form-card {
+        max-width: 100%;
+        padding: 1.1rem;
+    }
+
+    form fieldset {
+        padding: .75rem;
+    }
+
+    /* Full-width, thumb-sized buttons; the primary one comes first. */
+    .form-actions > button,
+    .form-actions > .button {
+        flex: 1 1 100%;
+    }
+}
