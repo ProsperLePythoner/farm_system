@@ -67,7 +67,7 @@ class FieldBoardView(
         search_query = request.GET.get("q", "").strip()
         view_mode = request.GET.get("view", "timeline")
 
-        if weeks not in {"8", "14", "26"}:
+        if weeks not in {"4", "14", "26", "48"}:
             return HttpResponseBadRequest("Choose a supported timeline range.")
         if crop_id and (
             not crop_id.isascii()
