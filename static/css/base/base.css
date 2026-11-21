@@ -155,3 +155,53 @@ a:focus-visible {
         transition-duration: .01ms !important;
     }
 }
+
+/* =====================================
+    PASSWORD VISIBILITY TOGGLE
+    ====================================
+*/
+
+.password-field-wrapper {
+    position: relative;
+}
+
+.password-field-wrapper input {
+    width: 100%;
+    padding-right: 45px !important;
+    box-sizing: border-box;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: calc(50% + 15px);
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+    color: #777;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.password-toggle svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.password-toggle:hover {
+    color: inherit;
+}
