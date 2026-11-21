@@ -202,6 +202,25 @@ a:focus-visible {
     stroke-linejoin: round;
 }
 
+.password-toggle,
+.password-toggle:hover,
+.password-toggle:focus,
+.password-toggle:active {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Light mode */
+.password-toggle {
+    color: #777;
+}
+
 .password-toggle:hover {
-    color: inherit;
+    color: #222222ed !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .password-toggle:hover {
+    color: #ddd !important;
 }
