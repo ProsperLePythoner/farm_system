@@ -27,6 +27,11 @@ class DashboardTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Farm Dashboard")
         self.assertEqual(response.content.lower().count(b"<html"), 1)
+        self.assertContains(
+            response,
+            '<link rel="icon" type="image/svg+xml" href="/static/images/farm-system-icon.svg">',
+            html=False,
+        )
 
     def test_shared_navigation_keeps_labels_with_decorative_material_symbols(self):
         response = self.client.get(reverse("dashboard:dashboard"))

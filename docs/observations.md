@@ -10,6 +10,8 @@ named its (probably harvesting unit, but that's selected from a dropdown???) har
 unit to **eh?** on purpose. Later on, viewing the `Recorded Harvests` page I'm surprised to 
 find that its entry field *Quantity* is written as *2,000.00 eh?*. I don't want that. But 
 *WHERE exactly is the harvest output unit???*, obviously the planting unit can't match the harvest unit???
+4. Currently, a harvested crop does not display its status as harvested even when a harvest has 
+been recorded within the specified window. Fix this.
 
 Implementation note: planting input units are free text (for example, seeds or
 kg), while harvest quantity uses the crop's output unit. These values are not
@@ -35,6 +37,8 @@ the user list after I manually update that field in the admin site! Dammit.
 3. Numerical values for prices lack commas for easier readability [resolved]
 4. Unit prices for sales orders for specific crops should only be set **ONCE** to prevent inconsistencies. The user 
 should then be allowed to customize it later on.
+5. The system should allow the sales manager to register when a customer is EXPECTED to 
+pay for their respective order, to make email reminders more specific and less frequent.
 
 # 4. Calendar
 Remember to add a calendar feature later on!
@@ -78,3 +82,4 @@ buttons, to favor mobile users. Mobile-native (even desktop) UI, modern everythi
 to other templates as well. Is it really good to have shadows btw?? Idk. We'll figure it out.
 7. Optionally, add a settings link where the user can quickly adjust preferences and even core functionality for 
 the application, such as by an admin.
+8. Give it a favicon.
